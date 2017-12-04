@@ -1,0 +1,8 @@
+.firebaserc
+firebase.json
+package-lock.json
+package.json
+workbox-cli-config.js
+.DS_Store
+*/DS_Store
+node_modules

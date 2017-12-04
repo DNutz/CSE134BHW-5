@@ -1,0 +1,782 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Player Info</title>
+  <script>
+    function back_to_roster() {
+      location.href = "roster_vanilla.html";
+    }
+    function getFormattedDate(date) {
+      d = new Date(date);
+      var year = d.getFullYear();
+      var month = d.getMonth() + 1;
+      var day = d.getDate();
+      var currentDate = month + '/' + day + '/' + year;
+      return currentDate;
+    }
+  </script>
+  <script src="/js/CRUD_roster.js"></script>
+
+  <style>
+    #rst_btn {
+      width: 50%;
+      margin-bottom: 1rem;
+    }
+
+    #btn_ct {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 1rem !important;
+    }
+
+    @font-face {
+      font-family: 'Glyphicons Halflings';
+
+      src: url('../bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.eot');
+      src: url('../bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.woff') format('woff'), url('../bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+    }
+
+    /*Bootstrap C&P*/
+
+    * {
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-family: sans-serif;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+      font-size: 10px;
+    }
+
+    body {
+      margin: 0;
+    }
+
+    article,
+    aside,
+    details,
+    figcaption,
+    figure,
+    footer,
+    header,
+    hgroup,
+    main,
+    menu,
+    nav,
+    section,
+    summary {
+      display: block;
+    }
+
+    .text-center {
+      text-align: center;
+      font-size: 4rem;
+    }
+
+    .input-group {
+      position: relative;
+      display: table;
+      border-collapse: separate;
+      width: 100%
+    }
+
+    .form-control {
+      display: block;
+      width: 100%;
+      height: 8rem;
+      padding: 0.5rem 1rem;
+      font-size: 5rem;
+      line-height: 5rem;
+      color: #555;
+      background-color: #fff;
+      background-image: none;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+      -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+      -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+      transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.5rem;
+      margin-bottom: 0;
+      font-size: 5rem;
+      font-weight: normal;
+      line-height: 5rem;
+      height: 8rem;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-image: none;
+      border: 1px solid transparent;
+      border-radius: 1rem;
+    }
+
+    .btn-default {
+      color: #333;
+      background-color: #fff;
+      border-color: #ccc;
+    }
+
+    .glyphicon {
+      position: relative;
+      top: 1px;
+      display: inline-block;
+      font-family: 'Glyphicons Halflings';
+      font-style: normal;
+      font-weight: normal;
+      line-height: 1;
+
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .img-responsive{
+      margin: auto;
+      margin-bottom: 1rem;
+      display: block;
+      width: 100%;
+      max-width: 640px;
+      height: auto
+    }
+
+    .img-circle {
+      border-radius: 50%;
+    }
+
+    .nav {
+      padding-left: 0;
+      margin-bottom: 0;
+      list-style: none;
+    }
+
+    .nav>li {
+      position: relative;
+      display: block;
+    }
+
+    .nav>li>a {
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+    }
+
+    .nav>li>a:hover,
+    .nav>li>a:focus {
+      text-decoration: none;
+      background-color: #eee;
+    }
+
+    .nav>li.disabled>a {
+      color: #777;
+    }
+
+    .nav>li.disabled>a:hover,
+    .nav>li.disabled>a:focus {
+      color: #777;
+      text-decoration: none;
+      cursor: not-allowed;
+      background-color: transparent;
+    }
+
+    .nav .open>a,
+    .nav .open>a:hover,
+    .nav .open>a:focus {
+      background-color: #eee;
+      border-color: #337ab7;
+    }
+
+    .nav .nav-divider {
+      height: 1px;
+      margin: 9px 0;
+      overflow: hidden;
+      background-color: #e5e5e5;
+    }
+
+    .nav>li>a>img {
+      max-width: none;
+    }
+
+    .nav-tabs {
+      border-bottom: 1px solid #ddd;
+    }
+
+    .nav-tabs>li {
+      float: left;
+      margin-bottom: -1px;
+    }
+
+    .nav-tabs>li>a {
+      margin-right: 2px;
+      line-height: 1.42857143;
+      border: 1px solid transparent;
+      border-radius: 4px 4px 0 0;
+    }
+
+    .nav-tabs>li>a:hover {
+      border-color: #eee #eee #ddd;
+    }
+
+    .nav-tabs>li.active>a,
+    .nav-tabs>li.active>a:hover,
+    .nav-tabs>li.active>a:focus {
+      color: #555;
+      cursor: default;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-bottom-color: transparent;
+    }
+
+    .nav-tabs.nav-justified {
+      width: 100%;
+      border-bottom: 0;
+    }
+
+    .nav-tabs.nav-justified>li {
+      float: none;
+    }
+
+    .nav-tabs.nav-justified>li>a {
+      margin-bottom: 5px;
+      text-align: center;
+    }
+
+    .nav-tabs.nav-justified>.dropdown .dropdown-menu {
+      top: auto;
+      left: auto;
+    }
+
+    @media (min-width: 768px) {
+      .nav-tabs.nav-justified>li {
+        display: table-cell;
+        width: 1%;
+      }
+      .nav-tabs.nav-justified>li>a {
+        margin-bottom: 0;
+      }
+    }
+
+    .nav-tabs.nav-justified>li>a {
+      margin-right: 0;
+      border-radius: 4px;
+    }
+
+    .nav-tabs.nav-justified>.active>a,
+    .nav-tabs.nav-justified>.active>a:hover,
+    .nav-tabs.nav-justified>.active>a:focus {
+      border: 1px solid #ddd;
+    }
+
+    @media (min-width: 768px) {
+      .nav-tabs.nav-justified>li>a {
+        border-bottom: 1px solid #ddd;
+        border-radius: 4px 4px 0 0;
+      }
+      .nav-tabs.nav-justified>.active>a,
+      .nav-tabs.nav-justified>.active>a:hover,
+      .nav-tabs.nav-justified>.active>a:focus {
+        border-bottom-color: #fff;
+      }
+    }
+
+    .pull-right {
+      float: right !important;
+    }
+
+    .pull-left {
+      float: left !important;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .glyphicon-search:before {
+      content: "\e003";
+    }
+
+    button,
+    input,
+    optgroup,
+    select,
+    textarea {
+      margin: 0;
+      font: inherit;
+      color: inherit;
+    }
+
+    .input-group .form-control {
+      position: relative;
+      z-index: 2;
+      float: left;
+      width: 100%;
+      margin-bottom: 0;
+      display: table-cell;
+    }
+
+    .input-group-addon,
+    .input-group-btn {
+      width: 1%;
+      white-space: nowrap;
+      vertical-align: middle;
+      display: table-cell;
+    }
+
+    .input-group-btn {
+      position: relative;
+      font-size: 0;
+      white-space: nowrap;
+    }
+
+    .input-group-btn {
+      position: relative;
+      font-size: 0;
+      white-space: nowrap;
+    }
+
+    .input-group-btn>.btn {
+      position: relative;
+    }
+
+    .input-group-btn>.btn+.btn {
+      margin-left: -1px;
+    }
+
+    .input-group-btn>.btn:hover,
+    .input-group-btn>.btn:focus,
+    .input-group-btn>.btn:active {
+      z-index: 2;
+    }
+
+    .input-group-btn:first-child>.btn,
+    .input-group-btn:first-child>.btn-group {
+      margin-right: -1px;
+    }
+
+    .input-group-btn:last-child>.btn,
+    .input-group-btn:last-child>.btn-group {
+      z-index: 2;
+      margin-left: -1px;
+    }
+
+    ul,
+    ol {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    header {
+      margin-bottom: 1rem;
+    }
+
+    .nav:before {
+      display: table;
+      content: " ";
+    }
+
+    .nav:after {
+      clear: both;
+      display: table;
+      content: " ";
+    }
+
+    /*End of Bootstrap C&P*/
+
+    li {
+      width: 50%;
+    }
+
+    .info-name {
+      margin-left: 1rem;
+    }
+
+    .info-value {
+      margin-right: 1rem;
+    }
+
+    span {
+      width: 45%;
+      font-size: 4rem;
+    }
+
+    img {
+      margin-bottom: 1rem;
+    }
+
+    .editDeleteSection {
+
+      bottom: 2%;
+      width:100%
+    }
+
+    #deletePlayerButton {
+      background-color: red;
+      color: white;
+      width: 100%;
+    }
+
+    #updatePlayerButton {
+      background-color: rgb(255, 208, 0);
+      color: white;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+
+    #deleteModal {
+      display: none;
+    }
+
+    #deleteModal>div {
+      position: relative;
+      text-align: right;
+      background-color: #fefefe;
+      border-radius: 10px;
+      border: 1px solid #888;
+      margin-top: 60%;
+      padding: 1rem 1rem 3rem 4rem;
+      font-size: 3rem;
+      vertical-align: middle;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      -webkit-animation-name: animatetop;
+      -webkit-animation-duration: 0.5s;
+      animation-name: animatetop;
+      animation-duration: 0.5s
+    }
+
+    #deleteModal>div>h2 {
+      text-align: left;
+    }
+
+    #confirmDeleteButton {
+      background-color: red;
+      color: white;
+      width: 30%;
+      height: 8rem;
+      margin: 0 1rem 0 1rem;
+      display: inline-block;
+    }
+
+    #cancelDeleteButton {
+      background-color: rgb(75, 75, 75);
+      color: white;
+      width: 30%;
+      height: 8rem;
+      margin: 0 1rem 0 1rem;
+      display: inline-block;
+    }
+  </style>
+
+  <!-- Modal Styles -->
+  <style>
+    /* Modal Styles */
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 5;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgb(0, 0, 0);
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      position: relative;
+      background-color: #fefefe;
+      border-radius: 10px;
+      border: 1px solid #888;
+      width: 80%;
+      margin: 10%;
+      vertical-align: middle;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      -webkit-animation-name: animatetop;
+      -webkit-animation-duration: 0.5s;
+      animation-name: animatetop;
+      animation-duration: 0.5s
+    }
+
+    .modal-header {
+      border-radius: 10px 10px 0px 0px;
+      padding: 4px;
+      background-color: #42b1b1;
+      text-align: center;
+      color: white;
+      font-size: 4.5rem;
+      padding: 1rem 1rem 1rem 2rem;
+    }
+
+    .modal-header>h4 {
+      display: inline-block;
+      line-height: 1rem;
+      padding-left: 3rem;
+    }
+
+    #save_btn {
+      width: 97%;
+      height: 8rem;
+      margin: 0 1rem 2rem 1rem;
+    }
+
+    .modal-body {
+      padding: 4%;
+      text-align: center;
+    }
+
+    .modal-footer {
+      padding: 1rem;
+    }
+
+    .modal label {
+      display: block;
+      text-align: left;
+    }
+
+    .modal-header>span:nth-child(1) {
+      display: inline-block;
+      margin-top: 1.5rem;
+    }
+
+    /* The Close Button */
+
+    .close {
+      color: gray;
+      float: right;
+      font-size: 8rem;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background-color: #42b1b1;
+      color: white;
+    }
+
+    /* Add Animation */
+
+    @keyframes animatetop {
+      from {
+        top: -300px;
+        opacity: 0
+      }
+      to {
+        top: 0;
+        opacity: 1
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+  <header class="text-center">
+    <div id="btn_ct" class="container">
+      <button id="rst_btn" type="button" class="btn btn-primary" onclick="back_to_roster()">Back to Roster</button>
+    </div>
+    <form class="navbar-form" role="search">
+      <div class="input-group add-on">
+        <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text">
+        <div class="input-group-btn">
+          <button id="srch-btn" class="btn btn-default" type="submit">
+            <i class="glyphicon glyphicon-search" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+    <h1 id="infoPlayerName">...</h1>
+    <!--<img class="img-responsive img-circle" alt="Player picture" src="../src/john_smith.jpg"> -->
+
+    <ul class="nav nav-tabs">
+      <li class="active">
+        <a href="">Information</a>
+      </li>
+      <li>
+        <a href="player_stats_vanilla.html">Stats</a>
+      </li>
+    </ul>
+  </header>
+  <div class="text-center">
+    <hr> PLAYER INFO
+    <hr>
+  </div>
+  <div id="info+values">
+    <span class="pull-left info-name">Position</span>
+    <span id="infoPlayerPosition" class="pull-right text-right info-value">Forward</span>
+    <br>
+    <span class="pull-left info-name">Number</span>
+    <span id="infoPlayerNumber" class="pull-right text-right info-value">76</span>
+    <br>
+    <span class="pull-left info-name">Status</span>
+    <span id="infoPlayerStatus" class="pull-right text-right info-value">Starter</span>
+    <br>
+    <span class="pull-left info-name">College</span>
+    <span id="infoPlayerCollege" class="pull-right text-right info-value">UCD</span>
+    <br>
+    <span class="pull-left info-name">Hometown</span>
+    <span id="infoPlayerHometown" class="pull-right text-right info-value">Sacramento</span>
+    <br>
+    <span class="pull-left info-name">Age</span>
+    <span id="infoPlayerAge" class="pull-right text-right info-value">20</span>
+    <br>
+    <span class="pull-left info-name">DOB</span>
+    <span id="infoPlayerDOB" class="pull-right text-right info-value">4/18/1997</span>
+    <br>
+    <span class="pull-left info-name">Player ID</span>
+    <span id="infoPlayerPID" class="pull-right text-right info-value">P16126065</span>
+  </div>
+  </div>
+
+  <div class="editDeleteSection">
+    <button id="updatePlayerButton" class="btn" onclick="updatePlayer()">Update Player</button>
+    <button id="deletePlayerButton" class="btn" onclick="deleteModalAppear()">Delete Player</button>
+  </div>
+  <!-- Confirm Delete Modal -->
+  <div id="deleteModal" class="modal">
+    <div class="modal-content">
+      <h2>Are you sure you want to delete this player?</h2>
+      <input type="submit" id="confirmDeleteButton" class="btn" value="delete" onclick="confirmDeletePlayer()">
+      <input type="submit" id="cancelDeleteButton" class="btn" value="cancel" onclick="deleteModalDissapear()">
+    </div>
+  </div>
+
+
+  <div class="container">
+    <!-- Modal -->
+    <div class="modal" id="updateModal">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" onclick="close_update_modal()">&times;</button>
+          <h4 class="modal-title">Add a Player</h4>
+        </div>
+        <div class="modal-body">
+          <form id="updatePlayerForm">
+            <input class="form-control" type="text" name="name" placeholder="Name">
+            <input class="form-control" type="text" name="position" placeholder="Postion">
+            <input class="form-control" type="number" name="number" placeholder="Number">
+            <input class="form-control" type="text" name="status" placeholder="Status">
+            <input class="form-control" type="text" name="college" placeholder="College">
+            <input class="form-control" type="text" name="hometown" placeholder="Hometown">
+            <input class="form-control" type="number" name="age" placeholder="Age">
+            <input class="form-control" type="text" name="dob" placeholder="DOB">
+            <input class="form-control" type="text" name="pid" placeholder="Player ID">
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button id="save_btn" type="button" class="btn btn-primary" onclick="confirmUpdate()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    function deleteModalAppear() {
+      document.getElementById('deleteModal').style.display = 'block';
+    }
+
+    function deleteModalDissapear() {
+      document.getElementById('deleteModal').style.display = 'none';
+    }
+
+    function close_update_modal() {
+      var modal = document.getElementById('updateModal');
+      modal.style.display = 'none';
+    }
+
+    function confirmDeletePlayer() {
+
+      var pid = document.getElementById('infoPlayerPID').innerHTML;
+      deletePlayerById(pid);
+      deleteModalDissapear();
+      location.href = 'roster_vanilla.html';
+    }
+
+    function updatePlayer() {
+
+      document.getElementById('updateModal').style.display = 'block';
+      var info = document.getElementById('info+values');
+      var form = document.getElementById('updatePlayerForm');
+
+      var infoSpan = info.getElementsByTagName('span');
+      form.children[0].value = document.getElementById('infoPlayerName').innerHTML; //name
+      form.children[1].value = infoSpan[1].innerHTML; //position
+      form.children[2].value = infoSpan[3].innerHTML; //number
+      form.children[3].value = infoSpan[5].innerHTML; //status
+      form.children[4].value = infoSpan[7].innerHTML; //college
+      form.children[5].value = infoSpan[9].innerHTML; //hometown
+      form.children[6].value = infoSpan[11].innerHTML; //age
+      form.children[7].value = infoSpan[13].innerHTML; //DOB
+      form.children[8].value = infoSpan[15].innerHTML; //pid
+    }
+
+    function confirmUpdate() {
+
+      var form = document.getElementById('updatePlayerForm');
+      var name = form.children[0].value;
+      var pos = form.children[1].value;
+      var num = form.children[2].value;
+      var status = form.children[3].value;
+      var college = form.children[4].value;
+      var hometown = form.children[5].value;
+      var age = form.children[6].value;
+      var dob = form.children[7].value;
+      var pid = form.children[8].value;
+
+      var unique = checkPlayerUpdate(num, pid);
+      if (unique == false) {
+        alert('This number is already taken');
+        return;
+      }
+      var player = updatePlayerStorage(undefined, name, pos, num, status, college, hometown, age, dob, pid);
+      console.log(player);
+
+      document.getElementById('updateModal').style.display = 'none';
+      loadInfo();
+    }
+
+  </script>
+
+  <!-- On Load scripts -->
+  <script>
+    //setting the player info
+
+    loadInfo();
+
+    function loadInfo() {
+      var pid = localStorage.getItem('currentPlayer');
+      var inputRoster = JSON.parse(localStorage.getItem('Roster'));
+      var player;
+
+      for (var i = 0; i < inputRoster.length; i++) if (inputRoster[i].ID == pid) player = inputRoster[i];
+
+      console.log(player);
+      document.getElementById('infoPlayerName').innerText = player.name;
+      document.getElementById('infoPlayerPosition').innerText = player.position;
+      document.getElementById('infoPlayerNumber').innerText = player.number;
+      document.getElementById('infoPlayerStatus').innerText = player.status;
+      document.getElementById('infoPlayerCollege').innerText = player.college;
+      document.getElementById('infoPlayerHometown').innerText = player.hometown;
+      document.getElementById('infoPlayerAge').innerText = player.age;
+      document.getElementById('infoPlayerDOB').innerText = getFormattedDate(player.DOB);
+      document.getElementById('infoPlayerPID').innerText = player.ID;
+    }
+  </script>
+</body>
+
+</html>

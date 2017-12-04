@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Create Account</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            margin: 5% 5% 5% 5%;
+            font-size: 5rem;
+        }
+
+        body * {
+            margin-bottom: 2rem;
+        }
+
+        #create_header {
+            text-align: center;
+        }
+
+        input,
+        select {
+            height: 6rem;
+            font-size: 3rem;
+            display: block;
+            width: 100%;
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            z-index: 2;
+            margin-bottom: 1rem;
+        }
+
+        .dropdown option {
+            font-size: 2rem;
+        }
+
+        h1 {
+            font-size: 7rem;
+        }
+
+        #create_start {
+            width: 100%;
+            font-size: 3rem;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 1.42857143;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .btn-success {
+            color: #fff;
+            background-color: #5cb85c;
+            border-color: #4cae4c;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 id="create_header">Create Account</h1>
+    <form id="create_account_form" class="form-group">
+        <label for="create_email">Email-Address:</label>
+        <input type="email" name="create_email" id="create_email" minlength="1" required>
+        <label for="create_password">Password:</label>
+        <input type="password" name="create_password" id="create_password" onchange="checkPasswords()" minlength="1" required>
+        <label for="create_confirmPassword">Confirm Password:</label>
+        <input type="password" name="create_confirmPassword" id="create_confirmPassword" onchange="checkPasswords()" minlength="1" required>
+        <label for="create_securityQuestion">Security Question</label>
+        <select id="create_securityQuestion" name="create_securityQuestion" form="create_account_form" class="dropdown">
+            <option value="0" selected disabled>--Select a Security Question--</option>
+            <option value="1">What is your mother's maiden name?</option>
+            <option value="2">Where were you born?</option>
+            <option value="3">Who is your favorite soccer player?</option>
+            <option value="4">What is the name of your first pet?</option>
+            <option value="5">What is your first car?</option>
+        </select>
+        <label for="create_answer">Answer:</label>
+        <input type="text" name="create_answer" id="create_answer" minlength="1" required>
+        <label for="create_userType">User Type:</label>
+        <select id="create_userType" name="create_userType" form="create_account_form" class="dropdown">
+            <option value="0" selected disabled>What Kind of User Are You?</option>
+            <option value="1">Coach</option>
+            <option value="2">Player</option>
+            <option value="3">Fan</option>
+        </select>
+    </form>
+    <button id="create_start" name="create_start" type="button" form="create_account_form" class="btn btn-success" onclick="createUser()">Start</button>
+    <script>
+        function checkPasswords() {
+            var password = document.getElementById('create_password');
+            var confirm_password = document.getElementById('create_confirmPassword');
+            if (password.value != confirm_password.value) {
+                confirm_password.setCustomValidity("Passwords do not match!");
+            }
+            else {
+                confirm_password.setCustomValidity("");
+            }
+        }
+
+        function createUser() {
+            //TODO: add check to see if local storage is available
+            //TODO: check if user has inputted correct stuff in form
+            //properties of user: email, password, type, security question, security answer
+            var password = document.getElementById('create_password').value;
+            var confirm_password = document.getElementById('create_confirmPassword').value;
+            if (password != confirm_password) {
+                alert("Password and Confirm Password must match");
+                return 0;
+            }
+
+            var securityQ = document.getElementById('create_securityQuestion');
+            if (securityQ.options[securityQ.selectedIndex].value == '0') {
+                alert("You must select a security question");
+                return 0;
+            }
+
+            var userType = document.getElementById('create_userType');
+            if (userType.options[userType.selectedIndex].value == '0') {
+                alert("You must select a user type");
+                return 0;
+            }
+            
+            var users = [];
+            var backUserList = localStorage.getItem('userList');
+            if (backUserList != undefined) {
+                users = JSON.parse(backUserList);
+            }
+            var emailAddr = document.getElementById('create_email').value;
+
+            //check for duplicate emails
+            for (var index = 0; index < users.length; index++) {
+                if (users[index].email == emailAddr) {
+                    alert('Account with the same email address already exists');
+                    return 0;
+                }
+            }
+
+            var createUser = {};
+            
+            createUser['email'] = emailAddr;
+            createUser['password'] = confirm_password;
+            createUser['question'] = securityQ.options[securityQ.selectedIndex].text;
+            createUser['answer'] = document.getElementById('create_answer').value;
+            createUser['type'] = userType.options[userType.selectedIndex].text;
+            users.push(createUser);
+            localStorage.setItem('userList', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(createUser));
+
+            location.href = ("homepage.html");
+        }
+    </script>
+</body>
+
+</html>

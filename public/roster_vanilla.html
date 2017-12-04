@@ -1,0 +1,1332 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Roster</title>
+  <script src="/js/CRUD_roster.js"></script>
+  <script src="/js/hideInputTab.js"></script>
+  <script>
+    function link_to_playerinfo(td) {
+      console.log(td);
+      var pid = td.getElementsByTagName('input')[0].value;
+      console.log('PID = ' + pid);
+      localStorage.setItem('currentPlayer', pid);
+      location.href = ("../vanilla-src/player_info_vanilla.html")
+    }
+    function show_add_modal(){
+      var modal = document.getElementById('addModal');
+      modal.style.display = 'block';
+    }
+    function close_add_modal(){
+      var modal = document.getElementById('addModal');
+      modal.style.display = 'none';
+    }
+    /*function show_remove_modal(){
+      var modal = document.getElementById('removeModal');
+      modal.style.display = 'block';
+    }
+    function close_remove_modal(){
+      var modal = document.getElementById('removeModal');
+      modal.style.display = 'none';
+    }*/
+  </script>
+  <style>
+    @font-face {
+      font-family: 'Glyphicons Halflings';
+
+      src: url('../bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.eot');
+      src: url('../bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.woff') format('woff'), url('../bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+    }
+     /* Modal Styles */
+     .modal {
+      display: none;
+      position: fixed;
+      z-index: 5;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      line-height: 100%;
+      overflow: auto;
+      background-color: rgb(0, 0, 0);
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+    .modal-content {
+      position: relative;
+      background-color: #fefefe;
+      border-radius: 10px;
+      border: 1px solid #888;
+      width: 80%; 
+      margin: 10%;
+      vertical-align: middle;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      -webkit-animation-name: animatetop;
+      -webkit-animation-duration: 0.5s;
+      animation-name: animatetop;
+      animation-duration: 0.5s
+    }
+    .modal-header {
+      border-radius: 10px 10px 0px 0px;
+      padding: 1rem;
+      background-color: #42b1b1;
+      text-align: center;
+      color: white;
+      font-size: 4.5rem;
+      padding: 1rem 1rem 1rem 2rem;
+    }
+    .modal-body {
+      padding: 4%;
+      text-align: center;
+    }
+    .modal-footer {
+      padding: 1rem;
+    }
+
+    .modal label {
+        display: block;
+        text-align: left;
+    }
+
+    .modal-header > span:nth-child(1) {
+        display: inline-block;
+        margin-top: 1.5rem;
+    }
+
+    .playerInfoP {
+      font-size: 4rem !important;
+    }
+
+    #save_btn {
+      width: 97%;
+      height: 8rem;
+      margin: 0 1rem 2rem 1rem;
+    }
+
+    #playerTemplate p {
+      font-size: 4rem;
+    }
+
+    /* The Close Button */
+    .close {
+      color: gray;
+      float: right;
+      font-size: 8rem;
+      font-weight: bold;
+      margin: 4rem 0 0 3rem;
+    }
+    .close:hover,
+    .close:focus {
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+        background-color: #42b1b1;
+    }
+
+    /* Add Animation */
+    @keyframes animatetop {
+      from {
+        top: -300px;
+        opacity: 0
+      }
+      to {
+        top: 0;
+        opacity: 1
+      }
+    }
+    /*Bootstrap C&P*/
+
+    * {
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-family: sans-serif;
+      font-size: 10px;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+    }
+
+    article,
+    aside,
+    details,
+    figcaption,
+    figure,
+    footer,
+    header,
+    hgroup,
+    main,
+    menu,
+    nav,
+    section,
+    summary {
+      display: block;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .navbar-form {
+      padding: 10px 15px;
+      margin-top: 8px;
+      margin-right: -15px;
+      margin-bottom: 8px;
+      margin-left: -15px;
+      border-top: 1px solid transparent;
+      border-bottom: 1px solid transparent;
+      -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 1px 0 rgba(255, 255, 255, .1);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 1px 0 rgba(255, 255, 255, .1);
+    }
+
+    @media (min-width: 768px) {
+      .navbar-form .form-group {
+        display: inline-block;
+        margin-bottom: 0;
+        vertical-align: middle;
+      }
+      .navbar-form .form-control {
+        display: inline-block;
+        width: auto;
+        vertical-align: middle;
+      }
+      .navbar-form .form-control-static {
+        display: inline-block;
+      }
+      .navbar-form .input-group {
+        display: inline-table;
+        vertical-align: middle;
+      }
+      .navbar-form .input-group .input-group-addon,
+      .navbar-form .input-group .input-group-btn,
+      .navbar-form .input-group .form-control {
+        width: auto;
+      }
+      .navbar-form .input-group>.form-control {
+        width: 100%;
+      }
+      .navbar-form .control-label {
+        margin-bottom: 0;
+        vertical-align: middle;
+      }
+      .navbar-form .radio,
+      .navbar-form .checkbox {
+        display: inline-block;
+        margin-top: 0;
+        margin-bottom: 0;
+        vertical-align: middle;
+      }
+      .navbar-form .radio label,
+      .navbar-form .checkbox label {
+        padding-left: 0;
+      }
+      .navbar-form .radio input[type="radio"],
+      .navbar-form .checkbox input[type="checkbox"] {
+        position: relative;
+        margin-left: 0;
+      }
+      .navbar-form .has-feedback .form-control-feedback {
+        top: 0;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .navbar-form .form-group {
+        margin-bottom: 5px;
+      }
+      .navbar-form .form-group:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .navbar-form {
+        width: auto;
+        padding-top: 0;
+        padding-bottom: 0;
+        margin-right: 0;
+        margin-left: 0;
+        border: 0;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+      }
+    }
+
+    .input-group .form-control:first-child,
+    .input-group-addon:first-child,
+    .input-group-btn:first-child>.btn,
+    .input-group-btn:first-child>.btn-group>.btn,
+    .input-group-btn:first-child>.dropdown-toggle,
+    .input-group-btn:last-child>.btn:not(:last-child):not(.dropdown-toggle),
+    .input-group-btn:last-child>.btn-group:not(:last-child)>.btn {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    .input-group {
+      position: relative;
+      display: table;
+      border-collapse: separate;
+    }
+
+    .form-control {
+      display: block;
+      width: 100%;
+      height: 8rem;
+      font-size: 5rem;
+      padding: 6px 12px;
+      line-height: 5rem;
+      margin-top: 1rem;
+      color: rgb(68, 68, 68);
+      background-color: #fff;
+      background-image: none;
+      border: 1px solid rgb(99, 99, 99);
+      border-radius: 4px;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+      -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+      -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+      transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 6px 12px;
+      margin-bottom: 0;
+      font-size: 5rem;
+      height: 8rem;
+      font-weight: normal;
+      line-height: 5rem;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-image: none;
+      border: 1px solid transparent;
+      border-radius: 4px;
+    }
+
+    .btn-default {
+      color: #333;
+      background-color: #fff;
+      border-color: #ccc;
+    }
+
+    .glyphicon {
+      position: relative;
+      top: 1px;
+      display: inline-block;
+      font-family: 'Glyphicons Halflings';
+      font-style: normal;
+      font-weight: normal;
+      line-height: 1;
+
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .img-responsive,
+    .thumbnail>img,
+    .thumbnail a>img,
+    .carousel-inner>.item>img,
+    .carousel-inner>.item>a>img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .img-circle {
+      border-radius: 50%;
+    }
+
+    .nav {
+      padding-left: 0;
+      margin-bottom: 0;
+      list-style: none;
+    }
+
+    .nav>li {
+      position: relative;
+      display: block;
+    }
+
+    .nav>li>a {
+      position: relative;
+      display: block;
+      text-decoration: none;
+      padding: 10px 15px;
+    }
+
+    .nav>li>a:hover,
+    .nav>li>a:focus {
+      text-decoration: none;
+      background-color: #eee;
+    }
+
+    .nav>li.disabled>a {
+      color: #777;
+    }
+
+    .nav>li.disabled>a:hover,
+    .nav>li.disabled>a:focus {
+      color: #777;
+      text-decoration: none;
+      cursor: not-allowed;
+      background-color: transparent;
+    }
+
+    .nav .open>a,
+    .nav .open>a:hover,
+    .nav .open>a:focus {
+      background-color: #eee;
+      border-color: #337ab7;
+    }
+
+    .nav .nav-divider {
+      height: 1px;
+      margin: 9px 0;
+      overflow: hidden;
+      background-color: #e5e5e5;
+    }
+
+    .nav>li>a>img {
+      max-width: none;
+    }
+
+    .nav-tabs {
+      border-bottom: 1px solid #ddd;
+    }
+
+    .nav-tabs>li {
+      float: left;
+      margin-bottom: -1px;
+    }
+
+    .nav-tabs>li>a {
+      margin-right: 2px;
+      line-height: 1.42857143;
+      border: 1px solid transparent;
+      border-radius: 4px 4px 0 0;
+    }
+
+    .nav-tabs>li>a:hover {
+      border-color: #eee #eee #ddd;
+    }
+
+    .nav-tabs>li.active>a,
+    .nav-tabs>li.active>a:hover,
+    .nav-tabs>li.active>a:focus {
+      color: #555;
+      cursor: default;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-bottom-color: transparent;
+    }
+
+    .nav-tabs.nav-justified {
+      width: 100%;
+      border-bottom: 0;
+    }
+
+    .nav-tabs.nav-justified>li {
+      float: none;
+    }
+
+    .nav-tabs.nav-justified>li>a {
+      margin-bottom: 5px;
+      text-align: center;
+    }
+
+    .nav-tabs.nav-justified>.dropdown .dropdown-menu {
+      top: auto;
+      left: auto;
+    }
+
+    @media (min-width: 768px) {
+      .nav-tabs.nav-justified>li {
+        display: table-cell;
+        width: 1%;
+      }
+      .nav-tabs.nav-justified>li>a {
+        margin-bottom: 0;
+      }
+    }
+
+    .nav-tabs.nav-justified>li>a {
+      margin-right: 0;
+      border-radius: 4px;
+    }
+
+    .nav-tabs.nav-justified>.active>a,
+    .nav-tabs.nav-justified>.active>a:hover,
+    .nav-tabs.nav-justified>.active>a:focus {
+      border: 1px solid #ddd;
+    }
+
+    @media (min-width: 768px) {
+      .nav-tabs.nav-justified>li>a {
+        border-bottom: 1px solid #ddd;
+        border-radius: 4px 4px 0 0;
+      }
+      .nav-tabs.nav-justified>.active>a,
+      .nav-tabs.nav-justified>.active>a:hover,
+      .nav-tabs.nav-justified>.active>a:focus {
+        border-bottom-color: #fff;
+      }
+    }
+
+    .pull-right {
+      float: right !important;
+    }
+
+    .pull-left {
+      float: left !important;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .glyphicon-search:before {
+      content: "\e003";
+    }
+
+    button,
+    input,
+    optgroup,
+    select,
+    textarea {
+      margin: 0;
+      font: inherit;
+      color: inherit;
+    }
+
+    .input-group .form-control {
+      position: relative;
+      z-index: 2;
+      float: left;
+      width: 100%;
+      margin-bottom: 0;
+      display: table-cell;
+    }
+
+    .input-group-addon,
+    .input-group-btn {
+      width: 1%;
+      white-space: nowrap;
+      vertical-align: middle;
+      display: table-cell;
+    }
+
+    .input-group-btn {
+      position: relative;
+      font-size: 0;
+      white-space: nowrap;
+    }
+
+    .input-group-btn {
+      position: relative;
+      font-size: 0;
+      white-space: nowrap;
+    }
+
+    .input-group-btn>.btn {
+      position: relative;
+    }
+
+    .input-group-btn>.btn+.btn {
+      margin-left: -1px;
+    }
+
+    .input-group-btn>.btn:hover,
+    .input-group-btn>.btn:focus,
+    .input-group-btn>.btn:active {
+      z-index: 2;
+    }
+
+    .input-group-btn:first-child>.btn,
+    .input-group-btn:first-child>.btn-group {
+      margin-right: -1px;
+    }
+
+    .input-group-btn:last-child>.btn,
+    .input-group-btn:last-child>.btn-group {
+      z-index: 2;
+      margin-left: -1px;
+    }
+
+    ul,
+    ol {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    header {
+      margin-bottom: 1rem;
+    }
+
+    .nav:before {
+      display: table;
+      content: " ";
+    }
+
+    .nav:after {
+      clear: both;
+      display: table;
+      content: " ";
+    }
+
+    table {
+      border-spacing: 0;
+      border-collapse: collapse;
+    }
+
+    th {
+      text-align: left;
+    }
+
+    .table {
+      width: 100%;
+      max-width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .table>thead>tr>th,
+    .table>tbody>tr>th,
+    .table>tfoot>tr>th,
+    .table>thead>tr>td,
+    .table>tbody>tr>td,
+    .table>tfoot>tr>td {
+      padding: 8px;
+      line-height: 1.42857143;
+      vertical-align: top;
+      border-top: 1px solid #ddd;
+    }
+
+    .table>thead>tr>th {
+      vertical-align: bottom;
+      border-bottom: 2px solid #ddd;
+    }
+
+    .table>caption+thead>tr:first-child>th,
+    .table>colgroup+thead>tr:first-child>th,
+    .table>thead:first-child>tr:first-child>th,
+    .table>caption+thead>tr:first-child>td,
+    .table>colgroup+thead>tr:first-child>td,
+    .table>thead:first-child>tr:first-child>td {
+      border-top: 0;
+    }
+
+    .table>tbody+tbody {
+      border-top: 2px solid #ddd;
+    }
+
+    .table .table {
+      background-color: #fff;
+    }
+
+    .table-condensed>thead>tr>th,
+    .table-condensed>tbody>tr>th,
+    .table-condensed>tfoot>tr>th,
+    .table-condensed>thead>tr>td,
+    .table-condensed>tbody>tr>td,
+    .table-condensed>tfoot>tr>td {
+      padding: 5px;
+    }
+
+    .table-bordered {
+      border: 1px solid #ddd;
+    }
+
+    .table-bordered>thead>tr>th,
+    .table-bordered>tbody>tr>th,
+    .table-bordered>tfoot>tr>th,
+    .table-bordered>thead>tr>td,
+    .table-bordered>tbody>tr>td,
+    .table-bordered>tfoot>tr>td {
+      border: 1px solid #ddd;
+    }
+
+    .table-bordered>thead>tr>th,
+    .table-bordered>thead>tr>td {
+      border-bottom-width: 2px;
+    }
+
+    .table-striped>tbody>tr:nth-of-type(odd) {
+      background-color: #f9f9f9;
+    }
+
+    .table-hover>tbody>tr:hover {
+      background-color: #f5f5f5;
+    }
+
+    table col[class*="col-"] {
+      position: static;
+      display: table-column;
+      float: none;
+    }
+
+    table td[class*="col-"],
+    table th[class*="col-"] {
+      position: static;
+      display: table-cell;
+      float: none;
+    }
+
+    .table>thead>tr>td.active,
+    .table>tbody>tr>td.active,
+    .table>tfoot>tr>td.active,
+    .table>thead>tr>th.active,
+    .table>tbody>tr>th.active,
+    .table>tfoot>tr>th.active,
+    .table>thead>tr.active>td,
+    .table>tbody>tr.active>td,
+    .table>tfoot>tr.active>td,
+    .table>thead>tr.active>th,
+    .table>tbody>tr.active>th,
+    .table>tfoot>tr.active>th {
+      background-color: #f5f5f5;
+    }
+
+    .table-hover>tbody>tr>td.active:hover,
+    .table-hover>tbody>tr>th.active:hover,
+    .table-hover>tbody>tr.active:hover>td,
+    .table-hover>tbody>tr:hover>.active,
+    .table-hover>tbody>tr.active:hover>th {
+      background-color: #e8e8e8;
+    }
+
+    .table>thead>tr>td.success,
+    .table>tbody>tr>td.success,
+    .table>tfoot>tr>td.success,
+    .table>thead>tr>th.success,
+    .table>tbody>tr>th.success,
+    .table>tfoot>tr>th.success,
+    .table>thead>tr.success>td,
+    .table>tbody>tr.success>td,
+    .table>tfoot>tr.success>td,
+    .table>thead>tr.success>th,
+    .table>tbody>tr.success>th,
+    .table>tfoot>tr.success>th {
+      background-color: #dff0d8;
+    }
+
+    .table-hover>tbody>tr>td.success:hover,
+    .table-hover>tbody>tr>th.success:hover,
+    .table-hover>tbody>tr.success:hover>td,
+    .table-hover>tbody>tr:hover>.success,
+    .table-hover>tbody>tr.success:hover>th {
+      background-color: #d0e9c6;
+    }
+
+    .table>thead>tr>td.info,
+    .table>tbody>tr>td.info,
+    .table>tfoot>tr>td.info,
+    .table>thead>tr>th.info,
+    .table>tbody>tr>th.info,
+    .table>tfoot>tr>th.info,
+    .table>thead>tr.info>td,
+    .table>tbody>tr.info>td,
+    .table>tfoot>tr.info>td,
+    .table>thead>tr.info>th,
+    .table>tbody>tr.info>th,
+    .table>tfoot>tr.info>th {
+      background-color: #d9edf7;
+    }
+
+    .table-hover>tbody>tr>td.info:hover,
+    .table-hover>tbody>tr>th.info:hover,
+    .table-hover>tbody>tr.info:hover>td,
+    .table-hover>tbody>tr:hover>.info,
+    .table-hover>tbody>tr.info:hover>th {
+      background-color: #c4e3f3;
+    }
+
+    .table>thead>tr>td.warning,
+    .table>tbody>tr>td.warning,
+    .table>tfoot>tr>td.warning,
+    .table>thead>tr>th.warning,
+    .table>tbody>tr>th.warning,
+    .table>tfoot>tr>th.warning,
+    .table>thead>tr.warning>td,
+    .table>tbody>tr.warning>td,
+    .table>tfoot>tr.warning>td,
+    .table>thead>tr.warning>th,
+    .table>tbody>tr.warning>th,
+    .table>tfoot>tr.warning>th {
+      background-color: #fcf8e3;
+    }
+
+    .table-hover>tbody>tr>td.warning:hover,
+    .table-hover>tbody>tr>th.warning:hover,
+    .table-hover>tbody>tr.warning:hover>td,
+    .table-hover>tbody>tr:hover>.warning,
+    .table-hover>tbody>tr.warning:hover>th {
+      background-color: #faf2cc;
+    }
+
+    .table>thead>tr>td.danger,
+    .table>tbody>tr>td.danger,
+    .table>tfoot>tr>td.danger,
+    .table>thead>tr>th.danger,
+    .table>tbody>tr>th.danger,
+    .table>tfoot>tr>th.danger,
+    .table>thead>tr.danger>td,
+    .table>tbody>tr.danger>td,
+    .table>tfoot>tr.danger>td,
+    .table>thead>tr.danger>th,
+    .table>tbody>tr.danger>th,
+    .table>tfoot>tr.danger>th {
+      background-color: #f2dede;
+    }
+
+    .table-hover>tbody>tr>td.danger:hover,
+    .table-hover>tbody>tr>th.danger:hover,
+    .table-hover>tbody>tr.danger:hover>td,
+    .table-hover>tbody>tr:hover>.danger,
+    .table-hover>tbody>tr.danger:hover>th {
+      background-color: #ebcccc;
+    }
+
+    .table-responsive {
+      min-height: .01%;
+      overflow-x: auto;
+    }
+
+    @media screen and (max-width: 767px) {
+      .table-responsive {
+        width: 100%;
+        margin-bottom: 15px;
+        overflow-y: hidden;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+        border: 1px solid #ddd;
+      }
+      .table-responsive>.table {
+        margin-bottom: 0;
+      }
+      .table-responsive>.table>thead>tr>th,
+      .table-responsive>.table>tbody>tr>th,
+      .table-responsive>.table>tfoot>tr>th,
+      .table-responsive>.table>thead>tr>td,
+      .table-responsive>.table>tbody>tr>td,
+      .table-responsive>.table>tfoot>tr>td {
+        white-space: nowrap;
+      }
+      .table-responsive>.table-bordered {
+        border: 0;
+      }
+      .table-responsive>.table-bordered>thead>tr>th:first-child,
+      .table-responsive>.table-bordered>tbody>tr>th:first-child,
+      .table-responsive>.table-bordered>tfoot>tr>th:first-child,
+      .table-responsive>.table-bordered>thead>tr>td:first-child,
+      .table-responsive>.table-bordered>tbody>tr>td:first-child,
+      .table-responsive>.table-bordered>tfoot>tr>td:first-child {
+        border-left: 0;
+      }
+      .table-responsive>.table-bordered>thead>tr>th:last-child,
+      .table-responsive>.table-bordered>tbody>tr>th:last-child,
+      .table-responsive>.table-bordered>tfoot>tr>th:last-child,
+      .table-responsive>.table-bordered>thead>tr>td:last-child,
+      .table-responsive>.table-bordered>tbody>tr>td:last-child,
+      .table-responsive>.table-bordered>tfoot>tr>td:last-child {
+        border-right: 0;
+      }
+      .table-responsive>.table-bordered>tbody>tr:last-child>th,
+      .table-responsive>.table-bordered>tfoot>tr:last-child>th,
+      .table-responsive>.table-bordered>tbody>tr:last-child>td,
+      .table-responsive>.table-bordered>tfoot>tr:last-child>td {
+        border-bottom: 0;
+      }
+    }
+
+    .center-block {
+      display: block;
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    .col-xs-4 {
+      width: 33.33333333%;
+      float: left;
+      position: relative;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+
+    .col-xs-8 {
+      width: 66.66666667%;
+      float: left;
+      position: relative;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+    .col-xs-2 {
+      width: 5%;
+      float: left;
+      position: relative;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+
+    .col-xs-7 {
+      width: 60%;
+      float: left;
+      position: relative;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+    .col-xs-3 {
+      width: 35%;
+      float: left;
+      position: relative;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+
+    .btn-primary {
+      color: #fff;
+      background-color: #42b1b1;
+      border-color: #2e6da4;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
+    }
+
+    /*End of Bootstrap C&P*/
+
+    .fourty {
+      width: 40%;
+      margin-left: 1rem;
+      margin-right: 1rem;
+    }
+
+    li {
+      width: 50%;
+      text-align: center;
+    }
+
+    li>a {
+      font-size: 2.5rem;
+    }
+
+    .navbar-form {
+      padding: 1rem;
+      margin: 0;
+      margin-top: 2rem;
+      width: 100%;
+    }
+
+    p {
+      font-size: 4rem;
+    }
+
+    #search_input_group {
+      width: 100%;
+    }
+
+    .nav-pills>li {
+      float: left;
+    }
+
+    .nav-pills>li>a {
+      border-radius: 4px;
+    }
+
+    .nav-pills>li+li {
+      margin-left: 2px;
+    }
+
+    .nav-pills>li.active>a,
+    .nav-pills>li.active>a:hover,
+    .nav-pills>li.active>a:focus {
+      color: #fff;
+      background-color: #337ab7;
+    }
+
+    .nav-justified {
+      width: 100%;
+    }
+
+    .nav-justified>li {
+      display: table-cell;
+      width: 1%;
+      float: none;
+    }
+
+    .nav-justified>li>a {
+      margin-bottom: 5px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <ul class="nav nav-pills nav-justified">
+    <li>
+      <a data-toggle="pill" href="homepage.html">Home</a>
+    </li>
+    <li>
+      <a data-toggle="pill" href="schedule_upcoming.html">Schedule</a>
+    </li>
+    <li class="active">
+      <a data-toggle="pill">Roster</a>
+    </li>
+    <li class="inputTab">
+      <a data-toggle="pill" href="input_stats_vanilla.html">Input</a>
+    </li>
+    <li>
+      <a data-toggle="pill" href="account_settings.html">Settings</a>
+    </li>
+  </ul>
+  <form class="navbar-form" role="search">
+    <div id="search_input_group" class="input-group add-on">
+      <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text">
+      <div id="roster_search_submit" class="input-group-btn">
+        <button class="btn btn-default" type="submit">
+          <i class="glyphicon glyphicon-search" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </form>
+  <table id="playerTable" class="table table-hover table-bordered">
+    <tbody>
+      <tr>
+        <td>
+          <button id="addPlayerButton" type="button" class="btn btn-primary fourty" onclick="show_add_modal()">Add a player</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="container">
+      <!-- Modal -->
+      <div class="modal" id="addModal">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" onclick="close_add_modal()">&times;</button>
+              <h4 class="modal-title">Add a Player</h4>
+            </div>
+            <div class="modal-body">
+              <form id="addPlayerForm">
+                <input class="form-control" type="text" name="name" placeholder="Name" required>
+                <input class="form-control" type="text" name="position" placeholder="Position" required>
+                <input class="form-control" type="number" name="number" placeholder="Number" required>
+                <input class="form-control" type="text" name="status" placeholder="Status" required>
+                <input class="form-control" type="text" name="college" placeholder="College" required>
+                <input class="form-control" type="text" name="hometown" placeholder="Hometown" required>
+                <input class="form-control" type="number" name="age" placeholder="Age" required>
+                <label style="display: block;font-size: 4rem;margin: 2rem 0 2rem 0;">DOB:</label>
+                <input class="form-control" type="date" name="dob" placeholder="DOB" required>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button id="save_btn" type="button" class="btn btn-primary" onclick="confirmAddPlayer()">Save</button>
+            </div>
+          </div>
+      </div>
+  </div>
+  <!--< div class="container">
+      Modal
+      <div class="modal" id="removeModal">
+          Modal content
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" onclick="close_remove_modal()">&times;</button>
+              <h4 class="modal-title">Remove a Player</h4>
+            </div>
+            <div class="modal-body">
+                <table id="playerTable2" class="table table-hover table-bordered">
+                    <tbody>
+                      <tr>
+                        <td onclick="close_remove_modal()">
+                          <div id="player_5" class="container">
+                            <div class="row">
+                              <div class="col-xs-4 text-center">
+                                <img class="img-responsive img-circle center-block" alt="Player picture" src="../src/john_smith.jpg"> 76
+                              </div>
+                              <div class="col-xs-8 text-right">
+                                <p>John Smith</p>
+                                <p>Forward</p>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+          </div>
+      </div>
+  </div>-->
+
+  <template id="playerTemplate">
+      <tr>
+          <!--<td onclick="close_remove_modal()">-->
+              <td>
+            <input type="hidden">
+            <div class="container">
+              <div class="row">
+                <div class="col-xs-2 text-left">
+                  <p class="playerInfoP">1</p>
+                </div>
+                <div class="col-xs-7 text-center">
+                  <p class="playerInfoP">John Smith</p>
+                </div>
+                <div class="col-xs-3 text-right">  
+                  <p class="playerInfoP">Forward</p>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+  </template>
+
+  <!-- Modal Scripts-->
+  <script>
+    var values = document.getElementsByClassName('editable');
+    for(var i=0;i < values.length; i++){
+      values.item(i).setAttribute("contenteditable","true");
+    }
+  </script>
+
+  <!-- CRUD Scripts -->
+  <script>
+    function confirmAddPlayer() {
+      var playerTable = document.getElementById('playerTable');
+      var form = document.getElementById('addPlayerForm');
+      var name = form.children[0].value;
+      var pos = form.children[1].value;
+      var num = form.children[2].value;
+      var status = form.children[3].value;
+      var college = form.children[4].value;
+      var hometown = form.children[5].value;
+      var age = form.children[6].value;
+      var dob = form.children[7].value;
+
+      var unique = checkPlayer(num);
+      if (unique == false) {
+        alert('This number is already taken');
+        return
+      }
+      var stats = {
+            fouls: 0,
+            redCards: 0,
+            yellowCards: 0,
+            shotsOnGoal: 0,
+            goals: 0,
+            cKicks: 0,
+            pKicks: 0,
+            tIns: 0,
+            appearances: 0
+        };
+      var player = createPlayer(undefined, name, pos, num, status, college, hometown, age, dob,stats);
+      //console.log(player);
+      var playerRow = createPlayerRowNoImg(player);
+      playerTable.children[0].appendChild(playerRow);
+
+      var backRoster = JSON.parse(localStorage.getItem('Roster'));
+      backRoster.push(player);
+      localStorage.setItem('Roster', JSON.stringify(backRoster));
+      close_add_modal();
+    }
+    
+  </script>
+
+  <!-- Helper Scripts-->
+  <script>
+    function createPlayerRow(player) {
+
+      if ('options' in document.createElement('template')) {
+
+        var playerTemplate = document.getElementById('playerTemplate');
+
+        var playerTable = document.getElementById('playerTable');
+        var index = playerTable.childElementCount - 1;
+
+        var tr = playerTemplate.content.children[0];
+        var td = playerTemplate.content.children[0].children[0];
+        tr.setAttribute('data-index', index);
+        tr.setAttribute('onclick', 'link_to_playerinfo(this);');
+
+        //pid
+        td.getElementsByTagName('input')[0].value = player.ID;
+
+        //img
+        td.getElementsByTagName('img')[0].setAttribute('alt', 'Player picture');
+
+        //player p tags
+        td.getElementsByTagName('p')[0].innerHTML = player.name;
+        td.getElementsByTagName('p')[1].innerHTML = player.position;
+
+        var clone = document.importNode(playerTemplate.content, true);
+        console.log(clone.children[0]);
+        return clone.children[0];
+      }
+      else {
+
+        var tr = document.createElement('tr');
+        var td = document.createElement('td');
+        var input = document.createElement('input');
+        var container = document.createElement('div');
+        var row = document.createElement('div');
+        var col4 = document.createElement('div');
+        var img = document.createElement('img');
+        var col8 = document.createElement('div');
+        var name = document.createElement('p');
+        var pos = document.createElement('p');
+    
+        tr.setAttribute('data-index', index);
+        tr.setAttribute('onclick', 'link_to_playerinfo(this);');
+        //td.setAttribute('onclick', 'close_remove_modal()');
+        input.setAttribute('type', 'hidden');
+        input.value = player.ID;
+        container.setAttribute('class', 'container');
+        row.setAttribute('class', 'row');
+        col4.setAttribute('class', 'col-xs-4 text-center');
+        img.setAttribute('class', 'img-responsive img-circle center-block');
+        img.setAttribute('alt', 'Player Icon');
+        img.setAttribute('src', '');
+        col8.setAttribute('class', 'col-xs-8 text-right');
+        name.innerHTML = player.name;
+        pos.innerHTML = player.position;
+    
+        col8.appendChild(name);
+        col8.appendChild(pos);
+        col4.appendChild(img);
+        row.appendChild(col4);
+        row.appendChild(col8);
+        container.appendChild(row);
+        td.appendChild(input);
+        td.appendChild(container);
+        tr.appendChild(td);
+        console.log(tr);
+        return tr;
+      }
+    }
+
+    function createPlayerRowNoImg(player) {
+
+      if ('options' in document.createElement('template')) {
+
+        var playerTemplate = document.getElementById('playerTemplate');
+
+        var playerTable = document.getElementById('playerTable');
+        var index = playerTable.childElementCount - 1;
+
+        var tr = playerTemplate.content.children[0];
+        var td = playerTemplate.content.children[0].children[0];
+        tr.setAttribute('data-index', index);
+        tr.setAttribute('onclick', 'link_to_playerinfo(this);');
+
+        //pid
+        td.getElementsByTagName('input')[0].value = player.ID;
+
+        //player p tags
+        td.getElementsByTagName('p')[0].innerHTML = player.num;
+        td.getElementsByTagName('p')[1].innerHTML = player.name;
+        td.getElementsByTagName('p')[2].innerHTML = player.position;
+
+        var clone = document.importNode(playerTemplate.content, true);
+        console.log(clone.children[0]);
+        return clone.children[0];
+      }
+      else {
+
+        var tr = document.createElement('tr');
+        var td = document.createElement('td');
+        var input = document.createElement('input');
+        var container = document.createElement('div');
+        var row = document.createElement('div');
+        var col2 = document.createElement('div');
+        var col7 = document.createElement('div');
+        var col3 = document.createElement('div');
+        var num = document.createElement('p');
+        var name = document.createElement('p');
+        var pos = document.createElement('p');
+    
+        tr.setAttribute('data-index', index);
+        tr.setAttribute('onclick', 'link_to_playerinfo(this);');
+        //td.setAttribute('onclick', 'close_remove_modal()');
+        input.setAttribute('type', 'hidden');
+        input.value = player.ID;
+        container.setAttribute('class', 'container');
+        row.setAttribute('class', 'row');
+        col2.setAttribute('class', 'col-xs-2 text-left');
+        col7.setAttribute('class', 'col-xs-7 text-center');
+        col3.setAttribute('class', 'col-xs-3 text-right');
+        num.innerHTML = player.number;
+        name.innerHTML = player.name;
+        pos.innerHTML = player.position;
+    
+        col2.appendChild(num);
+        col7.appendChild(name);
+        col3.appendChild(pos);
+        row.appendChild(col2)
+        row.appendChild(col7);
+        row.appendChild(col3);
+        container.appendChild(row);
+        td.appendChild(input);
+        td.appendChild(container);
+        tr.appendChild(td);
+        console.log(tr);
+        return tr;
+      }
+    }
+
+    function setPlayerTable() {
+      var playerTable = document.getElementById('playerTable');
+      var roster = JSON.parse(localStorage.getItem('Roster'));
+      //var roster = JSON.parse(localStorage.getItem('Roster'));
+      for (var i = 0; i < roster.length; i++) {
+        var player = roster[i];
+
+        if (player.inactive == false) {
+          var playerRow = createPlayerRowNoImg(player);
+          playerTable.children[0].appendChild(playerRow);
+        }
+      }
+    }
+  </script>
+
+  <!-- Page Scripts--> 
+  <script>
+    if (localStorage.getItem('Roster') == undefined) initializeRoster(0);
+    setPlayerTable();
+  </script>
+  <script>
+    //initializeRoster(10);
+    /*var u = {
+      email : 'hi@mail.com',
+      password : 'password',
+      question : 'question',
+      answer : 'none',
+      type : 'coach'
+    }
+    localStorage.setItem('currentUser',JSON.stringify(u));*/
+    hideInputTab();
+    if (localStorage.getItem('currentUser') == undefined || JSON.parse(localStorage.getItem('currentUser')).type != 'Coach') {
+        document.getElementById('addPlayerButton').style.display = 'none';
+    }
+  </script>
+</body>
+
+</html>

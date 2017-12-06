@@ -3,8 +3,8 @@
 
 <head>
   <title>Roster</title>
-  <script src="/js/CRUD_roster.js"></script>
-  <script src="/js/hideInputTab.js"></script>
+  <script src="js/CRUD_roster.js"></script>
+  <script src="js/hideInputTab.js"></script>
   <script>
     function link_to_playerinfo(td) {
       console.log(td);
@@ -94,6 +94,14 @@
 
     .playerInfoP {
       font-size: 4rem !important;
+    }
+
+    #modalImageInput {
+      font-size: 3rem;
+      border: rgb(104, 102, 102) 2px solid;
+      background-color:#777;
+      font: white;
+      margin-bottom: 1rem;
     }
 
     #save_btn {
@@ -1036,6 +1044,10 @@
                 <input class="form-control" type="number" name="age" placeholder="Age" required>
                 <label style="display: block;font-size: 4rem;margin: 2rem 0 2rem 0;">DOB:</label>
                 <input class="form-control" type="date" name="dob" placeholder="DOB" required>
+                <label style="font-size: 4rem;margin: 3rem 0 3rem 0;">Upload Profile Picture:</label>                
+                <input input id="modalImageInput" type="file" onchange="previewFile()"><br>
+                <img id="modalImage" src="" height="300px" width="250px" alt="ProfileImage">  
+                
               </form>
             </div>
             <div class="modal-footer">
@@ -1120,7 +1132,9 @@
       var college = form.children[4].value;
       var hometown = form.children[5].value;
       var age = form.children[6].value;
-      var dob = form.children[7].value;
+      var dob = form.children[8].value;
+      var img = form.children[11];
+      var imgData = getBase64Image(img);
 
       var unique = checkPlayer(num);
       if (unique == false) {
@@ -1171,6 +1185,8 @@
         td.getElementsByTagName('input')[0].value = player.ID;
 
         //img
+        var playerImage = 'data:image/png;base64,' + player.img;
+        td.getElementsByTagName('img')[0].setAttribute('src', playerImage);
         td.getElementsByTagName('img')[0].setAttribute('alt', 'Player picture');
 
         //player p tags
@@ -1221,6 +1237,35 @@
         console.log(tr);
         return tr;
       }
+    }
+
+    function getBase64Image(img) {
+
+      if (! file.type.match('image.*)')) {
+        
+        alert('This is not an image file');
+        //return 0;
+      }
+      var canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+
+      var extention = file.name.substring(file.name.lastIndexOf('.'));
+      var validFileType = '.jpg , .png , .bmp , .svg';
+
+      if (validFileType.toLowerCase().indexOf(extension) < 0) {
+
+        alert('The file type is not supported');
+        //return 0;
+      }
+
+      var urlName = 'image/' + extension;
+      var dataURL = canvas.toDataURL("urlName");
+
+      return dataURL.replace(/^data:image\/(png|jpg|svg|bmp);base64,/, "");
     }
 
     function createPlayerRowNoImg(player) {
@@ -1327,6 +1372,26 @@
         document.getElementById('addPlayerButton').style.display = 'none';
     }
   </script>
+
+<script>
+  function previewFile(){
+      var preview = document.getElementById('modalImage'); //selects the query named img
+      var file    = document.getElementById('modalImageInput').files[0]; //sames as here
+      var reader  = new FileReader();
+
+      reader.onloadend = function () {
+          preview.src = reader.result;
+      }
+
+      if (file) {
+          reader.readAsDataURL(file); //reads the data as a URL
+      } else {
+          preview.src = "";
+      }
+ }
+
+ previewFile();  //calls the function named previewFile()
+ </script>
 </body>
 
 </html>

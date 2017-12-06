@@ -1417,9 +1417,40 @@
  previewFile();  //calls the function named previewFile()
  </script>
 
- <script>
- var db = firebase.firestore();
- </script>
+  <script>
+    var db = firebase.firestore();
+    var stats = {
+            fouls: 0,
+            redCards: 0,
+            yellowCards: 0,
+            shotsOnGoal: 0,
+            goals: 0,
+            cKicks: 0,
+            pKicks: 0,
+            tIns: 0,
+            appearances: 0
+        };
+    db.collection("players").add({
+      img: null,
+      number: 0,
+      name: 'Player ' + 0,
+      status: 'Starter',
+      position: 'position ' + 0,
+      college: 'UCSD',
+      hometown: 'San Diego',
+      age: 30,
+      DOB: Date.now(),
+      ID: ('P' + (11110)),
+      stats: stats,
+      inactive: false
+    })
+    .then(function(docRef) {
+        console.log("Document written with ID: ", docRef.id);
+    })
+    .catch(function(error) {
+        console.error("Error adding document: ", error);
+    });
+  </script>
 </body>
 
 </html>

@@ -101,7 +101,22 @@
             <option value="3">Fan</option>
         </select>
     </form>
-    <button id="create_start" name="create_start" type="button" form="create_account_form" class="btn btn-success" onclick="createUser()">Start</button>
+    <!--<button id="create_start" name="create_start" type="button" form="create_account_form" class="btn btn-success" onclick="createUser()">Start</button>-->
+    <button id="create_start" type="button" class="btn btn-success" onclick="create()">Start</button>
+
+    <script src="/js/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyA4_4i286-lIif954lxXfFFMCxIdzgNeLQ",
+            authDomain: "cse134bhw-5.firebaseapp.com",
+            databaseURL: "https://cse134bhw-5.firebaseio.com",
+            projectId: "cse134bhw-5",
+            storageBucket: "cse134bhw-5.appspot.com",
+            messagingSenderId: "849104176022"
+        };
+        firebase.initializeApp(config);
+    </script>
     <script>
         function checkPasswords() {
             var password = document.getElementById('create_password');
@@ -163,7 +178,47 @@
             localStorage.setItem('userList', JSON.stringify(users));
             localStorage.setItem('currentUser', JSON.stringify(createUser));
 
+            //location.href = ("homepage.html");
+        }
+
+        function goToHomepage(){
             location.href = ("homepage.html");
+        }
+        function create(){
+            createUser();
+            fireCreate();
+        }
+        function fireCreate(){
+            var email = document.getElementById('create_email').value;
+            var password = document.getElementById('create_password').value;
+            var confirm_password = document.getElementById('create_confirmPassword').value;
+            if (password != confirm_password) {
+                alert("Password and Confirm Password must match");
+                return 0;
+            }
+            firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                console.log("Error: code("+errorCode+") "+errorMessage);
+                alert("Error: code("+errorCode+") "+errorMessage);
+            });
+            firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                user.sendEmailVerification().then(function() {
+                // Email sent.
+                location.href = ("homepage.html");
+                }).catch(function(error) {
+                // An error happened.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                console.log("Error: code("+errorCode+") "+errorMessage);
+                alert("Error: code("+errorCode+") "+errorMessage);
+                });
+            } else {
+                // No user is signed in.
+            }
+            });
+            return 1;
         }
     </script>
 </body>

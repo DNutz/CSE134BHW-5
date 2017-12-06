@@ -458,7 +458,7 @@
         </div>
     </section>
     <section id="pageFooter">
-        <button id='logoutButton' class='btn btn-lg' onclick="logout()">Logout</button>
+        <button id='logoutButton' class='btn btn-lg' onclick="fireLogout()">Logout</button>
     </section>
 
     <!-- Change Email Modal -->
@@ -469,7 +469,7 @@
                 <span id="closeEmail" class="close">&times;</span>
             </div>
             <div class="modal-body">
-                <form id="changeEmailForm" method="post" onsubmit="changeEmail()">
+                <form id="changeEmailForm" method="post" onsubmit="fireChangeEmail(); return false;">
 
                     <label for="securityQuestion">Security Question:</label>
                     <select id="securityQuestion" name="securityQuestion" class="form-control form-select">
@@ -510,7 +510,7 @@
             </div>
             <div class="modal-body">
 
-                <form id="changePasswordForm" method="post" enctype="multipart/form-data" onsubmit="changePassword()">
+                <form id="changePasswordForm" method="post" enctype="multipart/form-data" onsubmit="fireChangePass(); return false;">
 
                     <label for="securityQuestion1">Security Question:</label>
                     <select id="securityQuestion1" name="securityQuestion1" class="form-control form-select">
@@ -590,7 +590,20 @@
         </div>
         <!-- content div -->
     </div>
-
+    <!--Firebase Scripts-->
+    <script src="/js/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyA4_4i286-lIif954lxXfFFMCxIdzgNeLQ",
+            authDomain: "cse134bhw-5.firebaseapp.com",
+            databaseURL: "https://cse134bhw-5.firebaseio.com",
+            projectId: "cse134bhw-5",
+            storageBucket: "cse134bhw-5.appspot.com",
+            messagingSenderId: "849104176022"
+        };
+        firebase.initializeApp(config);
+    </script>
     <!-- Modal Script -->
     <script>
 
@@ -636,14 +649,64 @@
             }
 
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            location.href = "login_vanilla.html";
+            location.href = "index.html";
         }
+        function fireLogout(){
+            firebase.auth().signOut().then(function() {
+                location.href = "index.html";
+                return 1;
+            }).catch(function(error) {
+                console.log("Error: code("+errorCode+") "+errorMessage);
+                alert("Error: code("+errorCode+") "+errorMessage);
+                return 0;
+            });
+        }
+        function fireChangePass(){
+            var user = firebase.auth().currentUser;
+            var newPassword = document.getElementById('newPassword').value;
+
+            user.updatePassword(newPassword).then(function() {
+            // Update successful.
+            alert('Password updated sucessfully');
+            document.getElementById('changePasswordModal').style.display = 'none';
+            }).catch(function(error) {
+            // An error happened.
+            console.log("Error: code("+errorCode+") "+errorMessage);
+            alert("Error: code("+errorCode+") "+errorMessage);
+            });
+        }
+        function fireChangeEmail(){
+            var user = firebase.auth().currentUser;
+            var newEmail = document.getElementById('password1').value;
+            alert(newEmail);
+            user.updateEmail(newEmail).then(function() {
+            // Update successful.
+            alert('Email updated sucessfully');
+            location.reload();
+            document.getElementById('changeEmailModal').style.display = 'none';
+            }).catch(function(error) {
+            // An error happened.
+            console.log("Error: code("+errorCode+") "+errorMessage);
+            alert("Error: code("+errorCode+") "+errorMessage);
+            });
+        }
+
         //hide input tab if user is not a coach
         hideInputTab();
 
         //populate the page with current account info
         var currUser = JSON.parse(localStorage.getItem('currentUser'));
-        document.getElementById('email').innerText = currUser.email;
+
+        var curruser;
+        firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+            curruser = firebase.auth().currentUser;
+            document.getElementById('email').innerText = curruser.email;
+        } else {
+            // No user is signed in.
+        }
+        });
+        //document.getElementById('email').innerText = email;
         document.getElementById('security').innerText = currUser.question;
     </script>
 

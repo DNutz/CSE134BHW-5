@@ -5,6 +5,20 @@
   <title>Roster</title>
   <script src="js/CRUD_roster.js"></script>
   <script src="js/hideInputTab.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/firestore.js"></script>
+  <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyA4_4i286-lIif954lxXfFFMCxIdzgNeLQ",
+        authDomain: "cse134bhw-5.firebaseapp.com",
+        databaseURL: "https://cse134bhw-5.firebaseio.com",
+        projectId: "cse134bhw-5",
+        storageBucket: "cse134bhw-5.appspot.com",
+        messagingSenderId: "849104176022"
+      };
+      firebase.initializeApp(config);
+    </script>
   <script>
     function link_to_playerinfo(td) {
       console.log(td);
@@ -1401,6 +1415,10 @@
  }
 
  previewFile();  //calls the function named previewFile()
+ </script>
+
+ <script>
+ var db = firebase.firestore();
  </script>
 </body>
 

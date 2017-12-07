@@ -5,42 +5,6 @@
     <title>Account Settings</title>
     <meta charset="utf-8">
     <script src="/js/hideInputTab.js"></script>
-    <script>
-        function changeEmail() {
-            if (localStorage.getItem('currentUser') != undefined) {
-                var currentUser = JSON.parse(localStorage.getItem('currentUser'));
-                var selectQ = document.getElementById('securityQuestion');
-                if (currentUser['question']==selectQ[selectQ.selectedIndex].innerText && currentUser['answer']==document.getElementById('answer').value){
-                    currentUser['email'] = document.getElementById('password1').value;
-                }
-                localStorage.setItem('currentUser',JSON.stringify(currentUser));
-            }
-        }
-        function changePassword() {
-            if (localStorage.getItem('currentUser') != undefined) {
-                var currentUser = JSON.parse(localStorage.getItem('currentUser'));
-                var selectQ = document.getElementById('securityQuestion1');
-                if (currentUser['question']==selectQ[selectQ.selectedIndex].innerText && currentUser['answer']==document.getElementById('answer1').value 
-                    && currentUser['password']==document.getElementById('currentPassword').value && document.getElementById('newPassword').value==document.getElementById('confirmPassword').value){
-                    currentUser['password'] = document.getElementById('newPassword').value;
-                }
-                localStorage.setItem('currentUser',JSON.stringify(currentUser));
-            }
-        }
-        function changeQuestion() {
-            if (localStorage.getItem('currentUser') != undefined) {
-                var currentUser = JSON.parse(localStorage.getItem('currentUser'));
-                var selectQ = document.getElementById('currentSecurityQuestion');
-                var selectNewQ = document.getElementById('newSecurityQuestion');
-                if (currentUser['question']==selectQ[selectQ.selectedIndex].innerText && currentUser['answer']==document.getElementById('currentAnswer').value){
-                    currentUser['question'] = selectNewQ[selectNewQ.selectedIndex].innerText;
-                    currentUser['answer'] = document.getElementById('newAnswer').value;
-                }
-                localStorage.setItem('currentUser',JSON.stringify(currentUser));
-            }
-        }
-    </script>
-
 
     <!-- Element Styles -->
     <style>
@@ -449,13 +413,6 @@
                 <img id="changePassword" alt="edit" src="/images/edit.svg">
             </p>
         </div>
-        <div class="sectionEntry">
-            <label>Security Question:</label>
-            <p>
-                <span class="entry" id="security"></span>
-                <img id="changeSecurity" alt="edit" src="/images/edit.svg">
-            </p>
-        </div>
     </section>
     <section id="pageFooter">
         <button id='logoutButton' class='btn btn-lg' onclick="fireLogout()">Logout</button>
@@ -542,54 +499,6 @@
 
     </div>
 
-    <!-- Change Security Question Modal -->
-    <div id="changeSecurityModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span>Change Security Question</span>
-                <span id="closeSecurity" class="close">&times;</span>
-            </div>
-            <div class="modal-body">
-                <form id="changeSecurityForm" method="post" enctype="multipart/form-data" onsubmit="changeQuestion()">
-
-                    <label for="currentSecurityQuestion">Security Question:</label>
-                    <select id="currentSecurityQuestion" name="currentSecurityQuestion" class="form-control form-select">
-                        <optgroup label="curretn security questions">
-                            <option value="0" selected disabled>-- Select a Security Question--</option>
-                            <option value="1">What is your mother's maiden name?</option>
-                            <option value="2">Where were you born?</option>
-                            <option value="3">Who is your favorite soccer player?</option>
-                            <option value="4">What is the name of your first pet?</option>
-                            <option value="5">What is your first car?</option>
-                        </optgroup>
-                    </select>
-
-                    <label for="currentAnswer">Answer:</label>
-                    <input type="text" name="currentAnswer" id="currentAnswer" class="form-control">
-
-                    <label for="newSecurityQuestion">Security Question:</label>
-                    <select id="newSecurityQuestion" name="newSecurityQuestion" class="form-control form-select">
-                        <optgroup label="new security questions">
-                            <option value="0" selected disabled>-- Select a Security Question--</option>
-                            <option value="1">What is your mother's maiden name?</option>
-                            <option value="2">Where were you born?</option>
-                            <option value="3">Who is your favorite soccer player?</option>
-                            <option value="4">What is the name of your first pet?</option>
-                            <option value="5">What is your first car?</option>
-                        </optgroup>
-                    </select>
-
-                    <label for="newAnswer">Answer:</label>
-                    <input type="text" name="newAnswer" id="newAnswer" class="form-control">
-
-                    <input type="submit" id="changeSecuritySubmit" name="changeSecuritySubmit" class="btn" value="Update">
-                </form>
-
-            </div>
-            <!-- modal body div -->
-        </div>
-        <!-- content div -->
-    </div>
     <!--Firebase Scripts-->
     <script src="/js/firebase.js"></script>
     <script>
@@ -616,10 +525,6 @@
             var modal = document.getElementById((this.id + 'Modal'));
             modal.style.display = 'block';
         }
-        document.getElementById('changeSecurity').onclick = function () {
-            var modal = document.getElementById((this.id + 'Modal'));
-            modal.style.display = 'block';
-        }
 
         //making the modals dissapear
         document.getElementById('closeEmail').onclick = function () {
@@ -630,27 +535,10 @@
             var modal = this.parentNode.parentNode.parentNode;
             modal.style.display = 'none';
         }
-        document.getElementById('closeSecurity').onclick = function () {
-            var modal = this.parentNode.parentNode.parentNode;
-            modal.style.display = 'none';
-        }
     </script>
 
     <!-- General Scripts -->
     <script>
-        function logout() {
-            if (localStorage.getItem('currentUser') != undefined) {
-                var currentUser = JSON.parse(localStorage.getItem('currentUser'));
-                currentUser['email'] = undefined;
-                currentUser['password'] = undefined;
-                currentUser['question'] = undefined;
-                currentUser['answer'] = undefined;
-                currentUser['type'] = undefined;
-            }
-
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            location.href = "index.html";
-        }
         function fireLogout(){
             firebase.auth().signOut().then(function() {
                 location.href = "index.html";
@@ -666,11 +554,9 @@
             var newPassword = document.getElementById('newPassword').value;
 
             user.updatePassword(newPassword).then(function() {
-            // Update successful.
             alert('Password updated sucessfully');
             document.getElementById('changePasswordModal').style.display = 'none';
             }).catch(function(error) {
-            // An error happened.
             console.log("Error: code("+errorCode+") "+errorMessage);
             alert("Error: code("+errorCode+") "+errorMessage);
             });
@@ -680,23 +566,20 @@
             var newEmail = document.getElementById('password1').value;
             alert(newEmail);
             user.updateEmail(newEmail).then(function() {
-            // Update successful.
             alert('Email updated sucessfully');
             location.reload();
             document.getElementById('changeEmailModal').style.display = 'none';
             }).catch(function(error) {
-            // An error happened.
             console.log("Error: code("+errorCode+") "+errorMessage);
             alert("Error: code("+errorCode+") "+errorMessage);
             });
         }
-
+    </script>
+    <script>
         //hide input tab if user is not a coach
         hideInputTab();
 
         //populate the page with current account info
-        var currUser = JSON.parse(localStorage.getItem('currentUser'));
-
         var curruser;
         firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
@@ -706,8 +589,6 @@
             // No user is signed in.
         }
         });
-        //document.getElementById('email').innerText = email;
-        document.getElementById('security').innerText = currUser.question;
     </script>
 
 

@@ -715,10 +715,10 @@
 
     function confirmDeletePlayer() {
 
-      var pid = document.getElementById('infoPlayerPID').innerHTML;
-      deletePlayerById(pid);
+      var pid = localStorage.getItem('currentPlayer');
+      console.log('About to delete ' + pid);
+      deletePlayerFirestore(pid);
       deleteModalDissapear();
-      location.href = 'roster_vanilla.html';
     }
 
     function updatePlayer() {
@@ -750,7 +750,7 @@
       var hometown = form.children[5].value;
       var age = form.children[6].value;
       var dob = form.children[7].value;
-      var pid = form.children[8].value;
+      var pid = localStorage.getItem('currentPlayer');
 
       var unique = checkPlayerUpdate(num, pid);
       if (unique == false) {

@@ -20,12 +20,12 @@
       firebase.initializeApp(config);
     </script>
   <script>
-    function link_to_playerinfo(td) {
-      console.log(td);
-      var pid = td.getElementsByTagName('input')[0].value;
+    function link_to_playerinfo(tr) {
+      console.log(tr);
+      var pid = tr.getElementsByTagName('input')[0].value;
       console.log('PID = ' + pid);
       localStorage.setItem('currentPlayer', pid);
-      location.href = ("../vanilla-src/player_info_vanilla.html")
+      location.href = ("player_info_vanilla.html")
     }
     function show_add_modal(){
       var modal = document.getElementById('addModal');
@@ -1066,7 +1066,6 @@
             </div>
             <div class="modal-footer">
               <button id="save_btn" type="button" class="btn btn-primary" onclick="confirmAddPlayer()">Save</button>
-              <button id="update_btn" type="button" class="btn btn-primary" onclick="confirmUpdatePlayer()">Update</button>
             </div>
           </div>
       </div>
@@ -1186,45 +1185,6 @@
       localStorage.setItem('Roster', JSON.stringify(backRoster));
       close_add_modal();
     }
-
-    function confirmUpdatePlayer() {
-      var playerTable = document.getElementById('playerTable');
-      var form = document.getElementById('addPlayerForm');
-      var name = form.children[0].value;
-      var pos = form.children[1].value;
-      var num = form.children[2].value;
-      var status = form.children[3].value;
-      var college = form.children[4].value;
-      var hometown = form.children[5].value;
-      var age = form.children[6].value;
-      var dob = form.children[8].value;
-      var imgInput = form.children[10].files[0];
-      var img = document.getElementById('modalImage');
-      var imgData = undefined;
-
-      if (!imgInput.type.match('image\/.+')) {
-        
-        alert('This is not an image file');
-        //return 0;
-      }
-      else imgData= getBase64Image(img, imgInput.name);
-
-      var unique = checkPlayer(num);
-      if (unique == false) {
-        alert('This number is already taken');
-        return
-      }
-
-      var player = updatePlayerStorage(imgData, name, pos, num, status, college, hometown, age, dob,stats);
-      //console.log(player);
-      var playerRow = createPlayerRow(player);
-      playerTable.children[0].appendChild(playerRow);
-
-      var backRoster = JSON.parse(localStorage.getItem('Roster'));
-      backRoster.push(player);
-      localStorage.setItem('Roster', JSON.stringify(backRoster));
-      close_add_modal();
-    }
     
   </script>
 
@@ -1282,7 +1242,7 @@
         col4.setAttribute('class', 'col-xs-4 text-center');
         img.setAttribute('class', 'img-responsive img-circle center-block');
         img.setAttribute('alt', 'Player Icon');
-        console.log(player.img);
+        //console.log(player.img);
         img.setAttribute('src', player.img);
         col8.setAttribute('class', 'col-xs-8 text-right');
         name.innerHTML = player.name;
@@ -1327,7 +1287,7 @@
       var extentionNoDot = extension.substring(1, extension.length);
       var urlName = 'image/' + extension;
       var dataURL = canvas.toDataURL("urlName");
-      console.log(dataURL);
+      //console.log(dataURL);
 
       return dataURL;
     }
@@ -1454,7 +1414,6 @@
       }
  }
 
- previewFile();  //calls the function named previewFile()
  </script>
 
   <script>/*

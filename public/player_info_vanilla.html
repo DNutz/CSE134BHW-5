@@ -16,7 +16,21 @@
       return currentDate;
     }
   </script>
-  <script src="/js/CRUD_roster.js"></script>
+  <script src="js/CRUD_roster.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/firestore.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyA4_4i286-lIif954lxXfFFMCxIdzgNeLQ",
+      authDomain: "cse134bhw-5.firebaseapp.com",
+      databaseURL: "https://cse134bhw-5.firebaseio.com",
+      projectId: "cse134bhw-5",
+      storageBucket: "cse134bhw-5.appspot.com",
+      messagingSenderId: "849104176022"
+    };
+    firebase.initializeApp(config);
+  </script>
 
   <style>
     #rst_btn {
@@ -743,7 +757,7 @@
         alert('This number is already taken');
         return;
       }
-      var player = updatePlayerStorage(undefined, name, pos, num, status, college, hometown, age, dob, pid);
+      var player = updatePlayerFirestore(undefined, name, pos, num, status, college, hometown, age, dob, pid);
       console.log(player);
 
       document.getElementById('updateModal').style.display = 'none';

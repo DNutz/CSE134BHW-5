@@ -57,8 +57,8 @@ function getRoster() {
 }
 
 function createUniqueID() {
-    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     );
 }
 
@@ -97,8 +97,62 @@ function createPlayer(img, inputName, pos, num, stat, college, home, age, dob, s
     return player;
 }
 
+function createPlayerFirestore(img, inputName, pos, num, stat, college, home, age, dob, stats) {
+
+    var uniqueID = createUniqueID();
+    var db = firebase.firestore();
+    var stats = {
+        fouls: 0,
+        redCards: 0,
+        yellowCards: 0,
+        shotsOnGoal: 0,
+        goals: 0,
+        cKicks: 0,
+        pKicks: 0,
+        tIns: 0,
+        appearances: 0
+    };
+    db.collection("players").doc(uniqueID).set({
+        img: img,
+        number: num,
+        name: inputName,
+        status: stat,
+        position: pos,
+        college: college,
+        hometown: home,
+        age: age,
+        DOB: dob,
+        ID: uniqueID,
+        stats: stats,
+        inactive: false
+    })
+        .then(function (docRef) {
+            console.log("Document written with ID: ", uniqueID);
+        })
+        .catch(function (error) {
+            console.error("Error adding document: ", error);
+        });
+
+        var player = {
+            img: img,
+            number: num,
+            name: inputName,
+            status: stat,
+            position: pos,
+            college: college,
+            hometown: home,
+            age: age,
+            DOB: dob,
+            ID: createUniqueID(),
+            stats: stats,
+            inactive: false
+        };
+        return player;
+}
+
+
 function updatePlayerStorage(img, inputName, pos, num, stat, college, home, age, dob, pid) {
-    var backRoster = getRoster();   
+    var backRoster = getRoster();
     //var index = -1;
 
     for (var i = 0; i < backRoster.length; i++) {
@@ -123,12 +177,38 @@ function updatePlayerStorage(img, inputName, pos, num, stat, college, home, age,
     backRoster[i].ID = pid;
 
     localStorage.setItem('Roster', JSON.stringify(backRoster));
-}   
+}
+
+function updatePlayerStorageFirestore(img, inputName, pos, num, stat, college, home, age, dob) {
+    
+    var player = db.collection('players').where('pid', '==', pid);
+
+    player.update({
+        img : img,
+        number : num,
+        inputName : name,
+        stat : stat,
+        position : pos,
+        college : college,
+        hometown : home,
+        age : age,
+        DOB : dob,
+        
+    }).then(function() {
+        console.log("Document successfully updated!");
+    })
+    .catch(function(error) {
+        // The document probably doesn't exist.
+        console.error("Error updating document: ", error);
+    });
+
+    localStorage.setItem('Roster', JSON.stringify(backRoster));
+}
 
 function setInactiveByIndex(index) {
     var backRoster = JSON.parse(localStorage.getItem('Roster'));
     backRoster[index].inactive = true;
-    localStorage.setItem('Roster', JSON.stringify(backRoster));    
+    localStorage.setItem('Roster', JSON.stringify(backRoster));
 }
 
 function deletePlayerByIndex(index) {
@@ -141,7 +221,7 @@ function deletePlayerByIndex(index) {
 
 function deletePlayerByNumber(num) {
 
-    var backRoster = JSON.parse(localStorage.getItem('Roster'));    
+    var backRoster = JSON.parse(localStorage.getItem('Roster'));
     var index = -1;
 
     for (var i = 0; i < backRoster.length; i++) {
@@ -158,7 +238,7 @@ function deletePlayerByNumber(num) {
 
 function deletePlayerById(inputId) {
 
-    var backRoster = JSON.parse(localStorage.getItem('Roster'));    
+    var backRoster = JSON.parse(localStorage.getItem('Roster'));
     var index = -1;
 
     for (var i = 0; i < backRoster.length; i++) {
@@ -177,7 +257,7 @@ function initializeInputStats() {
     //alert('Initializing input stats');
     var inputRoster = JSON.parse(localStorage.getItem('Roster'));
     //console.log(inputRoster);
-    for (var i = 0; i < inputRoster.length; ++i){
+    for (var i = 0; i < inputRoster.length; ++i) {
         if (inputRoster[i].inactive == false) {
             var id = inputRoster[i].ID;
             var name = inputRoster[i].name;
@@ -198,7 +278,7 @@ function initializeInputStats() {
             //template.querySelector('#playerDiv').setAttribute('onClick',f);
             //template.querySelector('#playerDiv').setAttribute('onClick','show_modal('+name+')');
             //template.querySelector('#playerDiv').setAttribute('onClick','show_modal("'+name+'")');
-            template.childNodes[1].childNodes[1].setAttribute('onClick','show_modal("'+id+'")');
+            template.childNodes[1].childNodes[1].setAttribute('onClick', 'show_modal("' + id + '")');
             //console.log(template.childNodes[1].childNodes[1]);
             //template.querySelector('#playerDiv').setAttribute('onclick',function f(){show_modal(name)});
             //template.querySelector('#playerDiv').onclick = function f(){show_modal(name)};
@@ -211,9 +291,9 @@ function initializeInputStats() {
     return 1;
 }
 
-function viewStats(id){
+function viewStats(id) {
     var inputRoster = JSON.parse(localStorage.getItem('Roster'));
-    for (var i = 0; i < inputRoster.length; ++i){
+    for (var i = 0; i < inputRoster.length; ++i) {
         var player = inputRoster[i];
         if (player.ID == id) {
             document.getElementById('fouls').innerText = player.stats.fouls;
@@ -225,15 +305,15 @@ function viewStats(id){
             document.getElementById('pKicks').innerText = player.stats.pKicks;
             document.getElementById('tIns').innerText = player.stats.tIns;
             document.getElementById('appearances').innerText = player.stats.appearances;
-            document.getElementById('update_btn').setAttribute('onClick','updateStats("'+id+'")');
+            document.getElementById('update_btn').setAttribute('onClick', 'updateStats("' + id + '")');
             break;
         }
     }
 }
 
-function updateStats(id){
+function updateStats(id) {
     var inputRoster = JSON.parse(localStorage.getItem('Roster'));
-    for (var i = 0; i < inputRoster.length; ++i){
+    for (var i = 0; i < inputRoster.length; ++i) {
         var player = inputRoster[i];
         if (inputRoster[i].ID == id) {
             player.stats.fouls = document.getElementById('fouls').innerText;

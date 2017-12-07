@@ -1066,6 +1066,7 @@
             </div>
             <div class="modal-footer">
               <button id="save_btn" type="button" class="btn btn-primary" onclick="confirmAddPlayer()">Save</button>
+              <button id="update_btn" type="button" class="btn btn-primary" onclick="confirmUpdatePlayer()">Update</button>
             </div>
           </div>
       </div>
@@ -1175,7 +1176,46 @@
             tIns: 0,
             appearances: 0
         };
-      var player = createPlayer(imgData, name, pos, num, status, college, hometown, age, dob,stats);
+      var player = createPlayerFirestore(imgData, name, pos, num, status, college, hometown, age, dob,stats);
+      //console.log(player);
+      var playerRow = createPlayerRow(player);
+      playerTable.children[0].appendChild(playerRow);
+
+      var backRoster = JSON.parse(localStorage.getItem('Roster'));
+      backRoster.push(player);
+      localStorage.setItem('Roster', JSON.stringify(backRoster));
+      close_add_modal();
+    }
+
+    function confirmUpdatePlayer() {
+      var playerTable = document.getElementById('playerTable');
+      var form = document.getElementById('addPlayerForm');
+      var name = form.children[0].value;
+      var pos = form.children[1].value;
+      var num = form.children[2].value;
+      var status = form.children[3].value;
+      var college = form.children[4].value;
+      var hometown = form.children[5].value;
+      var age = form.children[6].value;
+      var dob = form.children[8].value;
+      var imgInput = form.children[10].files[0];
+      var img = document.getElementById('modalImage');
+      var imgData = undefined;
+
+      if (!imgInput.type.match('image\/.+')) {
+        
+        alert('This is not an image file');
+        //return 0;
+      }
+      else imgData= getBase64Image(img, imgInput.name);
+
+      var unique = checkPlayer(num);
+      if (unique == false) {
+        alert('This number is already taken');
+        return
+      }
+
+      var player = updatePlayerStorage(imgData, name, pos, num, status, college, hometown, age, dob,stats);
       //console.log(player);
       var playerRow = createPlayerRow(player);
       playerTable.children[0].appendChild(playerRow);
@@ -1417,7 +1457,7 @@
  previewFile();  //calls the function named previewFile()
  </script>
 
-  <script>
+  <script>/*
     var db = firebase.firestore();
     var stats = {
             fouls: 0,
@@ -1449,7 +1489,7 @@
     })
     .catch(function(error) {
         console.error("Error adding document: ", error);
-    });
+    });*/
   </script>
 </body>
 

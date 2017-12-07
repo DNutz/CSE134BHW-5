@@ -251,7 +251,6 @@ function deletePlayerById(inputId) {
 function initializeInputStats() {
     //alert('Initializing input stats');
     var inputRoster = JSON.parse(localStorage.getItem('Roster'));
-    //console.log(inputRoster);
     for (var i = 0; i < inputRoster.length; ++i) {
         if (inputRoster[i].inactive == false) {
             var id = inputRoster[i].ID;
@@ -259,30 +258,48 @@ function initializeInputStats() {
             var number = inputRoster[i].number;
             var position = inputRoster[i].position;
             var template = document.getElementById('playerTemplate').content;
-            //console.log(template);
-            //template.querySelector('#tempName').innerText = name;
-            //console.log(template.childNodes[1].childNodes[1].childNodes[1].childNodes[1].childNodes[3].childNodes[1]);
             template.childNodes[1].childNodes[1].childNodes[1].childNodes[1].childNodes[3].childNodes[1].innerText = name;
-            //template.firstChild.firstChild.firstChild.firstChild.childNodes[1].firstChild.innerText = name;
-            //template.querySelector('#tempPos').innerText = position;
             template.childNodes[1].childNodes[1].childNodes[1].childNodes[1].childNodes[3].childNodes[3].innerText = position;
-            //template.querySelector('#tempNum').innerText = number;
             template.childNodes[1].childNodes[1].childNodes[1].childNodes[1].childNodes[1].childNodes[3].innerText = number;
-            //console.log(template.querySelector('#playerDiv'));
-            //var f = ('show_modal('+name+')');
-            //template.querySelector('#playerDiv').setAttribute('onClick',f);
-            //template.querySelector('#playerDiv').setAttribute('onClick','show_modal('+name+')');
-            //template.querySelector('#playerDiv').setAttribute('onClick','show_modal("'+name+'")');
             template.childNodes[1].childNodes[1].setAttribute('onClick', 'show_modal("' + id + '")');
-            //console.log(template.childNodes[1].childNodes[1]);
-            //template.querySelector('#playerDiv').setAttribute('onclick',function f(){show_modal(name)});
-            //template.querySelector('#playerDiv').onclick = function f(){show_modal(name)};
-            //console.log(template.querySelector('#playerDiv'));
             var toAdd = document.getElementById('playerTemplate').content.cloneNode(true);
-            //console.log(toAdd);
             document.getElementById('IStbody').appendChild(toAdd);
         }
     }
+    return 1;
+}
+function initializeFireStats() {
+    //alert('Initializing input stats');
+    //var inputRoster = JSON.parse(localStorage.getItem('Roster'));
+    var pid = localStorage.ID;
+    var db = firebase.firestore();
+    var cRef = db.collection("players");
+    cRef.get().then(function(c) {
+        if (c.exists) {
+            console.log("Document data:", c.data());
+            for (doc in c){
+                console.log("Document data:", c.data());
+                //if (inputRoster[i].inactive == false) {
+                if (false){
+                var id = inputRoster[i].ID;
+                var name = inputRoster[i].name;
+                var number = inputRoster[i].number;
+                var position = inputRoster[i].position;
+                var template = document.getElementById('playerTemplate').content;
+                template.childNodes[1].childNodes[1].childNodes[1].childNodes[1].childNodes[3].childNodes[1].innerText = name;
+                template.childNodes[1].childNodes[1].childNodes[1].childNodes[1].childNodes[3].childNodes[3].innerText = position;
+                template.childNodes[1].childNodes[1].childNodes[1].childNodes[1].childNodes[1].childNodes[3].innerText = number;
+                template.childNodes[1].childNodes[1].setAttribute('onClick', 'show_modal("' + id + '")');
+                var toAdd = document.getElementById('playerTemplate').content.cloneNode(true);
+                document.getElementById('IStbody').appendChild(toAdd);
+                }
+            }
+        } else {
+            console.log("No such document!");
+        }
+    }).catch(function(error) {
+        console.log("Error getting document:", error);
+    });
     return 1;
 }
 

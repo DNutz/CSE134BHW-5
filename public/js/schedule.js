@@ -8,15 +8,11 @@ function viewGame(eventId, listOrigin) {
     location.href = 'gamestat_summary.html';
     */
     db.collection(listOrigin).doc(eventId).get().then(function (doc) {
-        var selectedGame = doc.data();
+        var selectedGame = {};
         selectedGame['listOrigin'] = listOrigin;
         selectedGame['id'] = eventId;
-        db.collection('editGames').doc('selectedGame').set(selectedGame).then(function() {
-            console.log('Successfully set selected game');
-            location.href = 'gamestat_summary.html';
-        }).catch(function (error) {
-            console.error('Error in setting selected game');
-        });
+        localStorage.setItem('selectedGame', JSON.stringify(selectedGame));
+        location.href = 'gamestat_summary.html';
     }).catch(function (err) {
         console.error('Error in getting game for view game');
     });

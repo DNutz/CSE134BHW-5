@@ -7,10 +7,6 @@
     <script src="js/firebase.js" type="text/javascript"></script>
     <script src="js/firestore.js" type="text/javascript"></script>
     <script>
-        // Initialize Firebase
-        //const firebase = require("firebase");
-        // Required for side-effects
-        //require("firebase/firestore");
         var config = {
             apiKey: "AIzaSyA4_4i286-lIif954lxXfFFMCxIdzgNeLQ",
             authDomain: "cse134bhw-5.firebaseapp.com",
@@ -25,6 +21,7 @@
     <script src="js/raven.js" type="text/javascript"></script>
     <script src="js/app.js" type="text/javascript"></script>
     <script src="js/sw.js" type="text/javascript"></script>
+    <script src="js/hideInputTab.js" type="text/javascript"></script>
     <style>
         html {
             font-size: 10px;
@@ -574,7 +571,7 @@
         db.collection('upcomingEvents').onSnapshot(function() {
             showSchedule();
         });
-
+        
         function checkUserType() {
             var currUser = localStorage.getItem('currentUser');
             if (currUser == undefined || JSON.parse(currUser).type != 'Coach') {
@@ -924,7 +921,7 @@
                 return retVal;*/
                 for (var docIndex = 0; docIndex < querySnapshot.size; ++docIndex) {
                     var currentDoc = querySnapshot.docs[docIndex];
-                    if (currentDoc.id != newId && currentDoc.data().date == newEvent.date && currentDoc.data().time == newEvent.time) {
+                    if (currentDoc.id != newId && currentDoc.data().valid == '1' && currentDoc.data().date == newEvent.date && currentDoc.data().time == newEvent.time) {
                         return true;
                     }
                 }

@@ -151,48 +151,19 @@ function createPlayerFirestore(img, inputName, pos, num, stat, college, home, ag
 }
 
 
-function updatePlayerStorage(img, inputName, pos, num, stat, college, home, age, dob, pid) {
-    var backRoster = getRoster();
-    //var index = -1;
+function updatePlayerFirestore(img, inputName, pos, num, stat, college, home, age, dob, pid) {
 
-    for (var i = 0; i < backRoster.length; i++) {
-
-        if (backRoster[i].ID == pid) {
-
-            //console.log('got in if statement');
-            //index = i;
-            break;
-        }
-    }
-
-    backRoster[i].img = img;
-    backRoster[i].number = num;
-    backRoster[i].inputName = name;
-    backRoster[i].stat = stat;
-    backRoster[i].position = pos;
-    backRoster[i].college = college;
-    backRoster[i].hometown = home;
-    backRoster[i].age = age;
-    backRoster[i].DOB = dob;
-    backRoster[i].ID = pid;
-
-    localStorage.setItem('Roster', JSON.stringify(backRoster));
-}
-
-function updatePlayerStorageFirestore(img, inputName, pos, num, stat, college, home, age, dob) {
-    
-    var player = db.collection('players').where('pid', '==', pid);
-
-    player.update({
-        img : img,
-        number : num,
-        inputName : name,
-        stat : stat,
-        position : pos,
-        college : college,
-        hometown : home,
-        age : age,
-        DOB : dob,
+    var db = firebase.firestore();
+    var player = db.collection('players').doc(pid).set({
+        //img: img,
+        number: num,
+        name: inputName,
+        status: stat,
+        position: pos,
+        college: college,
+        hometown: home,
+        age: age,
+        DOB: dob,
         
     }).then(function() {
         console.log("Document successfully updated!");
@@ -202,7 +173,31 @@ function updatePlayerStorageFirestore(img, inputName, pos, num, stat, college, h
         console.error("Error updating document: ", error);
     });
 
-    localStorage.setItem('Roster', JSON.stringify(backRoster));
+    //localStorage.setItem('Roster', JSON.stringify(backRoster));
+    var player = {
+        img: img,
+        number: num,
+        name: inputName,
+        status: stat,
+        position: pos,
+        college: college,
+        hometown: home,
+        age: age,
+        DOB: dob,
+        inactive: false
+    };
+    return player;
+}
+
+function deletePlayerFirestore(pid) {
+    db.collection("players").doc(pid).set({
+        inactive: true
+    }) 
+    .then(function() {
+        console.log("Document successfully deleted!");
+    }).catch(function(error) {
+        console.error("Error removing document: ", error);
+    });
 }
 
 function setInactiveByIndex(index) {

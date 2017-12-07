@@ -143,7 +143,7 @@ function createPlayerFirestore(img, inputName, pos, num, stat, college, home, ag
             hometown: home,
             age: age,
             DOB: dob,
-            ID: createUniqueID(),
+            ID: uniqueID,
             stats: stats,
             inactive: false
         };
@@ -153,6 +153,7 @@ function createPlayerFirestore(img, inputName, pos, num, stat, college, home, ag
 
 function updatePlayerFirestore(img, inputName, pos, num, stat, college, home, age, dob, pid) {
 
+    console.log("PID: " + pid);
     var db = firebase.firestore();
     var player = db.collection('players').doc(pid).set({
         //img: img,
@@ -163,9 +164,10 @@ function updatePlayerFirestore(img, inputName, pos, num, stat, college, home, ag
         college: college,
         hometown: home,
         age: age,
-        DOB: dob,
+        DOB: dob
         
-    }).then(function() {
+    }, {merge: true})
+    .then(function() {
         console.log("Document successfully updated!");
     })
     .catch(function(error) {
@@ -190,11 +192,13 @@ function updatePlayerFirestore(img, inputName, pos, num, stat, college, home, ag
 }
 
 function deletePlayerFirestore(pid) {
-    db.collection("players").doc(pid).set({
+    db = firebase.firestore();
+    db.collection('players').doc(pid).set({
         inactive: true
-    }) 
+    }, {merge:true}) 
     .then(function() {
         console.log("Document successfully deleted!");
+        location.href = 'roster_vanilla.html';        
     }).catch(function(error) {
         console.error("Error removing document: ", error);
     });

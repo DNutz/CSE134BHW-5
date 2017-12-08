@@ -5,7 +5,7 @@
   <title>Input Stats</title>
   <script>
     function show_modal(n) {
-      viewStats(n);
+      viewFireStats(n);
       var modal = document.getElementById('myModal');
       modal.style.display = 'block';
     }
@@ -953,7 +953,13 @@
   </ul>
   <h1 class="ml-5 text-center">Input Stats</h1>
   <table class="table table-hover table-bordered">
-    <tbody id='IStbody'><!--
+    <tbody id='IStbody'>
+      <tr id="loading">
+        <td>
+          Loading...
+        </td>
+      </tr>
+      <!--
       <tr>
         <td>
           <div id="player_1" class="container" onClick="show_modal()">
@@ -1130,7 +1136,8 @@
     </tr>
   </template>
   <script>
-    initializeInputStats();
+    //initializeInputStats();
+    initializeFireStats();
     var values = document.getElementsByClassName('editable');
     for (var i = 0; i < values.length; i++) {
       values.item(i).setAttribute("contenteditable", "true");

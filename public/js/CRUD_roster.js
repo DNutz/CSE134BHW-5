@@ -274,35 +274,39 @@ function initializeInputStats() {
 }
 function initializeFireStats() {
     //alert('Initializing input stats');
-    //var inputRoster = JSON.parse(localStorage.getItem('Roster'));
-    var pid = localStorage.ID;
+    var firstLoop = true;
     var db = firebase.firestore();
     var cRef = db.collection("players");
-    cRef.get().then(function(c) {
-        if (c.exists) {
-            console.log("Document data:", c.data());
-            for (doc in c){
-                console.log("Document data:", c.data());
-                //if (inputRoster[i].inactive == false) {
-                if (false){
-                var id = inputRoster[i].ID;
-                var name = inputRoster[i].name;
-                var number = inputRoster[i].number;
-                var position = inputRoster[i].position;
+    cRef.get().then(function(querySnapshot) {
+        //localStorage.setItem('statsPlayerList',JSON.stringify(querySnapshot));
+        //console.log(JSON.stringify(querySnapshot));
+        var statsPlayerList = [];
+        var i = 0;
+        querySnapshot.forEach(function(doc) {
+            //console.log(doc.id, " => ", doc.data());
+            statsPlayerList[i]=doc.data();
+            ++i;
+            if (doc.data().inactive == false) {
+                var id = doc.data().ID;
+                var name = doc.data().name;
+                var number = doc.data().number;
+                var position = doc.data().position;
+                var image = doc.data().img;
                 var template = document.getElementById('playerTemplate').content;
                 template.childNodes[1].childNodes[1].childNodes[1].childNodes[1].childNodes[3].childNodes[1].innerText = name;
                 template.childNodes[1].childNodes[1].childNodes[1].childNodes[1].childNodes[3].childNodes[3].innerText = position;
+                template.childNodes[1].childNodes[1].childNodes[1].childNodes[1].childNodes[1].childNodes[1].setAttribute('src', image);
                 template.childNodes[1].childNodes[1].childNodes[1].childNodes[1].childNodes[1].childNodes[3].innerText = number;
                 template.childNodes[1].childNodes[1].setAttribute('onClick', 'show_modal("' + id + '")');
                 var toAdd = document.getElementById('playerTemplate').content.cloneNode(true);
-                document.getElementById('IStbody').appendChild(toAdd);
+                if (firstLoop){
+                    document.getElementById('IStbody').removeChild(document.getElementById('loading'));
+                    firstLoop = false;
                 }
+                document.getElementById('IStbody').appendChild(toAdd);
             }
-        } else {
-            console.log("No such document!");
-        }
-    }).catch(function(error) {
-        console.log("Error getting document:", error);
+        });
+        localStorage.setItem('statsPlayerList',JSON.stringify(statsPlayerList));
     });
     return 1;
 }
@@ -327,6 +331,52 @@ function viewStats(id) {
     }
 }
 
+function viewFireStats(id) {
+    var ls = true;
+    try {var spl = JSON.parse(localStorage.getItem('statsPlayerList'));}
+    catch (exception){ls = false;}
+    if (ls && spl != null){
+        for (var i = 0; i < spl.length; ++i) {
+            var player = spl[i];
+            if (player.ID == id) {
+                document.getElementById('fouls').innerText = player.stats.fouls;
+                document.getElementById('redCards').innerText = player.stats.redCards;
+                document.getElementById('yellowCards').innerText = player.stats.yellowCards;
+                document.getElementById('shotsOnGoal').innerText = player.stats.shotsOnGoal;
+                document.getElementById('goals').innerText = player.stats.goals;
+                document.getElementById('cKicks').innerText = player.stats.cKicks;
+                document.getElementById('pKicks').innerText = player.stats.pKicks;
+                document.getElementById('tIns').innerText = player.stats.tIns;
+                document.getElementById('appearances').innerText = player.stats.appearances;
+                document.getElementById('update_btn').setAttribute('onClick', 'updateFireStats("' + id + '")');
+                break;
+            }
+        }
+    }
+    else {
+        var db = firebase.firestore();
+        db.collection("players").doc(id).get().then(function(doc) {
+            if (doc.exists) {
+                var player = doc.data();
+                document.getElementById('fouls').innerText = player.stats.fouls;
+                document.getElementById('redCards').innerText = player.stats.redCards;
+                document.getElementById('yellowCards').innerText = player.stats.yellowCards;
+                document.getElementById('shotsOnGoal').innerText = player.stats.shotsOnGoal;
+                document.getElementById('goals').innerText = player.stats.goals;
+                document.getElementById('cKicks').innerText = player.stats.cKicks;
+                document.getElementById('pKicks').innerText = player.stats.pKicks;
+                document.getElementById('tIns').innerText = player.stats.tIns;
+                document.getElementById('appearances').innerText = player.stats.appearances;
+                document.getElementById('update_btn').setAttribute('onClick', 'updateFireStats("' + id + '")');
+            } else {
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
+    }
+}
+
 function updateStats(id) {
     var inputRoster = JSON.parse(localStorage.getItem('Roster'));
     for (var i = 0; i < inputRoster.length; ++i) {
@@ -341,11 +391,80 @@ function updateStats(id) {
             player.stats.pKicks = document.getElementById('pKicks').innerText;
             player.stats.tIns = document.getElementById('tIns').innerText;
             player.stats.appearances = document.getElementById('appearances').innerText;
-            //inputRoster[i] = player;
-            //console.log(inputRoster);
             localStorage.setItem('Roster', JSON.stringify(inputRoster));
             break;
         }
+    }
+    close_modal();
+}
+
+function updateFireStats(id) {
+    var ls = true;
+    try {var spl = JSON.parse(localStorage.getItem('statsPlayerList'));}
+    catch (exception){ls = false;}
+    if (ls && spl != null){
+        for (var i = 0; i < spl.length; ++i) {
+            var player = spl[i];
+            if (player.ID == id) {
+                player.stats.fouls = document.getElementById('fouls').innerText;
+                player.stats.redCards = document.getElementById('redCards').innerText;
+                player.stats.yellowCards = document.getElementById('yellowCards').innerText;
+                player.stats.shotsOnGoal = document.getElementById('shotsOnGoal').innerText;
+                player.stats.goals = document.getElementById('goals').innerText;
+                player.stats.cKicks = document.getElementById('cKicks').innerText;
+                player.stats.pKicks = document.getElementById('pKicks').innerText;
+                player.stats.tIns = document.getElementById('tIns').innerText;
+                player.stats.appearances = document.getElementById('appearances').innerText;
+                localStorage.setItem('statsPlayerList', JSON.stringify(spl));
+                var db = firebase.firestore();
+                return db.collection('players').doc(id).update({
+                    stats: player.stats
+                })
+                .then(function() {
+                    //console.log("Document successfully updated!");
+                    i = spl.length;
+                    close_modal();
+                })
+                .catch(function(error) {
+                    console.error("Error updating document: ", error);
+                    close_modal();
+                });
+            }
+        }
+    }
+    else {
+        var db = firebase.firestore();
+        db.collection("players").doc(id).get().then(function(doc) {
+            if (doc.exists) {
+                var player = doc.data();
+                player.stats.fouls = document.getElementById('fouls').innerText;
+                player.stats.redCards = document.getElementById('redCards').innerText;
+                player.stats.yellowCards = document.getElementById('yellowCards').innerText;
+                player.stats.shotsOnGoal = document.getElementById('shotsOnGoal').innerText;
+                player.stats.goals = document.getElementById('goals').innerText;
+                player.stats.cKicks = document.getElementById('cKicks').innerText;
+                player.stats.pKicks = document.getElementById('pKicks').innerText;
+                player.stats.tIns = document.getElementById('tIns').innerText;
+                player.stats.appearances = document.getElementById('appearances').innerText;
+                return db.collection('players').doc(id).update({
+                    stats: player.stats
+                })
+                .then(function() {
+                    //console.log("Document successfully updated!");
+                    close_modal();
+                })
+                .catch(function(error) {
+                    console.error("Error updating document: ", error);
+                    close_modal();
+                });
+            } else {
+                console.log("No such document!");
+                close_modal();
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+            close_modal();
+        });
     }
     close_modal();
 }

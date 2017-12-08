@@ -8,33 +8,33 @@
   <script src="js/firebase.js"></script>
   <script src="js/firestore.js"></script>
   <script>
-      // Initialize Firebase
-      var config = {
-        apiKey: "AIzaSyA4_4i286-lIif954lxXfFFMCxIdzgNeLQ",
-        authDomain: "cse134bhw-5.firebaseapp.com",
-        databaseURL: "https://cse134bhw-5.firebaseio.com",
-        projectId: "cse134bhw-5",
-        storageBucket: "cse134bhw-5.appspot.com",
-        messagingSenderId: "849104176022"
-      };
-      firebase.initializeApp(config);
-    </script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyA4_4i286-lIif954lxXfFFMCxIdzgNeLQ",
+      authDomain: "cse134bhw-5.firebaseapp.com",
+      databaseURL: "https://cse134bhw-5.firebaseio.com",
+      projectId: "cse134bhw-5",
+      storageBucket: "cse134bhw-5.appspot.com",
+      messagingSenderId: "849104176022"
+    };
+    firebase.initializeApp(config);
+  </script>
   <script>
-    function link_to_playerinfo(tr) {
-      console.log(tr);
-      var pid = tr.getElementsByTagName('input')[0].value;
-      console.log('PID = ' + pid);
-      localStorage.setItem('currentPlayer', pid);
-      location.href = ("player_info_vanilla.html")
-    }
-    function show_add_modal(){
-      var modal = document.getElementById('addModal');
-      modal.style.display = 'block';
-    }
-    function close_add_modal(){
-      var modal = document.getElementById('addModal');
-      modal.style.display = 'none';
-    }
+      function link_to_playerinfo(tr) {
+        console.log(tr);
+        var pid = tr.getElementsByTagName('input')[0].value;
+        console.log('PID = ' + pid);
+        localStorage.setItem('currentPlayer', pid);
+        location.href = ("player_info_vanilla.html")
+      }
+      function show_add_modal() {
+        var modal = document.getElementById('addModal');
+        modal.style.display = 'block';
+      }
+      function close_add_modal() {
+        var modal = document.getElementById('addModal');
+        modal.style.display = 'none';
+      }
     /*function show_remove_modal(){
       var modal = document.getElementById('removeModal');
       modal.style.display = 'block';
@@ -51,8 +51,10 @@
       src: url('../bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.eot');
       src: url('../bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.woff') format('woff'), url('../bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
     }
-     /* Modal Styles */
-     .modal {
+
+    /* Modal Styles */
+
+    .modal {
       display: none;
       position: fixed;
       z-index: 5;
@@ -65,12 +67,13 @@
       background-color: rgb(0, 0, 0);
       background-color: rgba(0, 0, 0, 0.4);
     }
+
     .modal-content {
       position: relative;
       background-color: #fefefe;
       border-radius: 10px;
       border: 1px solid #888;
-      width: 80%; 
+      width: 80%;
       margin: 10%;
       vertical-align: middle;
       box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -79,6 +82,7 @@
       animation-name: animatetop;
       animation-duration: 0.5s
     }
+
     .modal-header {
       border-radius: 10px 10px 0px 0px;
       padding: 1rem;
@@ -88,22 +92,24 @@
       font-size: 4.5rem;
       padding: 1rem 1rem 1rem 2rem;
     }
+
     .modal-body {
       padding: 4%;
       text-align: center;
     }
+
     .modal-footer {
       padding: 1rem;
     }
 
     .modal label {
-        display: block;
-        text-align: left;
+      display: block;
+      text-align: left;
     }
 
-    .modal-header > span:nth-child(1) {
-        display: inline-block;
-        margin-top: 1.5rem;
+    .modal-header>span:nth-child(1) {
+      display: inline-block;
+      margin-top: 1.5rem;
     }
 
     .playerInfoP {
@@ -113,7 +119,7 @@
     #modalImageInput {
       font-size: 3rem;
       border: rgb(104, 102, 102) 2px solid;
-      background-color:#777;
+      background-color: #777;
       font: white;
       margin-bottom: 1rem;
     }
@@ -129,6 +135,7 @@
     }
 
     /* The Close Button */
+
     .close {
       color: gray;
       float: right;
@@ -136,6 +143,7 @@
       font-weight: bold;
       margin: 4rem 0 0 3rem;
     }
+
     .close:hover,
     .close:focus {
       color: #000;
@@ -144,10 +152,11 @@
     }
 
     .btn-primary {
-        background-color: #42b1b1;
+      background-color: #42b1b1;
     }
 
     /* Add Animation */
+
     @keyframes animatetop {
       from {
         top: -300px;
@@ -158,6 +167,7 @@
         opacity: 1
       }
     }
+
     /*Bootstrap C&P*/
 
     * {
@@ -892,6 +902,7 @@
       padding-right: 15px;
       padding-left: 15px;
     }
+
     .col-xs-2 {
       width: 5%;
       float: left;
@@ -909,6 +920,7 @@
       padding-right: 15px;
       padding-left: 15px;
     }
+
     .col-xs-3 {
       width: 35%;
       float: left;
@@ -1039,37 +1051,38 @@
     </tbody>
   </table>
   <div class="container">
-      <!-- Modal -->
-      <div class="modal" id="addModal">
-          <!-- Modal content-->
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" onclick="close_add_modal()">&times;</button>
-              <h4 class="modal-title">Add a Player</h4>
-            </div>
-            <div class="modal-body">
-              <form id="addPlayerForm">
-                <input class="form-control" type="text" name="name" placeholder="Name" required>
-                <input class="form-control" type="text" name="position" placeholder="Position" required>
-                <input class="form-control" type="number" name="number" placeholder="Number" required>
-                <input class="form-control" type="text" name="status" placeholder="Status" required>
-                <input class="form-control" type="text" name="college" placeholder="College" required>
-                <input class="form-control" type="text" name="hometown" placeholder="Hometown" required>
-                <input class="form-control" type="number" name="age" placeholder="Age" required>
-                <label style="display: block;font-size: 4rem;margin: 2rem 0 2rem 0;">DOB:</label>
-                <input class="form-control" type="date" name="dob" placeholder="DOB" required>
-                <label style="font-size: 4rem;margin: 3rem 0 3rem 0;">Upload Profile Picture:</label>                
-                <input input id="modalImageInput" type="file" onchange="previewFile()"><br>
-                <img id="modalImage" src="" height="300px" width="250px" alt="ProfileImage">
-                <img id="fullSizeImage" style="display:none">  
-                
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button id="save_btn" type="button" class="btn btn-primary" onclick="confirmAddPlayer()">Save</button>
-            </div>
-          </div>
+    <!-- Modal -->
+    <div class="modal" id="addModal">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" onclick="close_add_modal()">&times;</button>
+          <h4 class="modal-title">Add a Player</h4>
+        </div>
+        <div class="modal-body">
+          <form id="addPlayerForm">
+            <input class="form-control" type="text" name="name" placeholder="Name" required>
+            <input class="form-control" type="text" name="position" placeholder="Position" required>
+            <input class="form-control" type="number" name="number" placeholder="Number" required>
+            <input class="form-control" type="text" name="status" placeholder="Status" required>
+            <input class="form-control" type="text" name="college" placeholder="College" required>
+            <input class="form-control" type="text" name="hometown" placeholder="Hometown" required>
+            <input class="form-control" type="number" name="age" placeholder="Age" required>
+            <label style="display: block;font-size: 4rem;margin: 2rem 0 2rem 0;">DOB:</label>
+            <input class="form-control" type="date" name="dob" placeholder="DOB" required>
+            <label style="font-size: 4rem;margin: 3rem 0 3rem 0;">Upload Profile Picture:</label>
+            <input input id="modalImageInput" type="file" onchange="previewFile()">
+            <br>
+            <img id="modalImage" src="" height="300px" width="250px" alt="ProfileImage">
+            <img id="fullSizeImage" style="display:none">
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button id="save_btn" type="button" class="btn btn-primary" onclick="confirmAddPlayer()">Save</button>
+        </div>
       </div>
+    </div>
   </div>
   <!--< div class="container">
       Modal
@@ -1106,32 +1119,32 @@
   </div>-->
 
   <template id="playerTemplate">
-      <tr>
-          <!--<td onclick="close_remove_modal()">-->
-              <td>
-            <input type="hidden">
-            <div class="container">
-              <div class="row">
-                <div class="col-xs-2 text-left">
-                  <p class="playerInfoP">1</p>
-                </div>
-                <div class="col-xs-7 text-center">
-                  <p class="playerInfoP">John Smith</p>
-                </div>
-                <div class="col-xs-3 text-right">  
-                  <p class="playerInfoP">Forward</p>
-                </div>
-              </div>
+    <tr>
+      <!--<td onclick="close_remove_modal()">-->
+      <td>
+        <input type="hidden">
+        <div class="container">
+          <div class="row">
+            <div class="col-xs-2 text-left">
+              <p class="playerInfoP">1</p>
             </div>
-          </td>
-        </tr>
+            <div class="col-xs-7 text-center">
+              <p class="playerInfoP">John Smith</p>
+            </div>
+            <div class="col-xs-3 text-right">
+              <p class="playerInfoP">Forward</p>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
   </template>
 
   <!-- Modal Scripts-->
   <script>
     var values = document.getElementsByClassName('editable');
-    for(var i=0;i < values.length; i++){
-      values.item(i).setAttribute("contenteditable","true");
+    for (var i = 0; i < values.length; i++) {
+      values.item(i).setAttribute("contenteditable", "true");
     }
   </script>
 
@@ -1153,11 +1166,11 @@
       var imgData = undefined;
 
       if (!imgInput.type.match('image\/.+')) {
-        
+
         alert('This is not an image file');
         //return 0;
       }
-      else imgData= getBase64Image(img, imgInput.name);
+      else imgData = getBase64Image(img, imgInput.name);
 
       var unique = checkPlayer(num);
       if (unique == false) {
@@ -1166,17 +1179,17 @@
       }
 
       var stats = {
-            fouls: 0,
-            redCards: 0,
-            yellowCards: 0,
-            shotsOnGoal: 0,
-            goals: 0,
-            cKicks: 0,
-            pKicks: 0,
-            tIns: 0,
-            appearances: 0
-        };
-      var player = createPlayerFirestore(imgData, name, pos, num, status, college, hometown, age, dob,stats);
+        fouls: 0,
+        redCards: 0,
+        yellowCards: 0,
+        shotsOnGoal: 0,
+        goals: 0,
+        cKicks: 0,
+        pKicks: 0,
+        tIns: 0,
+        appearances: 0
+      };
+      var player = createPlayerFirestore(imgData, name, pos, num, status, college, hometown, age, dob, stats);
       //console.log(player);
       var playerRow = createPlayerRow(player);
       playerTable.children[0].appendChild(playerRow);
@@ -1186,7 +1199,7 @@
       localStorage.setItem('Roster', JSON.stringify(backRoster));
       close_add_modal();
     }
-    
+
   </script>
 
   <!-- Helper Scripts-->
@@ -1232,7 +1245,7 @@
         var col8 = document.createElement('div');
         var name = document.createElement('p');
         var pos = document.createElement('p');
-    
+
         tr.setAttribute('data-index', index);
         tr.setAttribute('onclick', 'link_to_playerinfo(this);');
         //td.setAttribute('onclick', 'close_remove_modal()');
@@ -1248,7 +1261,7 @@
         col8.setAttribute('class', 'col-xs-8 text-right');
         name.innerHTML = player.name;
         pos.innerHTML = player.position;
-    
+
         col8.appendChild(name);
         col8.appendChild(pos);
         col4.appendChild(img);
@@ -1273,7 +1286,7 @@
       canvas.width = 250; // destination size
       canvas.height = canvas.width * img.height / img.width;
       var ctx = canvas.getContext('2d');
-      
+
       resizeImage(canvas, ctx, img, canvas.width);
 
       var extension = imgName.substring(imgName.lastIndexOf('.'));
@@ -1295,12 +1308,12 @@
     }
 
     function resizeImage(canvas, context, img, destWidth) {
- 
+
       // step 1 - resize to 50%
       var otherCanvas = document.createElement('canvas');
       var otherCtx = otherCanvas.getContext('2d');
 
-      otherCanvas.width = img.width ;
+      otherCanvas.width = img.width;
       otherCanvas.height = img.height;
       otherCtx.drawImage(img, 0, 0);
 
@@ -1311,95 +1324,46 @@
         otherCtx.drawImage(otherCanvas, 0, 0, otherCanvas.width, otherCanvas.height);
       }
 
-    // step 3, resize to final size
-    context.drawImage(img, 0, 0, otherCanvas.width, otherCanvas.height);
-    }
-
-    function createPlayerRowNoImg(player) {
-
-      if ('options' in document.createElement('template')) {
-
-        var playerTemplate = document.getElementById('playerTemplate');
-
-        var playerTable = document.getElementById('playerTable');
-        var index = playerTable.childElementCount - 1;
-
-        var tr = playerTemplate.content.children[0];
-        var td = playerTemplate.content.children[0].children[0];
-        tr.setAttribute('data-index', index);
-        tr.setAttribute('onclick', 'link_to_playerinfo(this);');
-
-        //pid
-        td.getElementsByTagName('input')[0].value = player.ID;
-
-        //player p tags
-        td.getElementsByTagName('p')[0].innerHTML = player.num;
-        td.getElementsByTagName('p')[1].innerHTML = player.name;
-        td.getElementsByTagName('p')[2].innerHTML = player.position;
-
-        var clone = document.importNode(playerTemplate.content, true);
-        console.log(clone.children[0]);
-        return clone.children[0];
-      }
-      else {
-
-        var tr = document.createElement('tr');
-        var td = document.createElement('td');
-        var input = document.createElement('input');
-        var container = document.createElement('div');
-        var row = document.createElement('div');
-        var col2 = document.createElement('div');
-        var col7 = document.createElement('div');
-        var col3 = document.createElement('div');
-        var num = document.createElement('p');
-        var name = document.createElement('p');
-        var pos = document.createElement('p');
-    
-        tr.setAttribute('data-index', index);
-        tr.setAttribute('onclick', 'link_to_playerinfo(this);');
-        //td.setAttribute('onclick', 'close_remove_modal()');
-        input.setAttribute('type', 'hidden');
-        input.value = player.ID;
-        container.setAttribute('class', 'container');
-        row.setAttribute('class', 'row');
-        col2.setAttribute('class', 'col-xs-2 text-left');
-        col7.setAttribute('class', 'col-xs-7 text-center');
-        col3.setAttribute('class', 'col-xs-3 text-right');
-        num.innerHTML = player.number;
-        name.innerHTML = player.name;
-        pos.innerHTML = player.position;
-    
-        col2.appendChild(num);
-        col7.appendChild(name);
-        col3.appendChild(pos);
-        row.appendChild(col2)
-        row.appendChild(col7);
-        row.appendChild(col3);
-        container.appendChild(row);
-        td.appendChild(input);
-        td.appendChild(container);
-        tr.appendChild(td);
-        console.log(tr);
-        return tr;
-      }
+      // step 3, resize to final size
+      context.drawImage(img, 0, 0, otherCanvas.width, otherCanvas.height);
     }
 
     function setPlayerTable() {
       var playerTable = document.getElementById('playerTable');
-      var roster = JSON.parse(localStorage.getItem('Roster'));
-      //var roster = JSON.parse(localStorage.getItem('Roster'));
-      for (var i = 0; i < roster.length; i++) {
-        var player = roster[i];
 
-        if (player.inactive == false) {
-          var playerRow = createPlayerRow(player);
-          playerTable.children[0].appendChild(playerRow);
-        }
-      }
+      getRosterFirestore();
+     
+    }
+    function getRosterFirestore() {
+      var db = firebase.firestore();
+      var playerList = [];
+      var i = 0;
+      db.collection('players').where('inactive', '==', false)
+        .get()
+        .then(function (querySnapshot) {
+          querySnapshot.forEach(function (doc) {
+            //console.log(doc.data());
+            //console.log(typeof(doc.data()));
+            playerList.push(doc.data());
+            //console.log(i++);
+          });
+        })
+        .then(function () {
+          for (var i = 0; i < playerList.length; i++) {
+            var player = playerList[i];
+            console.log(player);
+
+            var playerRow = createPlayerRow(player);
+            playerTable.children[0].appendChild(playerRow);
+
+          }
+        })
+        .catch(function (error) {
+        });
     }
   </script>
 
-  <!-- Page Scripts--> 
+  <!-- Page Scripts-->
   <script>
     if (localStorage.getItem('Roster') == undefined) initializeRoster(0);
     setPlayerTable();
@@ -1416,31 +1380,31 @@
     localStorage.setItem('currentUser',JSON.stringify(u));*/
     hideInputTab();
     if (localStorage.getItem('currentUser') == undefined || JSON.parse(localStorage.getItem('currentUser')).type != 'Coach') {
-        document.getElementById('addPlayerButton').style.display = 'none';
+      document.getElementById('addPlayerButton').style.display = 'none';
     }
   </script>
 
-<script>
-  function previewFile(){
+  <script>
+    function previewFile() {
       var preview = document.getElementById('modalImage'); //selects the query named img
       var fullSize = document.getElementById('fullSizeImage');
-      var file    = document.getElementById('modalImageInput').files[0]; //sames as here
-      var reader  = new FileReader();
+      var file = document.getElementById('modalImageInput').files[0]; //sames as here
+      var reader = new FileReader();
 
       reader.onloadend = function () {
-          preview.src = reader.result;
-          fullSize.src = reader.result;
+        preview.src = reader.result;
+        fullSize.src = reader.result;
 
       }
 
       if (file) {
-          reader.readAsDataURL(file); //reads the data as a URL
+        reader.readAsDataURL(file); //reads the data as a URL
       } else {
-          preview.src = "";
+        preview.src = "";
       }
- }
+    }
 
- </script>
+  </script>
 
   <script>/*
     var db = firebase.firestore();

@@ -4,231 +4,254 @@
 <head>
     <title>Game Summary</title>
     <meta charset="utf-8">
+    <script src="js/firebase.js" type="text/javascript"></script>
+    <script src="js/firestore.js" type="text/javascript"></script>
+    <script>
+        // Initialize Firebase
+        //const firebase = require("firebase");
+        // Required for side-effects
+        //require("firebase/firestore");
+        var config = {
+            apiKey: "AIzaSyA4_4i286-lIif954lxXfFFMCxIdzgNeLQ",
+            authDomain: "cse134bhw-5.firebaseapp.com",
+            databaseURL: "https://cse134bhw-5.firebaseio.com",
+            projectId: "cse134bhw-5",
+            storageBucket: "cse134bhw-5.appspot.com",
+            messagingSenderId: "849104176022"
+        };
+        firebase.initializeApp(config);
+    </script>
+    <script src="js/raven.js" type="text/javascript"></script>
+    <script src="js/app.js" type="text/javascript"></script>
+    <script src="js/sw.js" type="text/javascript"></script>
+    <style>
+        html {
+            font-size: 10px;
+        }
 
-<style>
-    html {
-        font-size: 10px;
-    }
+        body {
+            text-align: center;
+            margin: 5% 5% 5% 5%;
+            font-size: 4rem;
+        }
 
-    body {
-        text-align: center;
-        margin: 5% 5% 5% 5%;
-        font-size: 4rem;
-    }
+        h2 {
+            margin-bottom: 2rem;
+            font-size: 6rem;
+        }
 
-    h2 {
-        margin-bottom: 2rem;
-        font-size: 6rem;
-    }
+        .well {
+            margin-top: 2rem;
+            min-height: 20px;
+            padding: 19px;
+            margin-bottom: 20px;
+            background-color: #f5f5f5;
+            border: 1px solid #e3e3e3;
+            border-radius: 4px;
+        }
 
-    .well {
-        margin-top: 2rem;
-        min-height: 20px;
-        padding: 19px;
-        margin-bottom: 20px;
-        background-color: #f5f5f5;
-        border: 1px solid #e3e3e3;
-        border-radius: 4px;
-    }
+        .well * {
+            font-size: 3rem;
+        }
 
-    .well * {
-        font-size: 3rem;
-    }
+        .row {
+            margin-right: -15px;
+            margin-left: -15px;
+        }
 
-    .row {
-        margin-right: -15px;
-        margin-left: -15px;
-    }
+        .row:before,
+        .row:after {
+            display: table;
+            content: " ";
+        }
 
-    .row:before,
-    .row:after {
-        display: table;
-        content: " ";
-    }
+        .row:after {
+            clear: both;
+        }
 
-    .row:after {
-        clear: both;
-    }
+        .col-xs-1,
+        .col-xs-2,
+        .col-xs-3,
+        .col-xs-4,
+        .col-xs-6 {
+            position: relative;
+            min-height: 1px;
+            float: left;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
 
-    .col-xs-1,
-    .col-xs-2,
-    .col-xs-3,
-    .col-xs-4,
-    .col-xs-6 {
-        position: relative;
-        min-height: 1px;
-        float: left;
-        padding-left: 15px;
-        padding-right: 15px;
-    }
+        .col-xs-3 {
+            width: 25%;
+        }
 
-    .col-xs-3 {
-        width: 25%;
-    }
+        .col-xs-6 {
+            width: 50%;
+        }
 
-    .col-xs-6 {
-        width: 50%;
-    }
+        .col-xs-2 {
+            width: 16.66666667%;
+        }
 
-    .col-xs-2 {
-        width: 16.66666667%;
-    }
+        .col-xs-1 {
+            width: 8.33333333%;
+        }
 
-    .col-xs-1 {
-        width: 8.33333333%;
-    }
+        .col-xs-4 {
+            width: 33.33333333%;
+        }
 
-    .col-xs-4 {
-        width: 33.33333333%;
-    }
+        .btn {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 1.42857143;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            position: relative;
+        }
 
-    .btn {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: inline-block;
-        padding: 6px 12px;
-        margin-bottom: 0;
-        font-size: 14px;
-        font-weight: normal;
-        line-height: 1.42857143;
-        text-align: center;
-        white-space: nowrap;
-        vertical-align: middle;
-        border: 1px solid transparent;
-        border-radius: 4px;
-        position: relative;
-    }
+        .btn-success {
+            color: #fff;
+            background-color: #5cb85c;
+            border-color: #4cae4c;
+        }
 
-    .btn-success {
-        color: #fff;
-        background-color: #5cb85c;
-        border-color: #4cae4c;
-    }
+        .btn-info {
+            color: #fff;
+            background-color: #5bc0de;
+            border-color: #46b8da;
+        }
 
-    .btn-info {
-        color: #fff;
-        background-color: #5bc0de;
-        border-color: #46b8da;
-    }
+        .btn-primary {
+            color: #fff;
+            background-color: #337ab7;
+            border-color: #2e6da4;
+        }
 
-    .btn-primary {
-        color: #fff;
-        background-color: #337ab7;
-        border-color: #2e6da4;
-    }
+        * {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
 
-    * {
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        box-sizing: border-box;
-    }
+        *:before,
+        *:after {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
 
-    *:before,
-    *:after {
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        box-sizing: border-box;
-    }
+        ul li {
+            width: 50%;
+        }
 
-    ul li {
-        width: 50%;
-    }
+        div p {
+            font-size: 2.5rem;
+        }
 
-    div p {
-        font-size: 2.5rem;
-    }
+        p {
+            orphans: 3;
+            widows: 3;
+            margin: 0 0 10px;
+        }
 
-    p {
-        orphans: 3;
-        widows: 3;
-        margin: 0 0 10px;
-    }
+        .teaminfo p:nth-child(1) {
+            margin-bottom: 5rem;
+        }
 
-    .teaminfo p:nth-child(1) {
-        margin-bottom: 5rem;
-    }
+        .gameinfo p {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
 
-    .gameinfo p {
-        margin-top: 1rem;
-        margin-bottom: 1rem;
-    }
+        .score {
+            font-weight: 800;
+        }
 
-    .score {
-        font-weight: 800;
-    }
+        .score p {
+            margin-top: 6rem;
+        }
 
-    .score p {
-        margin-top: 6rem;
-    }
+        h3 {
+            overflow: hidden;
+            text-align: center;
+            font-size: 4rem;
+            margin-bottom: 2rem;
+        }
 
-    h3 {
-        overflow: hidden;
-        text-align: center;
-        font-size: 4rem;
-        margin-bottom: 2rem;
-    }
+        h3:before,
+        h3:after {
+            background-color: #000;
+            content: "";
+            display: inline-block;
+            height: 1px;
+            position: relative;
+            vertical-align: middle;
+            width: 50%;
+        }
 
-    h3:before,
-    h3:after {
-        background-color: #000;
-        content: "";
-        display: inline-block;
-        height: 1px;
-        position: relative;
-        vertical-align: middle;
-        width: 50%;
-    }
+        h3:before {
+            right: 0.5em;
+            margin-left: -50%;
+        }
 
-    h3:before {
-        right: 0.5em;
-        margin-left: -50%;
-    }
+        h3:after {
+            left: 0.5em;
+            margin-right: -50%;
+        }
 
-    h3:after {
-        left: 0.5em;
-        margin-right: -50%;
-    }
+        .matchInfo {
+            margin-bottom: 3rem;
+        }
 
-    .matchInfo {
-        margin-bottom: 3rem;
-    }
+        .stat {
+            background-color: rgb(0, 20, 56);
+            color: #FFF;
+        }
 
-    .stat {
-        background-color: rgb(0, 20, 56);
-        color: #FFF;
-    }
+        .statValue {
+            background-color: rgb(242, 242, 242);
+        }
 
-    .statValue {
-        background-color: rgb(242, 242, 242);
-    }
+        input {
+            height: 4.7rem;
+            text-align: center;
+            font-size: 3rem;
+        }
 
-    input {
-        height: 4.7rem;
-        text-align: center;
-        font-size: 3rem;
-    }
+        #editButton {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 2.5rem;
+            line-height: 4rem;
+            vertical-align: middle;
+            width: 15%;
+            margin-right: 5%;
+            margin-top: 5.5%;
+        }
 
-    #editButton {
-        position: absolute;
-        top: 0;
-        right: 0;
-        font-size: 2.5rem;
-        line-height: 4rem;
-        vertical-align: middle;
-        width: 15%;
-        margin-right: 5%;
-        margin-top: 5.5%;
-    }
-
-    #exitButton {
-        margin-top: 2.5rem;
-        font-size: 4rem;
-        width: 100%;
-    }
-</style>
+        #exitButton {
+            margin-top: 2.5rem;
+            font-size: 4rem;
+            width: 100%;
+        }
+    </style>
 </head>
+
 <body>
     <h2>Game Stats</h2>
+    <div id="gameAbout">
+        <p>Loading Game Information...</p>
+    </div>
     <template id="gameMetaInfo">
         <p>
             <span id="gameDate"></span> @
@@ -246,7 +269,7 @@
                 <p></p>
             </div>
             <div class="col-xs-2 gameinfo">
-                <p>90:00</p>
+                <p>Time</p>
                 <p>-</p>
             </div>
             <div class="col-xs-1 score">
@@ -297,7 +320,7 @@
             <input type="number" class="col-xs-3 statValue" name="oppSaves" id="oppSaves" required disabled min="0">
         </div>
         <div class="row matchInfo fouls">
-            <input type="number" class="col-xs-3 statValue" name="ownFouls" id="ownFouls" required disabled min="0"> 
+            <input type="number" class="col-xs-3 statValue" name="ownFouls" id="ownFouls" required disabled min="0">
             <div class="col-xs-6 stat">Fouls</div>
             <input type="number" class="col-xs-3 statValue" name="oppFouls" id="oppFouls" required disabled min="0">
         </div>
@@ -311,12 +334,24 @@
             <div class="col-xs-6 stat">Red Cards</div>
             <input type="number" class="col-xs-3 statValue" name="oppRCards" id="oppRCards" required disabled min="0">
         </div>
-        <button type="button" class="btn btn-info" id="editButton" onclick="enableEditing()">Edit Stats</button>        
+        <button type="button" class="btn btn-info" id="editButton" onclick="enableEditing()">Edit Stats</button>
     </form>
     <button type="button" class="btn btn-primary" id="exitButton" onclick="history.back()">Exit Game Stats</button>
     <script>
+        var db = firebase.firestore();
         checkUserType();
-        populatePage();
+        if (localStorage.getItem('selectedGame') == undefined) {
+            alert('The game is no longer available for view. Returning back to previous page');
+            history.back();
+        }
+        else {
+            var selectedGame = JSON.parse(localStorage.getItem('selectedGame'));
+            db.collection(selectedGame.listOrigin).doc(selectedGame.id).onSnapshot(function() {
+                populatePage();
+            }, function(error) {
+                console.error('Selected game does not exist');
+            });
+        }
 
         function checkUserType() {
             var currUser = localStorage.getItem('currentUser');
@@ -326,78 +361,82 @@
         }
 
         function populatePage() {
-            var selectedGame = localStorage.getItem('selectedGame');
-            if (selectedGame == undefined) {
+            var viewedGame = localStorage.getItem('selectedGame');
+            if (viewedGame == undefined) {
+                alert('The game is no longer available for view');
                 return 0;
             }
-            selectedGame = JSON.parse(selectedGame);
-            var metaTemplate = document.querySelector('#gameMetaInfo');
-            var metaContent = metaTemplate.content;
-            var metaInfo = metaContent.querySelectorAll('span');
-            metaInfo[0].textContent = selectedGame.date;
-            metaInfo[1].textContent = selectedGame.location;
+            viewedGame = JSON.parse(viewedGame);
+            var aboutContainer = document.querySelector('#gameAbout');
+            aboutContainer.innerHTML = '';
+            db.collection(viewedGame.listOrigin).doc(viewedGame.id).get().then(function (doc) {
+                var selectedGame = doc.data();
+                var metaTemplate = document.querySelector('#gameMetaInfo');
+                var metaContent = metaTemplate.content;
+                var metaInfo = metaContent.querySelectorAll('span');
+                metaInfo[0].textContent = selectedGame.date;
+                metaInfo[1].textContent = selectedGame.location;
 
-            var metaInfoClone = document.importNode(metaContent, true);
+                var metaInfoClone = document.importNode(metaContent, true);
 
-            var infoTemplate = document.querySelector('#gameInfoTemplate');
-            var infoContent = infoTemplate.content;
-            var status = infoContent.querySelectorAll('.locationStatus');
-            status[0].textContent = selectedGame.status;
-            var oppStatus = (selectedGame.status == 'Home') ? 'Away' : 'Home';
-            status[1].textContent = oppStatus;
+                var infoTemplate = document.querySelector('#gameInfoTemplate');
+                var infoContent = infoTemplate.content;
+                var status = infoContent.querySelectorAll('.locationStatus');
+                status[0].textContent = selectedGame.status;
+                var oppStatus = (selectedGame.status == 'Home') ? 'Away' : 'Home';
+                status[1].textContent = oppStatus;
 
-            infoContent.querySelector('#opponentName').textContent = selectedGame.opponent;
-            var scores = infoContent.querySelectorAll('.score p'); 
-            scores[0].textContent = selectedGame.gameStats.goals;
-            scores[1].textContent = selectedGame.gameStats.oppGoals;
+                infoContent.querySelector('#opponentName').textContent = selectedGame.opponent;
+                var scores = infoContent.querySelectorAll('.score p');
+                scores[0].textContent = selectedGame.gameStats.goals;
+                scores[1].textContent = selectedGame.gameStats.oppGoals;
 
-            var infoClone = document.importNode(infoContent, true);
+                var infoClone = document.importNode(infoContent, true);
 
-            var goals = document.querySelectorAll('.goals input');
-            goals[0].value = selectedGame.gameStats.goals;
-            goals[1].value = selectedGame.gameStats.oppGoals;
+                var goals = document.querySelectorAll('.goals input');
+                goals[0].value = selectedGame.gameStats.goals;
+                goals[1].value = selectedGame.gameStats.oppGoals;
 
-            var goalKicks = document.querySelectorAll('.goalKicks input');
-            goalKicks[0].value = selectedGame.gameStats.goalKicks;
-            goalKicks[1].value = selectedGame.gameStats.oppGoalKicks;
+                var goalKicks = document.querySelectorAll('.goalKicks input');
+                goalKicks[0].value = selectedGame.gameStats.goalKicks;
+                goalKicks[1].value = selectedGame.gameStats.oppGoalKicks;
 
-            var penaltyKicks = document.querySelectorAll('.penaltyKicks input');
-            penaltyKicks[0].value = selectedGame.gameStats.penaltyKicks;
-            penaltyKicks[1].value = selectedGame.gameStats.oppPenaltyKicks;
+                var penaltyKicks = document.querySelectorAll('.penaltyKicks input');
+                penaltyKicks[0].value = selectedGame.gameStats.penaltyKicks;
+                penaltyKicks[1].value = selectedGame.gameStats.oppPenaltyKicks;
 
-            var cornerKicks = document.querySelectorAll('.cornerKicks input');
-            cornerKicks[0].value = selectedGame.gameStats.cornerKicks;
-            cornerKicks[1].value = selectedGame.gameStats.oppCornerKicks;
+                var cornerKicks = document.querySelectorAll('.cornerKicks input');
+                cornerKicks[0].value = selectedGame.gameStats.cornerKicks;
+                cornerKicks[1].value = selectedGame.gameStats.oppCornerKicks;
 
-            var possTime = document.querySelectorAll('.possTime input');
-            possTime[0].value = selectedGame.gameStats.possTime;
-            possTime[1].value = selectedGame.gameStats.oppPossTime;
+                var possTime = document.querySelectorAll('.possTime input');
+                possTime[0].value = selectedGame.gameStats.possTime;
+                possTime[1].value = selectedGame.gameStats.oppPossTime;
 
-            var steals = document.querySelectorAll('.steals input');
-            steals[0].value = selectedGame.gameStats.steals;
-            steals[1].value = selectedGame.gameStats.oppSteals;
+                var steals = document.querySelectorAll('.steals input');
+                steals[0].value = selectedGame.gameStats.steals;
+                steals[1].value = selectedGame.gameStats.oppSteals;
 
-            var saves = document.querySelectorAll('.saves input');
-            saves[0].value = selectedGame.gameStats.saves;
-            saves[1].value = selectedGame.gameStats.oppSaves;
+                var saves = document.querySelectorAll('.saves input');
+                saves[0].value = selectedGame.gameStats.saves;
+                saves[1].value = selectedGame.gameStats.oppSaves;
 
-            var fouls = document.querySelectorAll('.fouls input');
-            fouls[0].value = selectedGame.gameStats.fouls;
-            fouls[1].value = selectedGame.gameStats.oppFouls;
+                var fouls = document.querySelectorAll('.fouls input');
+                fouls[0].value = selectedGame.gameStats.fouls;
+                fouls[1].value = selectedGame.gameStats.oppFouls;
 
-            var yellowCards = document.querySelectorAll('.yCards input');
-            yellowCards[0].value = selectedGame.gameStats.yCards;
-            yellowCards[1].value = selectedGame.gameStats.oppYCards;
+                var yellowCards = document.querySelectorAll('.yCards input');
+                yellowCards[0].value = selectedGame.gameStats.yCards;
+                yellowCards[1].value = selectedGame.gameStats.oppYCards;
 
-            var redCards = document.querySelectorAll('.rCards input');
-            redCards[0].value = selectedGame.gameStats.rCards;
-            redCards[1].value = selectedGame.gameStats.oppRCards;
+                var redCards = document.querySelectorAll('.rCards input');
+                redCards[0].value = selectedGame.gameStats.rCards;
+                redCards[1].value = selectedGame.gameStats.oppRCards;
 
 
-            var statsHeader = document.querySelector('h3');
-            var mainBody = document.querySelector('body');
-            mainBody.insertBefore(metaInfoClone, statsHeader);
-            mainBody.insertBefore(infoClone, statsHeader);
+                aboutContainer.appendChild(metaInfoClone);
+                aboutContainer.appendChild(infoClone);
+            })
         }
 
         function updateGame() {
@@ -413,98 +452,118 @@
                     var event = upcomingEventList[index];
                     if (event.type == 'Game' && event.date == selectedGame.date && event.time == selectedGame.time && event.location == selectedGame.location &&
                         event.opponent == selectedGame.opponent && event.status == selectedGame.status) {
-                            event.gameStats = selectedGame.gameStats;
-                            upcomingEventList[index] = event;
-                            localStorage.setItem('upcomingList', JSON.stringify(upcomingEventList));
-                            return 0;
-                        }
+                        event.gameStats = selectedGame.gameStats;
+                        upcomingEventList[index] = event;
+                        localStorage.setItem('upcomingList', JSON.stringify(upcomingEventList));
+                        return 0;
+                    }
                 }
             }
-            
+
             for (var index = 0; index < previousEventList.length; index++) {
                 var event = previousEventList[index];
                 if (event.type == 'Game' && event.date == selectedGame.date && event.time == selectedGame.time && event.location == selectedGame.location &&
                     event.opponent == selectedGame.opponent && event.status == selectedGame.status) {
-                        event.gameStats = selectedGame.gameStats;
-                        previousEventList[index] = event;
-                        localStorage.setItem('previousList', JSON.stringify(previousEventList));
-                        return 0;
-                    }
+                    event.gameStats = selectedGame.gameStats;
+                    previousEventList[index] = event;
+                    localStorage.setItem('previousList', JSON.stringify(previousEventList));
+                    return 0;
+                }
             }
             return 0;
         }
 
         function saveStats() {
+            var inputtedStats = {};
+
+            var goals = document.querySelectorAll('.goals input');
+            inputtedStats.goals = goals[0].value;
+            inputtedStats.oppGoals = goals[1].value;
+
+            var goalKicks = document.querySelectorAll('.goalKicks input');
+            inputtedStats.goalKicks = goalKicks[0].value;
+            inputtedStats.oppGoalKicks = goalKicks[1].value;
+
+            var penaltyKicks = document.querySelectorAll('.penaltyKicks input');
+            inputtedStats.penaltyKicks = penaltyKicks[0].value;
+            inputtedStats.oppPenaltyKicks = penaltyKicks[1].value;
+
+            var cornerKicks = document.querySelectorAll('.cornerKicks input');
+            inputtedStats.cornerKicks = cornerKicks[0].value;
+            inputtedStats.oppCornerKicks = cornerKicks[1].value;
+
+            var possTime = document.querySelectorAll('.possTime input');
+            if (parseInt(possTime[0].value) + parseInt(possTime[1].value) == 100) {
+                inputtedStats.possTime = possTime[0].value;
+                inputtedStats.oppPossTime = possTime[1].value;
+            }
+
+            var steals = document.querySelectorAll('.steals input');
+            inputtedStats.steals = steals[0].value;
+            inputtedStats.oppSteals = steals[1].value;
+
+            var saves = document.querySelectorAll('.saves input');
+            inputtedStats.saves = saves[0].value;
+            inputtedStats.oppSaves = saves[1].value;
+
+            var fouls = document.querySelectorAll('.fouls input');
+            inputtedStats.fouls = fouls[0].value;
+            inputtedStats.oppFouls = fouls[1].value;
+
+            var yellowCards = document.querySelectorAll('.yCards input');
+            inputtedStats.yCards = yellowCards[0].value;
+            inputtedStats.oppYCards = yellowCards[1].value;
+
+            var redCards = document.querySelectorAll('.rCards input');
+            inputtedStats.rCards = redCards[0].value;
+            inputtedStats.oppRCards = redCards[1].value;
+
             var selectedGame = localStorage.getItem('selectedGame');
             if (selectedGame == undefined) {
                 return 0;
             }
             selectedGame = JSON.parse(selectedGame);
 
-            var goals = document.querySelectorAll('.goals input');
-            selectedGame.gameStats.goals = goals[0].value;
-            selectedGame.gameStats.oppGoals = goals[1].value;
+            var listRef = selectedGame.listOrigin;
+            var gameId = selectedGame.id;
 
-            var goalKicks = document.querySelectorAll('.goalKicks input');
-            selectedGame.gameStats.goalKicks = goalKicks[0].value;
-            selectedGame.gameStats.oppGoalKicks = goalKicks[1].value;
-
-            var penaltyKicks = document.querySelectorAll('.penaltyKicks input');
-            selectedGame.gameStats.penaltyKicks = penaltyKicks[0].value;
-            selectedGame.gameStats.oppPenaltyKicks = penaltyKicks[1].value;
-
-            var cornerKicks = document.querySelectorAll('.cornerKicks input');
-            selectedGame.gameStats.cornerKicks = cornerKicks[0].value;
-            selectedGame.gameStats.oppCornerKicks = cornerKicks[1].value;
-
-            var possTime = document.querySelectorAll('.possTime input');
-            if (parseInt(possTime[0].value) + parseInt(possTime[1].value) == 100) {
-                selectedGame.gameStats.possTime = possTime[0].value;
-                selectedGame.gameStats.oppPossTime = possTime[1].value;
-            }
-
-            var steals = document.querySelectorAll('.steals input');
-            selectedGame.gameStats.steals = steals[0].value;
-            selectedGame.gameStats.oppSteals = steals[1].value;
-
-            var saves = document.querySelectorAll('.saves input');
-            selectedGame.gameStats.saves = saves[0].value;
-            selectedGame.gameStats.oppSaves = saves[1].value;
-
-            var fouls = document.querySelectorAll('.fouls input');
-            selectedGame.gameStats.fouls = fouls[0].value;
-            selectedGame.gameStats.oppFouls = fouls[1].value;
-
-            var yellowCards = document.querySelectorAll('.yCards input');
-            selectedGame.gameStats.yCards = yellowCards[0].value;
-            selectedGame.gameStats.oppYCards = yellowCards[1].value;
-
-            var redCards = document.querySelectorAll('.rCards input');
-            selectedGame.gameStats.rCards = redCards[0].value;
-            selectedGame.gameStats.oppRCards = redCards[1].value;
-
-            localStorage.setItem('selectedGame', JSON.stringify(selectedGame));
+            db.collection(listRef).doc(gameId).set({
+                gameStats: inputtedStats
+            }, { merge: true }).then(function () {
+                console.log("Stats successfully written!");
+            })
+                .catch(function (error) {
+                    console.error("Error updating stats: ", error);
+                });
 
         }
 
         function enableEditing() {
             var editBtn = document.getElementById('editButton');
-            if (editBtn.innerHTML == 'Edit Stats') {
+            if (editBtn.innerText == 'Edit Stats') {
                 var stats = document.querySelectorAll('.statValue');
                 for (var i = 0; i < stats.length; i++) {
                     stats[i].disabled = false;
                 }
-                
+
                 var saveBtnStyle = editBtn.getAttribute('class').replace('btn-info', 'btn-success');
                 editBtn.setAttribute('class', saveBtnStyle);
-                editBtn.innerHTML = 'Save';
+                editBtn.innerText = 'Save';
             }
-            else if (editBtn.innerHTML == 'Save') {
+            else if (editBtn.innerText == 'Save') {
                 editBtn.type = 'submit';
-                document.querySelector('#gameStatsForm').onsubmit = function() {
+                document.querySelector('#gameStatsForm').onsubmit = function () {
                     saveStats();
-                    updateGame();
+                    return false;
+                    //updateGame();
                 };
+                var stats = document.querySelectorAll('.statValue');
+                for (var i = 0; i < stats.length; i++) {
+                    stats[i].disabled = true;
+                }
+                var editBtnStyle = editBtn.getAttribute('class').replace('btn-success', 'btn-info');
+                editBtn.setAttribute('class', editBtnStyle);
+                editBtn.innerText = 'Edit Stats';
             }
             else {
                 return 0;

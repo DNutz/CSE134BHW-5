@@ -1270,11 +1270,12 @@
     function getBase64Image(img, imgName) {
 
       var canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-
+      canvas.width = 250; // destination size
+      canvas.height = canvas.width * img.height / img.width;
       var ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0);
+      
+      resizeImage(canvas, ctx, img, canvas.width);
+
       var extension = imgName.substring(imgName.lastIndexOf('.'));
 
       var validFileType = '.jpg , .png , .bmp , .svg';
@@ -1293,24 +1294,25 @@
       return dataURL;
     }
 
-    function resizeImage(img) {
-       // set size proportional to image
-    canvas.height = canvas.width * (img.height / img.width);
+    function resizeImage(canvas, context, img, destWidth) {
+ 
+      // step 1 - resize to 50%
+      var otherCanvas = document.createElement('canvas');
+      var otherCtx = otherCanvas.getContext('2d');
 
-    // step 1 - resize to 50%
-    var oc = document.createElement('canvas');
-    var octx = oc.getContext('2d');
+      otherCanvas.width = img.width ;
+      otherCanvas.height = img.height;
+      otherCtx.drawImage(img, 0, 0);
 
-    oc.width = img.width * 0.5;
-    oc.height = img.height * 0.5;
-    octx.drawImage(img, 0, 0, oc.width, oc.height);
-
-    // step 2
-    octx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5);
+      // step 2
+      while (otherCanvas.width * 0.5 > destWidth) {
+        otherCanvas.width *= 0.5;
+        otherCanvas.height *= 0.5;
+        otherCtx.drawImage(otherCanvas, 0, 0, otherCanvas.width, otherCanvas.height);
+      }
 
     // step 3, resize to final size
-    ctx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5,
-    0, 0, canvas.width, canvas.height);
+    context.drawImage(img, 0, 0, otherCanvas.width, otherCanvas.height);
     }
 
     function createPlayerRowNoImg(player) {

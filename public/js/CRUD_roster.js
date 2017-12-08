@@ -56,6 +56,34 @@ function getRoster() {
     return JSON.parse(localStorage.getItem('Roster'));
 }
 
+function getRosterFirestore() {
+    var db = firebase.firestore();
+    var playerList = [];
+    var i = 0;
+    db.collection('players').where('inactive', '==', false)
+    .get()
+    .then(function(querySnapshot) {
+        querySnapshot.forEach(function(doc) {
+            //console.log(doc.data());
+            //console.log(typeof(doc.data()));
+            playerList.push(doc.data());
+            //console.log(i++);
+        });
+    })
+    .then(function() {
+        console.log(playerList);
+        for (var i = 0; i < roster.length; i++) {
+            var player = roster[i];
+    
+            var playerRow = createPlayerRow(player);
+            playerTable.children[0].appendChild(playerRow);
+            
+          }        
+    })
+    .catch(function(error) {
+    });
+}
+
 function createUniqueID() {
     return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)

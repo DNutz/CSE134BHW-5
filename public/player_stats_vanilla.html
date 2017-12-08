@@ -939,6 +939,21 @@
     }).catch(function (error) {
       console.log("Error getting document:", error);
     });
+    db.collection("players").doc(id).onSnapshot(function(doc) {
+        console.log("Current data: ", doc && doc.data());
+        var player = doc.data();
+        document.getElementById('statsPlayerName').innerText = player.name;
+        document.getElementById('statsPlayerFouls').innerText = player.stats.fouls;
+        document.getElementById('statsPlayerRcards').innerText = player.stats.redCards;
+        document.getElementById('statsPlayerYcards').innerText = player.stats.yellowCards;
+        document.getElementById('statsPlayerSOG').innerText = player.stats.shotsOnGoal;
+        document.getElementById('statsPlayerGoals').innerText = player.stats.goals;
+        document.getElementById('statsPlayerCkicks').innerText = player.stats.cKicks;
+        document.getElementById('statsPlayerPkicks').innerText = player.stats.pKicks;
+        document.getElementById('statsPlayerTins').innerText = player.stats.tIns;
+        document.getElementById('statsPlayerAppearances').innerText = player.stats.appearances;
+        document.getElementById('playerPic').setAttribute('src', player.img);
+    });
   </script>
 </body>
 

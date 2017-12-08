@@ -177,6 +177,10 @@
             text-align: right;
         }
 
+        main > p {
+            margin-top: 2rem;
+        }
+
         input,
         select {
             height: 8rem;
@@ -436,7 +440,9 @@
     <div id="schedule_addButton" class="row">
         <button type="button" id="addEvent" class="btn btn-success" onclick="displayAddEvent()">Add Event</button>
     </div>
-    <main></main>
+    <main>
+        <p>Loading Events...</p>
+    </main>
     <template id="gameTemplate">
         <div class="well row" onclick="viewGame(this.getAttribute('data-id'), 'upcomingEvents')">
             <div class="col-xs-3 teamInfo">

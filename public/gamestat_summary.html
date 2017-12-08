@@ -249,7 +249,9 @@
 
 <body>
     <h2>Game Stats</h2>
-    <div id="gameAbout"></div>
+    <div id="gameAbout">
+        <p>Loading Game Information...</p>
+    </div>
     <template id="gameMetaInfo">
         <p>
             <span id="gameDate"></span> @
@@ -561,7 +563,7 @@
                 }
                 var editBtnStyle = editBtn.getAttribute('class').replace('btn-success', 'btn-info');
                 editBtn.setAttribute('class', editBtnStyle);
-                editBtn.innerText = 'Edit';
+                editBtn.innerText = 'Edit Stats';
             }
             else {
                 return 0;

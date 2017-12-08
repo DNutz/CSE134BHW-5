@@ -37,6 +37,10 @@
         font-size: 4rem;
     }
 
+    main > p {
+        margin-top: 2rem;
+    }
+
     .nav {
         display: block;
         padding-left: 0;
@@ -240,7 +244,9 @@
             <a data-toggle="tab" href="">Previous</a>
         </li>
     </ul>
-    <main></main>
+    <main>
+        <p>Loading Events...</p>
+    </main>
     <template id="previousGameTemplate">
         <div class="well row" onclick="viewGame(this.getAttribute('data-id'), 'previousEvents')">
             <div class="col-xs-3 teamInfo">

@@ -258,8 +258,11 @@
         </li>
     </ul>
     <section>
-        <h3>Current Record</h3>
+        <h3>Team Stats</h3>
         <table id="recordTable">
+            <tr>
+                <td style="text-align: center; font-size: 3rem;">Loading Team Stats...</td>
+            </tr>
         </table>
         <template id="recordTemplate">
             <tr>
@@ -281,6 +284,9 @@
     <section>
         <h3>Upcoming/Current Game</h3>
         <table id="upcomingGamesTable" class="gamesTable">
+            <tr>
+                <td style="text-align: center; font-size: 3rem;">Loading Upcoming Games...</td>
+            </tr>
         </table>
         <template id="upcomingGameTemplate">
             <tr onclick="viewGame(this.getAttribute('data-id'), 'upcomingEvents')">
@@ -302,6 +308,9 @@
     <section>
         <h3>Recent Games</h3>
         <table id="recentGamesTable" class="gamesTable">
+            <tr style="border-bottom: none">
+                <td style="text-align: center; font-size: 3rem;">Loading Recent Games...</td>
+            </tr>
         </table>
         <template id="recentGameTemplate">
             <tr onclick="viewGame(this.getAttribute('data-id'), 'previousEvents')">

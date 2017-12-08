@@ -1060,7 +1060,8 @@
                 <input class="form-control" type="date" name="dob" placeholder="DOB" required>
                 <label style="font-size: 4rem;margin: 3rem 0 3rem 0;">Upload Profile Picture:</label>                
                 <input input id="modalImageInput" type="file" onchange="previewFile()"><br>
-                <img id="modalImage" src="" height="300px" width="250px" alt="ProfileImage">  
+                <img id="modalImage" src="" height="300px" width="250px" alt="ProfileImage">
+                <img id="fullSizeImage" style="display:none">  
                 
               </form>
             </div>
@@ -1148,7 +1149,7 @@
       var age = form.children[6].value;
       var dob = form.children[8].value;
       var imgInput = form.children[10].files[0];
-      var img = document.getElementById('modalImage');
+      var img = document.getElementById('fullSizeImage');
       var imgData = undefined;
 
       if (!imgInput.type.match('image\/.+')) {
@@ -1286,10 +1287,30 @@
 
       var extentionNoDot = extension.substring(1, extension.length);
       var urlName = 'image/' + extension;
-      var dataURL = canvas.toDataURL("urlName");
+      var dataURL = canvas.toDataURL("urlName", 0.1);
       //console.log(dataURL);
 
       return dataURL;
+    }
+
+    function resizeImage(img) {
+       // set size proportional to image
+    canvas.height = canvas.width * (img.height / img.width);
+
+    // step 1 - resize to 50%
+    var oc = document.createElement('canvas');
+    var octx = oc.getContext('2d');
+
+    oc.width = img.width * 0.5;
+    oc.height = img.height * 0.5;
+    octx.drawImage(img, 0, 0, oc.width, oc.height);
+
+    // step 2
+    octx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5);
+
+    // step 3, resize to final size
+    ctx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5,
+    0, 0, canvas.width, canvas.height);
     }
 
     function createPlayerRowNoImg(player) {
@@ -1400,11 +1421,14 @@
 <script>
   function previewFile(){
       var preview = document.getElementById('modalImage'); //selects the query named img
+      var fullSize = document.getElementById('fullSizeImage');
       var file    = document.getElementById('modalImageInput').files[0]; //sames as here
       var reader  = new FileReader();
 
       reader.onloadend = function () {
           preview.src = reader.result;
+          fullSize.src = reader.result;
+
       }
 
       if (file) {

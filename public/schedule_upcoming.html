@@ -4,7 +4,20 @@
 <head>
     <title>Current/Upcoming Games</title>
     <meta charset="utf-8">
-    <script src="/js/schedule.js" type="text/javascript"></script>
+    <script src="/js/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyA4_4i286-lIif954lxXfFFMCxIdzgNeLQ",
+            authDomain: "cse134bhw-5.firebaseapp.com",
+            databaseURL: "https://cse134bhw-5.firebaseio.com",
+            projectId: "cse134bhw-5",
+            storageBucket: "cse134bhw-5.appspot.com",
+            messagingSenderId: "849104176022"
+        };
+        firebase.initializeApp(config);
+    </script>
+    <script src="./js/schedule.js" type="text/javascript"></script>
 <style>
     html {
         font-size: 10px;
@@ -546,6 +559,12 @@
         </div>
     </div>
     <script>
+        /*var dbTest = firebase.database().ref('/something').once('value').then(function(snapshot) {
+            console.log('Something: ' + snapshot.val());
+        });*/
+    </script>
+    <script>
+        var database = firebase.database();
         checkUserType();
         showSchedule();
         function checkUserType() {
@@ -828,7 +847,7 @@
             objEvent['location'] = location;
             objEvent['valid'] = '1';
             objEvent['dateVal'] = eventForm.querySelector('#addEvent_date').value;
-            if (checkDateLater(date, timeString)) {
+            if (checkDateLater(date, timeString)) {/*
                 var upcomingEventList = localStorage.getItem('upcomingList');
                 if (upcomingEventList == undefined) {
                     upcomingEventList = [];
@@ -841,7 +860,13 @@
                     return 0;
                 }
                 upcomingEventList.push(objEvent);
-                localStorage.setItem('upcomingList', JSON.stringify(upcomingEventList));
+                localStorage.setItem('upcomingList', JSON.stringify(upcomingEventList));*/
+                var rootRef = firebase.database().ref();
+                var upcomingEventList = rootRef.child('upcomingEvents');
+                var upcomingList = upcomingEventList.push();
+                upcomingList.set(objEvent);
+                //alert(rootRef);
+                //rootRef.update({something:"there"});
             }
             else {
                 var previousEventList = localStorage.getItem('previousList');

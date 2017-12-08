@@ -79,20 +79,9 @@
         <label for="create_email">Email-Address:</label>
         <input type="email" name="create_email" id="create_email" minlength="1" required>
         <label for="create_password">Password:</label>
-        <input type="password" name="create_password" id="create_password" onchange="checkPasswords()" minlength="1" required>
+        <input type="password" name="create_password" id="create_password" minlength="1" required>
         <label for="create_confirmPassword">Confirm Password:</label>
-        <input type="password" name="create_confirmPassword" id="create_confirmPassword" onchange="checkPasswords()" minlength="1" required>
-        <label for="create_securityQuestion">Security Question</label>
-        <select id="create_securityQuestion" name="create_securityQuestion" form="create_account_form" class="dropdown">
-            <option value="0" selected disabled>--Select a Security Question--</option>
-            <option value="1">What is your mother's maiden name?</option>
-            <option value="2">Where were you born?</option>
-            <option value="3">Who is your favorite soccer player?</option>
-            <option value="4">What is the name of your first pet?</option>
-            <option value="5">What is your first car?</option>
-        </select>
-        <label for="create_answer">Answer:</label>
-        <input type="text" name="create_answer" id="create_answer" minlength="1" required>
+        <input type="password" name="create_confirmPassword" id="create_confirmPassword" minlength="1" required>
         <label for="create_userType">User Type:</label>
         <select id="create_userType" name="create_userType" form="create_account_form" class="dropdown">
             <option value="0" selected disabled>What Kind of User Are You?</option>
@@ -101,69 +90,70 @@
             <option value="3">Fan</option>
         </select>
     </form>
-    <button id="create_start" name="create_start" type="button" form="create_account_form" class="btn btn-success" onclick="createUser()">Start</button>
-    <script>
-        function checkPasswords() {
-            var password = document.getElementById('create_password');
-            var confirm_password = document.getElementById('create_confirmPassword');
-            if (password.value != confirm_password.value) {
-                confirm_password.setCustomValidity("Passwords do not match!");
-            }
-            else {
-                confirm_password.setCustomValidity("");
-            }
-        }
+    <!--<button id="create_start" name="create_start" type="button" form="create_account_form" class="btn btn-success" onclick="createUser()">Start</button>-->
+    <button id="create_start" type="button" class="btn btn-success" onclick="fireCreate()">Start</button>
 
-        function createUser() {
-            //TODO: add check to see if local storage is available
-            //TODO: check if user has inputted correct stuff in form
-            //properties of user: email, password, type, security question, security answer
+    <script src="/js/firebase.js"></script>
+    <script src="js/firestore.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyA4_4i286-lIif954lxXfFFMCxIdzgNeLQ",
+            authDomain: "cse134bhw-5.firebaseapp.com",
+            databaseURL: "https://cse134bhw-5.firebaseio.com",
+            projectId: "cse134bhw-5",
+            storageBucket: "cse134bhw-5.appspot.com",
+            messagingSenderId: "849104176022"
+        };
+        firebase.initializeApp(config);
+    </script>
+    <script>
+        function fireCreate(){
+            var email = document.getElementById('create_email').value;
             var password = document.getElementById('create_password').value;
             var confirm_password = document.getElementById('create_confirmPassword').value;
+            var userType = document.getElementById('create_userType');
             if (password != confirm_password) {
                 alert("Password and Confirm Password must match");
                 return 0;
             }
-
-            var securityQ = document.getElementById('create_securityQuestion');
-            if (securityQ.options[securityQ.selectedIndex].value == '0') {
-                alert("You must select a security question");
-                return 0;
-            }
-
-            var userType = document.getElementById('create_userType');
             if (userType.options[userType.selectedIndex].value == '0') {
-                alert("You must select a user type");
+                alert("Error: You must select a user type");
                 return 0;
             }
-            
-            var users = [];
-            var backUserList = localStorage.getItem('userList');
-            if (backUserList != undefined) {
-                users = JSON.parse(backUserList);
+            firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                console.log("Error: code("+errorCode+") "+errorMessage);
+                alert("Error: code("+errorCode+") "+errorMessage);
+            });
+            firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                user.sendEmailVerification().then(function() {
+                    var db = firebase.firestore();
+                    db.collection("users").add({
+                        email: email,
+                        type: userType.options[userType.selectedIndex].text
+                    })
+                    .then(function(docRef) {
+                        console.log("Document written with ID: ", docRef.id);
+                        location.href = ("homepage.html");
+                    })
+                    .catch(function(error) {
+                        console.error("Error adding document: ", error);
+                        alert("Error adding document: "+ error);
+                    });
+                }).catch(function(error) {
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    console.log("Error: code("+errorCode+") "+errorMessage);
+                    alert("Error: code("+errorCode+") "+errorMessage);
+                    });
+            } else {
+                // No user is signed in.
             }
-            var emailAddr = document.getElementById('create_email').value;
-
-            //check for duplicate emails
-            for (var index = 0; index < users.length; index++) {
-                if (users[index].email == emailAddr) {
-                    alert('Account with the same email address already exists');
-                    return 0;
-                }
-            }
-
-            var createUser = {};
-            
-            createUser['email'] = emailAddr;
-            createUser['password'] = confirm_password;
-            createUser['question'] = securityQ.options[securityQ.selectedIndex].text;
-            createUser['answer'] = document.getElementById('create_answer').value;
-            createUser['type'] = userType.options[userType.selectedIndex].text;
-            users.push(createUser);
-            localStorage.setItem('userList', JSON.stringify(users));
-            localStorage.setItem('currentUser', JSON.stringify(createUser));
-
-            location.href = ("homepage.html");
+            });
+            return 1;
         }
     </script>
 </body>

@@ -35,6 +35,7 @@
     }
     function close_add_modal() {
       var modal = document.getElementById('addModal');
+      clearModal();
       modal.style.display = 'none';
     }
     /*function show_remove_modal(){
@@ -1209,6 +1210,21 @@
 
   <!-- Helper Scripts-->
   <script>
+    function clearModal() {
+
+      var playerTable = document.getElementById('playerTable');
+      var form = document.getElementById('addPlayerForm');
+      form.children[0].value = '';
+      form.children[1].value = '';
+      form.children[2].value = '';
+      form.children[3].value = '';
+      form.children[4].value = '';
+      form.children[5].value = '';
+      form.children[6].value = '';
+      form.children[8].value = '';
+      document.getElementById('modalImage').src = '';
+    }
+
     function createPlayerRow(player) {
 
       if ('options' in document.createElement('template')) {

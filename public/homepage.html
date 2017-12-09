@@ -225,7 +225,6 @@
         }
     </style>
 
-    <!-- Tabs Styles -->
     <style>
         li>a {
             font-size: 2rem;
@@ -240,7 +239,6 @@
 
 <body>
 
-    <!-- Logo -->
     <img src="./images/aztec.png" alt="Team Logo" class="logo">
     <ul id="menuTabs" class="nav nav-pills nav-justified">
         <li class="active">
@@ -297,9 +295,6 @@
                 </td>
                 <td>
                     <span id="scoreCell"></span>
-                    <!-- Can't really implement now
-                <br>
-                <span id="timeCell"></span>-->
                 </td>
                 <td>
                     <h5></h5>
@@ -343,41 +338,15 @@
         firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
             } else {
-                // No user is signed in.
                 location.href = 'index.html';
                 alert('You must be logged in to use this app.');
             }
         });
 
         function populateGames() {
-            /*var upcomingEventList = localStorage.getItem('upcomingList');
-            if (upcomingEventList == undefined) {
-                putUpcomingGame([]);
-            }
-            else {
-                upcomingEventList = JSON.parse(upcomingEventList);
-                upcomingEventList.sort(function (a,b) {
-                    if (Date.parse(a.date) < Date.parse(b.date)) {
-                        return -1;
-                    }
-                    if (Date.parse(a.date) > Date.parse(b.date)) {
-                        return 1;
-                    }
-                    if (a.time < b.time) {
-                        return -1;
-                    }
-                    if (a.time > b.time) {
-                        return 1;
-                    }
-                    return 0;
-                });
-                updateSchedule(upcomingEventList); 
-                putUpcomingGame(upcomingEventList);
-            }*/
             updateSchedule();
             putUpcomingGame();
             putRecentGames();
-
         }
 
         function populateTeamStats() {
@@ -391,7 +360,6 @@
                 recordTable.innerHTML = '';
                 for (var i = 0; i < querySnapshot.size; i++) {
                     var pastEvent = querySnapshot.docs[i].data();
-
                     var ownGoals = parseInt(pastEvent.gameStats.goals);
                     goalsFor += ownGoals;
                     var oppGoals = parseInt(pastEvent.gameStats.oppGoals);

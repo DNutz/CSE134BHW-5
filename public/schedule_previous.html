@@ -9,10 +9,6 @@
     <script src="js/firebase.js" type="text/javascript"></script>
     <script src="js/firestore.js" type="text/javascript"></script>
     <script>
-        // Initialize Firebase
-        //const firebase = require("firebase");
-        // Required for side-effects
-        //require("firebase/firestore");
         var config = {
             apiKey: "AIzaSyA4_4i286-lIif954lxXfFFMCxIdzgNeLQ",
             authDomain: "cse134bhw-5.firebaseapp.com",
@@ -298,24 +294,20 @@
                     var eventId = querySnapshot.docs[index].id;
                     if (prevEvent.valid == '1') {
                         if (prevEvent.type == 'Game') {
-                            //get template
                             var eventTemplate = document.querySelector('#previousGameTemplate');
                             var templateContent = eventTemplate.content;
                             templateContent.children[0].setAttribute('data-id', eventId);
 
-                            //team info
                             var teamInfo = templateContent.querySelectorAll('.teamInfo p');
                             teamInfo[1].textContent = prevEvent.gameStats.goals;
                             teamInfo[2].textContent = "(" + prevEvent.status + ")";
 
-                            //opponent info
                             var oppStatus = (status == 'Home') ? 'Away' : 'Home';
                             var oppInfo = templateContent.querySelectorAll('.oppInfo p');
                             oppInfo[0].textContent = prevEvent.opponent;
                             oppInfo[1].textContent = prevEvent.gameStats.oppGoals;
                             oppInfo[2].textContent = "(" + oppStatus + ")";
 
-                            //game info
                             var hour = parseInt(prevEvent.time.substr(0, 2));
                             var timeHalf = (hour >= 12) ? 'PM' : 'AM';
                             hour = ((hour + 11) % 12) + 1;
@@ -329,12 +321,10 @@
 
                         }
                         else {
-                            //get practice template
                             var eventTemplate = document.querySelector('#previousPracticeTemplate');
                             var templateContent = eventTemplate.content;
                             templateContent.children[0].setAttribute('data-index', eventId);
 
-                            //set date and time
                             var hour = parseInt(prevEvent.time.substr(0, 2));
                             var timeHalf = (hour >= 12) ? 'PM' : 'AM';
                             hour = ((hour + 11) % 12) + 1;
@@ -345,7 +335,6 @@
                             var practLoc = templateContent.querySelector('.practiceLoc p:last-child');
                             practLoc.textContent = prevEvent.location;
 
-                            //insert
                             var practiceClone = document.importNode(templateContent, true);
                             eventContainer.appendChild(practiceClone);
                         }
@@ -358,7 +347,6 @@
         firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
             } else {
-                // No user is signed in.
                 location.href = 'index.html';
                 alert('You must be logged in to use this app.');
             }

@@ -482,7 +482,6 @@
             </div>
         </div>
     </template>
-    <!-- Add Event Modal -->
     <div id="addEventModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -521,7 +520,6 @@
             </div>
         </div>
     </div>
-    <!-- Update Event Modal -->
     <div id="updateEventModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -557,7 +555,6 @@
             </div>
         </div>
     </div>
-    <!-- Delete Event Modal -->
     <div id="removeEventModal" class="modal">
         <div class="modal-content">
             <div class="modal-body">
@@ -603,8 +600,6 @@
                     console.log("Error getting documents: ", error);
                 });
                 
-            } else {
-                // No user is signed in.
             }
             });
         }
@@ -663,12 +658,6 @@
         }
 
         function removeFromList(eventId) {
-            /*
-            var upcomingEventList = JSON.parse(localStorage.getItem('upcomingList'));
-            upcomingEventList[numIndex].valid = '0';
-            //upcomingEventList.splice(numIndex, 1);
-            localStorage.setItem('upcomingList', JSON.stringify(upcomingEventList));
-            location.reload();*/
             var removeModal = document.querySelector('#removeEventModal');
             db.collection('upcomingEvents').doc(eventId).update({
                 'valid': '0' 
@@ -676,8 +665,6 @@
                 console.log('Successfully updated event to not be shown');
                 removeModal.style.display = 'none';
             });
-            
-            
         }
 
         function updateEvent(eventId) {
@@ -739,7 +726,6 @@
                 var date = dateTokens[1] + ' ' + dateTokens[2] + ', ' + dateTokens[3];
                 event.date = date;
 
-                //get location
                 var location = updateModal.querySelector('#updateEvent_loc').value + ", " + updateModal.querySelector('#updateEvent_city').value;
                 event.location = location;
                 checkForDuplicateEvents(event, doc.id, 'upcomingEvents', 'update');
@@ -760,22 +746,18 @@
                     var eventId = querySnapshot.docs[index].id;
                     if (currentEvent.valid == '1') {
                         if (currentEvent.type == 'Game') {
-                            //get template
                             var eventTemplate = document.querySelector('#gameTemplate');
                             var templateContent = eventTemplate.content;
                             templateContent.children[0].setAttribute('data-id', eventId);
 
-                            //team info
                             var teamStatus = templateContent.querySelector('.teamInfo p:last-child');
                             teamStatus.textContent = "(" + currentEvent.status + ")";
 
-                            //opponent info
                             var oppStatus = (currentEvent.status == 'Home') ? 'Away' : 'Home';
                             var oppInfo = templateContent.querySelectorAll('.oppInfo p');
                             oppInfo[0].textContent = currentEvent.opponent;
                             oppInfo[1].textContent = "(" + oppStatus + ")";
 
-                            //game info
                             var hour = parseInt(currentEvent.time.substr(0, 2));
                             var timeHalf = (hour >= 12) ? 'PM' : 'AM';
                             hour = ((hour + 11) % 12) + 1;
@@ -789,12 +771,10 @@
 
                         }
                         else {
-                            //get practice template
                             var eventTemplate = document.querySelector('#practiceTemplate');
                             var templateContent = eventTemplate.content;
                             templateContent.children[0].setAttribute('data-id', eventId);
 
-                            //set date and time
                             var hour = parseInt(currentEvent.time.substr(0, 2));
                             var timeHalf = (hour >= 12) ? 'PM' : 'AM';
                             hour = ((hour + 11) % 12) + 1;
@@ -805,7 +785,6 @@
                             var practLoc = templateContent.querySelector('.practiceLoc p:last-child');
                             practLoc.textContent = currentEvent.location;
 
-                            //insert
                             var practiceClone = document.importNode(templateContent, true);
                             eventContainer.appendChild(practiceClone);
                         }
@@ -824,7 +803,6 @@
             var objEvent = {};
             objEvent['type'] = eventType;
             if (eventType == 'Game') {
-                //teaminfo
                 var status = eventForm.querySelector('#homeaway_status').value;
                 objEvent['status'] = status;
 
@@ -855,7 +833,6 @@
                 objEvent['gameStats'] = gameStats;
             }
 
-            //get date and time
             var timeString = eventForm.querySelector('#addEvent_time').value;
             var dateValTokens = eventForm.querySelector('#addEvent_date').value.toString().split('-');
             var year = parseInt(dateValTokens[0]);
@@ -865,7 +842,6 @@
             var dateTokens = dateString.split(' ');
             var date = dateTokens[1] + ' ' + dateTokens[2] + ', ' + dateTokens[3];
 
-            //get location
             var location = eventForm.querySelector('#addEvent_loc').value + ", " + eventForm.querySelector('#addEvent_city').value;
 
             objEvent['date'] = date;
@@ -874,41 +850,10 @@
             objEvent['valid'] = '1';
             objEvent['dateVal'] = eventForm.querySelector('#addEvent_date').value;
             if (checkDateLater(date, timeString)) {
-                /*
-                var upcomingEventList = localStorage.getItem('upcomingList');
-                if (upcomingEventList == undefined) {
-                    upcomingEventList = [];
-                }
-                else {
-                    upcomingEventList = JSON.parse(upcomingEventList);
-                }
-                if (checkForDuplicateEvents(upcomingEventList, objEvent, -1)) {
-                    alert('Error: Another event already exists at the same time and date.')
-                    return 0;
-                }
-                upcomingEventList.push(objEvent);
-                localStorage.setItem('upcomingList', JSON.stringify(upcomingEventList));*/
-                console.log('In upcoming event add');
                 checkForDuplicateEvents(objEvent, '', 'upcomingEvents', 'add');
-
             }
             else {
-                /*
-                var previousEventList = localStorage.getItem('previousList');
-                if (previousEventList == undefined) {
-                    previousEventList = [];
-                }
-                else {
-                    previousEventList = JSON.parse(previousEventList);
-                }
-                if (checkForDuplicateEvents(previousEventList, objEvent, -1)) {
-                    alert('Error: Another event already exists at the same time and date.')
-                    return 0;
-                }
-                previousEventList.push(objEvent);
-                localStorage.setItem('previousList', JSON.stringify(previousEventList));*/
                 checkForDuplicateEvents(objEvent, '', 'previousEvents', 'add');
-
             }
             eventForm.reset();
             eventForm.querySelector('#eventType').value = 'Game';
@@ -930,25 +875,7 @@
         }
 
         function checkForDuplicateEvents(newEvent, newId, listType, manageType) {
-            /*for (var index = 0; index < eventList.length; index++) {
-                var event = eventList[index];
-                if (index != currPos && event.date == newEvent.date && event.time == newEvent.time) {
-                    return true;
-                }
-            }
-            return false;*/
-            
             db.collection(listType).get().then(function (querySnapshot) {
-                /*var retVal = false;
-                querySnapshot.forEach(function (doc) {
-                    console.log('Nid: ' + newId);
-                    console.log('eventID: ' + doc.id);
-                    if (doc.id != newId && doc.data().date == newEvent.date && doc.data().time == newEvent.time) {
-                        console.log('Found duplicate');
-                        retVal = true;
-                    }
-                })
-                return retVal;*/
                 for (var docIndex = 0; docIndex < querySnapshot.size; ++docIndex) {
                     var currentDoc = querySnapshot.docs[docIndex];
                     if (currentDoc.id != newId && currentDoc.data().valid == '1' && currentDoc.data().date == newEvent.date && currentDoc.data().time == newEvent.time) {
@@ -1003,7 +930,6 @@
         firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
             } else {
-                // No user is signed in.
                 location.href = 'index.html';
                 alert('You must be logged in to use this app.');
             }

@@ -10,34 +10,37 @@
   <script src="js/hideInputTab.js"></script>
   <script src="js/firebase.js"></script>
   <script src="js/firestore.js"></script>
+  <script src="https://static.filestackapi.com/v3/filestack.js"></script>
   <script>
-      // Initialize Firebase
-      var config = {
-        apiKey: "AIzaSyA4_4i286-lIif954lxXfFFMCxIdzgNeLQ",
-        authDomain: "cse134bhw-5.firebaseapp.com",
-        databaseURL: "https://cse134bhw-5.firebaseio.com",
-        projectId: "cse134bhw-5",
-        storageBucket: "cse134bhw-5.appspot.com",
-        messagingSenderId: "849104176022"
-      };
-      firebase.initializeApp(config);
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyA4_4i286-lIif954lxXfFFMCxIdzgNeLQ",
+      authDomain: "cse134bhw-5.firebaseapp.com",
+      databaseURL: "https://cse134bhw-5.firebaseio.com",
+      projectId: "cse134bhw-5",
+      storageBucket: "cse134bhw-5.appspot.com",
+      messagingSenderId: "849104176022"
+    };
+    firebase.initializeApp(config);
   </script>
   <script>
-      function link_to_playerinfo(tr) {
-        console.log(tr);
-        var pid = tr.getElementsByTagName('input')[0].value;
-        console.log('PID = ' + pid);
-        localStorage.setItem('currentPlayer', pid);
-        location.href = ("player_info_vanilla.html")
-      }
-      function show_add_modal() {
-        var modal = document.getElementById('addModal');
-        modal.style.display = 'block';
-      }
-      function close_add_modal() {
-        var modal = document.getElementById('addModal');
-        modal.style.display = 'none';
-      }
+    function link_to_playerinfo(tr) {
+      console.log(tr);
+      var pid = tr.getElementsByTagName('input')[0].value;
+      console.log('PID = ' + pid);
+      localStorage.setItem('currentPlayer', pid);
+      location.href = ("player_info_vanilla.html")
+    }
+    function show_add_modal() {
+      uploadSuccess = true;
+      var modal = document.getElementById('addModal');
+      modal.style.display = 'block';
+    }
+    function close_add_modal() {
+      var modal = document.getElementById('addModal');
+      clearModal();
+      modal.style.display = 'none';
+    }
     /*function show_remove_modal(){
       var modal = document.getElementById('removeModal');
       modal.style.display = 'block';
@@ -877,6 +880,7 @@
       <tr id="addPlayerRow">
         <td>
           <button id="addPlayerButton" type="button" class="btn btn-primary fourty" onclick="show_add_modal()">Add a player</button>
+          <p style="display:inline; float:right;" id="loadingRoster">Loading...</p>
         </td>
       </tr>
     </tbody>
@@ -901,8 +905,9 @@
             <input class="form-control" type="number" name="age" placeholder="Age" required>
             <label style="display: block;font-size: 4rem;margin: 2rem 0 2rem 0;">DOB:</label>
             <input class="form-control" type="date" name="dob" placeholder="DOB" required>
-            <label style="font-size: 4rem;margin: 3rem 0 3rem 0;">Upload Profile Picture:</label>
-            <input input id="modalImageInput" type="file" onchange="previewFile()">
+            <button type="button" style="font-size: 4rem; margin: 1rem 1rem 1rem 0; float:left; background-color:pink; height: 5rem; border: 0.5rem solid #dfa1c2;"
+              onclick="filestackUpload()">Upload a picture</button>
+            <!--<input input id="modalImageInput" type="file" onchange="previewFile()">-->
             <br>
             <img id="modalImage" src="" height="300px" width="250px" alt="ProfileImage">
             <img id="fullSizeImage" style="display:none">
@@ -910,44 +915,11 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button id="save_btn" type="button" class="btn btn-primary" onclick="confirmAddPlayer()">Save</button>
+          <button id="save_btn" type="button" class="btn btn-primary" onclick="confirmAddPlayerFilestack()">Save</button>
         </div>
       </div>
     </div>
   </div>
-  <!--< div class="container">
-      Modal
-      <div class="modal" id="removeModal">
-          Modal content
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" onclick="close_remove_modal()">&times;</button>
-              <h4 class="modal-title">Remove a Player</h4>
-            </div>
-            <div class="modal-body">
-                <table id="playerTable2" class="table table-hover table-bordered">
-                    <tbody>
-                      <tr>
-                        <td onclick="close_remove_modal()">
-                          <div id="player_5" class="container">
-                            <div class="row">
-                              <div class="col-xs-4 text-center">
-                                <img class="img-responsive img-circle center-block" alt="Player picture" src="../src/john_smith.jpg"> 76
-                              </div>
-                              <div class="col-xs-8 text-right">
-                                <p>John Smith</p>
-                                <p>Forward</p>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-            </div>
-          </div>
-      </div>
-  </div>-->
 
   <template id="playerTemplate">
     <tr>
@@ -981,6 +953,8 @@
 
   <!-- CRUD Scripts -->
   <script>
+
+    var uploadSuccess = false;
     function confirmAddPlayer() {
       var playerTable = document.getElementById('playerTable');
       var form = document.getElementById('addPlayerForm');
@@ -1020,6 +994,7 @@
         tIns: 0,
         appearances: 0
       };
+      if (uploadSuccess == false) alert('Please Wait until the picture finish uploading');
       var player = createPlayerFirestore(imgData, name, pos, num, status, college, hometown, age, dob, stats);
       //console.log(player);
       var playerRow = createPlayerRow(player);
@@ -1031,10 +1006,56 @@
       close_add_modal();
     }
 
+    function confirmAddPlayerFilestack() {
+      var playerTable = document.getElementById('playerTable');
+      var form = document.getElementById('addPlayerForm');
+      var name = form.children[0].value;
+      var pos = form.children[1].value;
+      var num = form.children[2].value;
+      var status = form.children[3].value;
+      var college = form.children[4].value;
+      var hometown = form.children[5].value;
+      var age = form.children[6].value;
+      var dob = form.children[8].value;
+      var imgUrl = document.getElementById('modalImage').src;
+
+      var stats = {
+        fouls: 0,
+        redCards: 0,
+        yellowCards: 0,
+        shotsOnGoal: 0,
+        goals: 0,
+        cKicks: 0,
+        pKicks: 0,
+        tIns: 0,
+        appearances: 0
+      };
+      var player = createPlayerFirestore(imgUrl, name, pos, num, status, college, hometown, age, dob, stats);
+      //console.log(player);
+      var playerRow = createPlayerRow(player);
+      playerTable.children[0].appendChild(playerRow);
+      close_add_modal();
+    }
+
   </script>
 
   <!-- Helper Scripts-->
   <script>
+    function clearModal() {
+
+      var playerTable = document.getElementById('playerTable');
+      var form = document.getElementById('addPlayerForm');
+      form.children[0].value = '';
+      form.children[1].value = '';
+      form.children[2].value = '';
+      form.children[3].value = '';
+      form.children[4].value = '';
+      form.children[5].value = '';
+      form.children[6].value = '';
+      form.children[8].value = '';
+      document.getElementById('modalImage').src = '';
+    }
+
     function createPlayerRow(player) {
 
       if ('options' in document.createElement('template')) {
@@ -1055,6 +1076,7 @@
         //img
         td.getElementsByTagName('img')[0].setAttribute('src', player.img);
         td.getElementsByTagName('img')[0].setAttribute('alt', 'Player picture');
+
 
         //player p tags
         td.getElementsByTagName('p')[0].innerHTML = player.name;
@@ -1105,6 +1127,26 @@
         console.log(tr);
         return tr;
       }
+    }
+
+    function filestackUpload() {
+      console.log('IN UPLOAD');
+      const client = filestack.init('AvxLSbgnTQsmcqyHB0WPFz');
+      client.pick({
+        accept: 'image/*',
+      }).then(function (result) {
+        console.log('IN THEN');
+        const fileUrl = result.filesUploaded[0].url;
+        var index = fileUrl.lastIndexOf('/');
+        var fileStackUrl = fileUrl.substr(0, index);
+        var imgUrl = fileUrl.substr(fileUrl.lastIndexOf('/'));
+        var compressStr = '/resize=width:250,height:300/compress';
+        var finalUrl = fileStackUrl + compressStr + imgUrl;
+        document.getElementById('modalImage').src = finalUrl;
+      })
+        .then(function () {
+          uploadSuccess = true;
+        });
     }
 
     function parseBase64Image(imgData) {
@@ -1159,12 +1201,6 @@
       context.drawImage(img, 0, 0, otherCanvas.width, otherCanvas.height);
     }
 
-    function setPlayerTable() {
-      var playerTable = document.getElementById('playerTable');
-
-      getRosterFirestore();
-     
-    }
     function getRosterFirestore() {
       var db = firebase.firestore();
       var playerList = [];
@@ -1186,36 +1222,42 @@
 
             var playerRow = createPlayerRow(player);
             playerTable.children[0].appendChild(playerRow);
-
+            document.getElementById('loadingRoster').innerHTML = '';
           }
         })
         .catch(function (error) {
         });
     }
+
   </script>
 
-  <!-- Page Scripts-->
+  <!-- Onload Scripts -->
   <script>
-    if (localStorage.getItem('Roster') == undefined) initializeRoster(0);
-    setPlayerTable();
-  </script>
-  <script>
-    //initializeRoster(10);
-    /*var u = {
-      email : 'hi@mail.com',
-      password : 'password',
-      question : 'question',
-      answer : 'none',
-      type : 'coach'
-    }
-    localStorage.setItem('currentUser',JSON.stringify(u));*/
-    //hideInputTab();
-    /*if (localStorage.getItem('currentUser') == undefined || JSON.parse(localStorage.getItem('currentUser')).type != 'Coach') {
+
+    var db = firebase.firestore();
+    db.collection('players').onSnapshot(function () {
+
+      var table = document.getElementById('playerTable');
+
+      console.log(table.children[0].childElementCount);
+      var i;
+      while (table.children[0].childElementCount > 1) {
+        table.deleteRow(1);
+        console.log(i++);
+      }
+
+      getRosterFirestore();
+
+    });
+
+    hideInputTab();
+    if (localStorage.getItem('currentUser') == undefined || JSON.parse(localStorage.getItem('currentUser')).type != 'Coach') {
       document.getElementById('addPlayerButton').style.display = 'none';
     }*/
   </script>
 
   <script>
+
     function previewFile() {
       var preview = document.getElementById('modalImage'); //selects the query named img
       var fullSize = document.getElementById('fullSizeImage');

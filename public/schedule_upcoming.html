@@ -4,94 +4,113 @@
 <head>
     <title>Current/Upcoming Games</title>
     <meta charset="utf-8">
-    <script src="/js/schedule.js" type="text/javascript"></script>
-<style>
-    html {
-        font-size: 10px;
-    }
+    <meta name="theme-color" content="#2E3AA1">
+    <meta name="viewport" content="width=980, initial-scale=.3">
+    <script src="js/firebase.js" type="text/javascript"></script>
+    <script src="js/firestore.js" type="text/javascript"></script>
+    <script>
+        var config = {
+            apiKey: "AIzaSyA4_4i286-lIif954lxXfFFMCxIdzgNeLQ",
+            authDomain: "cse134bhw-5.firebaseapp.com",
+            databaseURL: "https://cse134bhw-5.firebaseio.com",
+            projectId: "cse134bhw-5",
+            storageBucket: "cse134bhw-5.appspot.com",
+            messagingSenderId: "849104176022"
+        };
+        firebase.initializeApp(config);
+    </script>
+    <script src="js/schedule.js" type="text/javascript"></script>
+    <script src="js/raven.js" type="text/javascript"></script>
+    <script src="js/app.js" type="text/javascript"></script>
+    <script src="sw.js" type="text/javascript"></script>
+    <script src="js/hideInputTab.js" type="text/javascript"></script>
+    <style>
+        html {
+            font-size: 10px;
+        }
 
-    body {
-        text-align: center;
-        margin: 5% 5% 5% 5%;
-        font-size: 4rem;
-    }
+        body {
+            text-align: center;
+            margin: 5% 5% 5% 5%;
+            font-size: 4rem;
+        }
 
-    #menuTabs {
-        margin-bottom: 2rem;
-    }
+        #menuTabs {
+            margin-bottom: 2rem;
+        }
 
-    .nav {
-        display: block;
-        padding-left: 0;
-        margin-bottom: 0;
-        list-style: none;
-    }
+        .nav {
+            display: block;
+            padding-left: 0;
+            margin-bottom: 0;
+            list-style: none;
+        }
 
-    .nav:before,
-    .nav:after,
-    .row:before,
-    .row:after,
-    .modal-header:before {
-        display: table;
-        content: " ";
-    }
+        .nav:before,
+        .nav:after,
+        .row:before,
+        .row:after,
+        .modal-header:before {
+            display: table;
+            content: " ";
+        }
 
-    .nav:after,
-    .row:after,
-    .modal-header:after {
-        clear: both;
-    }
+        .nav:after,
+        .row:after,
+        .modal-header:after {
+            clear: both;
+        }
 
-    .nav>li {
-        position: relative;
-        display: block;
-    }
+        .nav>li {
+            position: relative;
+            display: block;
+        }
 
-    .nav>li>a {
-        position: relative;
-        display: block;
-        text-decoration: none;
-        font-size: 3rem;
-        padding: 10px 15px;
-    }
+        .nav>li>a {
+            position: relative;
+            display: block;
+            text-decoration: none;
+            font-size: 3rem;
+            padding: 10px 15px;
+        }
 
-    .nav>li>a:hover,
-    .nav>li>a:focus {
-        text-decoration: none;
-        background-color: #eee;
-    }
+        .nav>li>a:hover,
+        .nav>li>a:focus {
+            text-decoration: none;
+            background-color: #eee;
+        }
 
-    .nav-tabs>li.active>a,
-    .nav-tabs>li.active>a:hover,
-    .nav-tabs>li.active>a:focus {
-        color: #555;
-        cursor: default;
-        background-color: #fff;
-        border: 1px solid #ddd;
-        border-bottom-color: transparent;
-    }
+        .nav-tabs>li.active>a,
+        .nav-tabs>li.active>a:hover,
+        .nav-tabs>li.active>a:focus {
+            color: #555;
+            cursor: default;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-bottom-color: transparent;
+        }
 
-    .nav-tabs>li>a:hover {
-        border-color: #eee #eee #ddd;
-    }
+        .nav-tabs>li>a:hover {
+            border-color: #eee #eee #ddd;
+        }
 
-    .nav-tabs {
-        border-bottom: 1px solid #ddd;
-    }
+        .nav-tabs {
+            border-bottom: 1px solid #ddd;
+        }
 
-    .nav-tabs>li {
-        float: left;
-        margin-bottom: -1px;
-    }
+        .nav-tabs>li {
+            float: left;
+            margin-bottom: -1px;
+        }
 
-    .nav-tabs>li>a {
-        margin-right: 2px;
-        line-height: 1.42857143;
-        border: 1px solid transparent;
-        border-radius: 4px 4px 0 0;
-    }
+        .nav-tabs>li>a {
+            margin-right: 2px;
+            line-height: 1.42857143;
+            border: 1px solid transparent;
+            border-radius: 4px 4px 0 0;
+        }
 
-    .nav-pills>li {
+        .nav-pills>li {
             float: left;
         }
 
@@ -125,287 +144,293 @@
             text-align: center;
         }
 
-    h2 {
-        margin-bottom: 2rem;
-        font-size: 6rem;
-    }
-
-    ul li {
-        width: 50%;
-    }
-
-    div p {
-        font-size: 2.5rem;
-    }
-
-    p {
-        orphans: 3;
-        widows: 3;
-        margin: 0 0 10px;
-    }
-
-    #removeEventModal p {
-        font-size: 4rem;
-    }
-
-    .col-xs-3 p:nth-child(1) {
-        margin-bottom: 5rem;
-    }
-
-    .text-left {
-        text-align: left;
-    }
-
-    .text-right {
-        text-align: right;
-    }
-
-    input,
-    select {
-        height: 8rem;
-        font-size: 4rem;
-        margin-bottom: 2rem;
-        display: block;
-        width: 100%;
-        line-height: 1.42857143;
-        color: #555;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        z-index: 2;
-    }
-
-    .well {
-        margin-top: 2rem;
-        min-height: 20px;
-        padding: 19px;
-        margin-bottom: 20px;
-        background-color: #f5f5f5;
-        border: 1px solid #e3e3e3;
-        border-radius: 4px;
-    }
-
-    .row {
-        margin-right: -15px;
-        margin-left: -15px;
-    }
-
-    .col-xs-3,
-    .col-xs-4,
-    .col-xs-6,
-    .col-xs-6c,
-    .col-xs-btn {
-        position: relative;
-        min-height: 1px;
-        float: left;
-        padding-left: 15px;
-        padding-right: 15px;
-    }
-
-    .col-xs-3 {
-        width: 20%;
-    }
-
-    .col-xs-4 {
-        width: 33.33333333333%;
-    }
-
-    .col-xs-6 {
-        width: 50%;
-    }
-
-    .col-xs-6c {
-        width: 45%;
-    }
-
-    .col-xs-btn {
-        width: 10%;
-    }
-
-    .manageButtons {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: inline-block;
-        padding: 6px 12px;
-        margin-bottom: 0;
-        font-weight: normal;
-        line-height: 1.42857143;
-        text-align: center;
-        white-space: nowrap;
-        vertical-align: middle;
-        border: 1px solid transparent;
-        border-radius: 4px;
-        position: relative;
-    }
-
-    .btn {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: inline-block;
-        padding: 6px 12px;
-        margin-bottom: 0;
-        font-weight: normal;
-        line-height: 1.42857143;
-        text-align: center;
-        white-space: nowrap;
-        vertical-align: middle;
-        border: 1px solid transparent;
-        border-radius: 4px;
-        position: relative;
-        width: 100%;
-        height: 10rem;
-        font-size: 5rem;
-    }
-
-    .btn-success {
-        color: #fff;
-        background-color: #5cb85c;
-        border-color: #4cae4c;
-    }
-
-    .btn-info {
-        color: #fff;
-        background-color: #5bc0de;
-        border-color: #46b8da;
-    }
-
-    .btn-danger {
-        color: #fff;
-        background-color: #d9534f;
-        border-color: #d43f3a;
-    }
-
-    #addEvent,
-    #removeEvent {
-        font-size: 3rem;
-    }
-
-    #schedule_addButton {
-        margin-top: 2rem;
-    }
-
-    #gamesList_delete option {
-        font-size: 2rem;
-    }
-
-    * {
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        box-sizing: border-box;
-    }
-
-    *:before,
-    *:after {
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        box-sizing: border-box;
-    }
-
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        width: 100%;
-        height: 100%;
-        line-height: 100%;
-        overflow: auto;
-        background-color: rgb(0, 0, 0);
-        background-color: rgba(0, 0, 0, 0.4);
-    }
-
-    .modal-content {
-        position: relative;
-        background-color: #fefefe;
-        border-radius: 10px;
-        border: 1px solid #888;
-        width: 80%;
-        margin: 10%;
-        vertical-align: middle;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        -webkit-animation-name: animatetop;
-        -webkit-animation-duration: 0.5s;
-        animation-name: animatetop;
-        animation-duration: 0.5s
-    }
-
-    .modal-header {
-        border-radius: 10px 10px 0px 0px;
-        padding: 4px;
-        background-color: #42b1b1;
-        text-align: center;
-        color: white;
-        height: 10rem;
-        font-size: 4.5rem;
-        padding: 1rem 1rem 1rem 2rem;
-    }
-
-    .modal-body {
-        padding: 4%;
-        position: relative;
-        text-align: center;
-    }
-
-    .modal label {
-        display: block;
-        text-align: left;
-    }
-
-    .modal-header>span:nth-child(1) {
-        display: inline-block;
-        margin-top: 1.5rem;
-    }
-
-    /* The Close Button */
-
-    .close {
-        color: white;
-        float: right;
-        font-size: 6rem;
-        font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: #000;
-        text-decoration: none;
-        cursor: pointer;
-    }
-
-    /* Add Animation */
-    @keyframes animatetop {
-        from {
-            top: -300px;
-            opacity: 0
+        h2 {
+            margin-bottom: 2rem;
+            font-size: 6rem;
         }
-        to {
+
+        ul li {
+            width: 50%;
+        }
+
+        div p {
+            font-size: 2.5rem;
+        }
+
+        p {
+            orphans: 3;
+            widows: 3;
+            margin: 0 0 10px;
+        }
+
+        #removeEventModal p {
+            font-size: 4rem;
+        }
+
+        .col-xs-3 p:nth-child(1) {
+            margin-bottom: 5rem;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        main > p {
+            margin-top: 2rem;
+        }
+
+        input,
+        select {
+            height: 8rem;
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            display: block;
+            width: 100%;
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            z-index: 2;
+        }
+
+        .well {
+            margin-top: 2rem;
+            min-height: 20px;
+            padding: 19px;
+            margin-bottom: 20px;
+            background-color: #f5f5f5;
+            border: 1px solid #e3e3e3;
+            border-radius: 4px;
+        }
+
+        .row {
+            margin-right: -15px;
+            margin-left: -15px;
+        }
+
+        .col-xs-3,
+        .col-xs-4,
+        .col-xs-6,
+        .col-xs-6c,
+        .col-xs-btn {
+            position: relative;
+            min-height: 1px;
+            float: left;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .col-xs-3 {
+            width: 20%;
+        }
+
+        .col-xs-4 {
+            width: 33.33333333333%;
+        }
+
+        .col-xs-6 {
+            width: 50%;
+        }
+
+        .col-xs-6c {
+            width: 45%;
+        }
+
+        .col-xs-btn {
+            width: 10%;
+        }
+
+        .manageButtons {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-weight: normal;
+            line-height: 1.42857143;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .btn {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-weight: normal;
+            line-height: 1.42857143;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            position: relative;
+            width: 100%;
+            height: 10rem;
+            font-size: 5rem;
+        }
+
+        .btn-success {
+            color: #fff;
+            background-color: #5cb85c;
+            border-color: #4cae4c;
+        }
+
+        .btn-info {
+            color: #fff;
+            background-color: #5bc0de;
+            border-color: #46b8da;
+        }
+
+        .btn-danger {
+            color: #fff;
+            background-color: #d9534f;
+            border-color: #d43f3a;
+        }
+
+        #addEvent,
+        #removeEvent {
+            font-size: 3rem;
+        }
+
+        #schedule_addButton {
+            margin-top: 2rem;
+        }
+
+        #gamesList_delete option {
+            font-size: 2rem;
+        }
+
+        * {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        *:before,
+        *:after {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
             top: 0;
-            opacity: 1
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            line-height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
         }
-    }
-</style>
+
+        .modal-content {
+            position: relative;
+            background-color: #fefefe;
+            border-radius: 10px;
+            border: 1px solid #888;
+            width: 80%;
+            margin: 10%;
+            vertical-align: middle;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            -webkit-animation-name: animatetop;
+            -webkit-animation-duration: 0.5s;
+            animation-name: animatetop;
+            animation-duration: 0.5s
+        }
+
+        .modal-header {
+            border-radius: 10px 10px 0px 0px;
+            padding: 4px;
+            background-color: #42b1b1;
+            text-align: center;
+            color: white;
+            height: 10rem;
+            font-size: 4.5rem;
+            padding: 1rem 1rem 1rem 2rem;
+        }
+
+        .modal-body {
+            padding: 4%;
+            position: relative;
+            text-align: center;
+        }
+
+        .modal label {
+            display: block;
+            text-align: left;
+        }
+
+        .modal-header>span:nth-child(1) {
+            display: inline-block;
+            margin-top: 1.5rem;
+        }
+
+        /* The Close Button */
+
+        .close {
+            color: white;
+            float: right;
+            font-size: 6rem;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Add Animation */
+
+        @keyframes animatetop {
+            from {
+                top: -300px;
+                opacity: 0
+            }
+            to {
+                top: 0;
+                opacity: 1
+            }
+        }
+    </style>
 </head>
+
 <body>
-        <ul id="menuTabs" class="nav nav-pills nav-justified">
-                <li>
-                    <a data-toggle="pill" href="homepage.html">Home</a>
-                </li>
-                <li class="active">
-                    <a data-toggle="pill">Schedule</a>
-                </li>
-                <li>
-                    <a data-toggle="pill" href="roster_vanilla.html">Roster</a>
-                </li>
-                <li class="inputTab">
-                    <a data-toggle="pill" href="input_stats_vanilla.html">Input</a>
-                </li>
-                <li>
-                    <a data-toggle="pill" href="account_settings.html">Settings</a>
-                </li>
-            </ul>
+    <ul id="menuTabs" class="nav nav-pills nav-justified">
+        <li>
+            <a data-toggle="pill" href="homepage.html">Home</a>
+        </li>
+        <li class="active">
+            <a data-toggle="pill">Schedule</a>
+        </li>
+        <li>
+            <a data-toggle="pill" href="roster_vanilla.html">Roster</a>
+        </li>
+        <li id="inputTab">
+            <a data-toggle="pill" href="input_stats_vanilla.html">Input</a>
+        </li>
+        <li>
+            <a data-toggle="pill" href="account_settings.html">Settings</a>
+        </li>
+    </ul>
     <ul class="nav nav-tabs">
         <li class="active">
             <a data-toggle="tab" href="">Ongoing/Upcoming</a>
@@ -417,8 +442,11 @@
     <div id="schedule_addButton" class="row">
         <button type="button" id="addEvent" class="btn btn-success" onclick="displayAddEvent()">Add Event</button>
     </div>
+    <main>
+        <p>Loading Events...</p>
+    </main>
     <template id="gameTemplate">
-        <div class="well row" onclick="viewGame(this.getAttribute('data-index'), 'upcoming')">
+        <div class="well row" onclick="viewGame(this.getAttribute('data-id'), 'upcomingEvents')">
             <div class="col-xs-3 teamInfo">
                 <p>Team Aztecs</p>
                 <p></p>
@@ -433,8 +461,8 @@
                 <p></p>
             </div>
             <div class="col-xs-btn">
-                <button type="button" class="btn-info manageButtons" onclick="event.stopPropagation(); updateEvent(this.parentNode.parentNode.getAttribute('data-index'))">Edit</button>
-                <button type="button" class="btn-danger manageButtons" onclick="event.stopPropagation(); removeEvent(this.parentNode.parentNode.getAttribute('data-index'))">Remove</button>  
+                <button type="button" class="btn-info manageButtons" onclick="event.stopPropagation(); updateEvent(this.parentNode.parentNode.getAttribute('data-id'))">Edit</button>
+                <button type="button" class="btn-danger manageButtons" onclick="event.stopPropagation(); removeEvent(this.parentNode.parentNode.getAttribute('data-id'))">Remove</button>
             </div>
         </div>
     </template>
@@ -449,12 +477,11 @@
                 <p></p>
             </div>
             <div class="col-xs-btn">
-                <button type="button" class="btn-info manageButtons" onclick="updateEvent(this.parentNode.parentNode.getAttribute('data-index'))">Edit</button>
-                <button type="button" class="btn-danger manageButtons" onclick="removeEvent(this.parentNode.parentNode.getAttribute('data-index'))">Remove</button>  
-            </div>           
+                <button type="button" class="btn-info manageButtons" onclick="updateEvent(this.parentNode.parentNode.getAttribute('data-id'))">Edit</button>
+                <button type="button" class="btn-danger manageButtons" onclick="removeEvent(this.parentNode.parentNode.getAttribute('data-id'))">Remove</button>
+            </div>
         </div>
     </template>
-    <!-- Add Event Modal -->
     <div id="addEventModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -463,7 +490,7 @@
             </div>
             <div id="addBody" class="modal-body">
 
-                <form id="addEventForm" method="POST" onsubmit="addEvent()">
+                <form id="addEventForm" method="GET" onsubmit="addEvent(); return false;">
                     <label for="eventType">Select Type of Event:</label>
                     <select id="eventType" name="eventType" form="addEventForm" onchange="changeAddInfo(this)">
                         <option value="Game">Game</option>
@@ -493,7 +520,6 @@
             </div>
         </div>
     </div>
-    <!-- Update Event Modal -->
     <div id="updateEventModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -502,7 +528,7 @@
             </div>
             <div id="updateBody" class="modal-body">
 
-                <form id="updateEventForm" method="POST">
+                <form id="updateEventForm" method="GET">
                     <label for="updateEventType"></label>
                     <input type="text" name="updateEventType" id="updateEventType" disabled>
                     <div id="updateOpponentContainer">
@@ -529,7 +555,6 @@
             </div>
         </div>
     </div>
-    <!-- Delete Event Modal -->
     <div id="removeEventModal" class="modal">
         <div class="modal-content">
             <div class="modal-body">
@@ -546,13 +571,37 @@
         </div>
     </div>
     <script>
-        checkUserType();
-        showSchedule();
+        var db = firebase.firestore();
+        db.collection('upcomingEvents').onSnapshot(function() {
+            showSchedule();
+            checkUserType();
+        });
+        
         function checkUserType() {
-            var currUser = localStorage.getItem('currentUser');
-            if (currUser == undefined || JSON.parse(currUser).type != 'Coach') {
-                document.getElementById('schedule_addButton').style.display = 'none';
+            var curruser;
+            firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                curruser = firebase.auth().currentUser;
+                db.collection('users').where("email", "==", curruser.email).get()
+                .then(function(querySnapshot) {
+                    querySnapshot.forEach(function(doc) {
+                        var type = doc.data().type;
+                        if (type != 'Coach'){
+                            document.getElementById('schedule_addButton').style.display = 'none';
+                            document.getElementById('inputTab').style.display = 'none';
+                            var buttons = document.querySelectorAll(".manageButtons");
+                            for (var i = 0; i < buttons.length; ++i){
+                                buttons[i].style.display = 'none';
+                            }
+                        }
+                    });
+                })
+                .catch(function(error) {
+                    console.log("Error getting documents: ", error);
+                });
+                
             }
+            });
         }
 
         function changeAddInfo(dropdown) {
@@ -569,207 +618,182 @@
             }
         }
 
-        function removeEvent(indexStr) {
-            var numIndex = parseInt(indexStr);
+        function removeEvent(eventId) {
             var removeModal = document.querySelector('#removeEventModal');
-            var upcomingEventList = JSON.parse(localStorage.getItem('upcomingList'));
-            var event = upcomingEventList[numIndex];
-            var hour = parseInt(event.time.substr(0, 2));
-            var timeHalf = 'AM';
-            if (hour > 12) {
-                hour = hour % 12;
-                timeHalf = 'PM';
-            }
-            var timeStr = hour.toString() + event.time.substr(2) + ' ' + timeHalf;
-            var warningStr = `${event.type}: ${event.date} ` + timeStr + ` at ${event.location}`;
-            if (event.type == 'Game') {
-                warningStr += ` vs ${event.opponent}`;
-            }
-            var warningParagraph = document.createElement('p');
-            var warningMessage = document.createTextNode(warningStr);
-            warningParagraph.appendChild(warningMessage);
-            var removeBody = removeModal.querySelector('.modal-body');
-            while (removeBody.children.length > 1) {
-                removeBody.removeChild(removeBody.lastElementChild);
-            }
-            removeBody.appendChild(warningParagraph);
+            db.collection('upcomingEvents').doc(eventId).get().then(function(doc) {
+                var event = doc.data();
+                var hour = parseInt(event.time.substr(0, 2));
+                var timeHalf = 'AM';
+                if (hour > 12) {
+                    hour = hour % 12;
+                    timeHalf = 'PM';
+                }
+                var timeStr = hour.toString() + event.time.substr(2) + ' ' + timeHalf;
+                var warningStr = `${event.type}: ${event.date} ` + timeStr + ` at ${event.location}`;
+                if (event.type == 'Game') {
+                    warningStr += ` vs ${event.opponent}`;
+                }
+                var warningParagraph = document.createElement('p');
+                var warningMessage = document.createTextNode(warningStr);
+                warningParagraph.appendChild(warningMessage);
+                var removeBody = removeModal.querySelector('.modal-body');
+                while (removeBody.children.length > 1) {
+                    removeBody.removeChild(removeBody.lastElementChild);
+                }
+                removeBody.appendChild(warningParagraph);
 
-            removeModal.querySelector('#removeCancel').onclick = function() {
-                var removeModal = document.querySelector('#removeEventModal');
+                removeModal.querySelector('#removeCancel').onclick = function () {
+                    var removeModal = document.querySelector('#removeEventModal');
+                    removeModal.style.display = 'none';
+                }
+
+                removeModal.querySelector('#removeConfirm').onclick = function () {
+                    removeFromList(eventId);
+                }
+
+                removeModal.style.display = 'block';
+            }).catch(function(error) {
+                console.error('Error in getting event to remove: ', error);
+            });
+        }
+
+        function removeFromList(eventId) {
+            var removeModal = document.querySelector('#removeEventModal');
+            db.collection('upcomingEvents').doc(eventId).update({
+                'valid': '0' 
+            }).then(function() {
+                console.log('Successfully updated event to not be shown');
                 removeModal.style.display = 'none';
-            }
-
-            removeModal.querySelector('#removeConfirm').onclick = function() {
-                removeFromList(indexStr);
-            }
-            
-            removeModal.style.display = 'block';
+            });
         }
 
-        function removeFromList(indexStr) {
-            var numIndex = parseInt(indexStr);
-            var upcomingEventList = JSON.parse(localStorage.getItem('upcomingList'));
-            upcomingEventList[numIndex].valid = '0';
-            //upcomingEventList.splice(numIndex, 1);
-            localStorage.setItem('upcomingList', JSON.stringify(upcomingEventList));
-            location.reload();
-        }
-
-        function updateEvent(indexStr) {
-            var numIndex = parseInt(indexStr);
+        function updateEvent(eventId) {
             var updateModal = document.querySelector('#updateEventModal');
             var opponentInfo = document.querySelector('#updateOpponentContainer');
             var statusInfo = document.querySelector('#updateStatusContainer');
-            var upcomingEventList = JSON.parse(localStorage.getItem('upcomingList'));
-            var eventType = upcomingEventList[numIndex].type;
-            updateModal.querySelector('#updateEventType').value = eventType;
-            if (eventType == 'Game') {
-                updateModal.querySelector('#updateGame_opponent').value = upcomingEventList[numIndex].opponent;
-                updateModal.querySelector('#updateHomeaway_status').value = upcomingEventList[numIndex].status;
-                opponentInfo.style.display = 'block';
-                statusInfo.style.display = 'block';
-            }
-            else {
-                opponentInfo.querySelector('#updateGame_opponent').required = false;
-                opponentInfo.style.display = 'none';
-                statusInfo.style.display = 'none';
-            }
+            
+            db.collection('upcomingEvents').doc(eventId).get().then(function(doc) {
+                var event = doc.data();
+                var eventType = event.type;
+                updateModal.querySelector('#updateEventType').value = eventType;
+                if (eventType == 'Game') {
+                    updateModal.querySelector('#updateGame_opponent').value = event.opponent;
+                    updateModal.querySelector('#updateHomeaway_status').value = event.status;
+                    opponentInfo.style.display = 'block';
+                    statusInfo.style.display = 'block';
+                }
+                else {
+                    opponentInfo.querySelector('#updateGame_opponent').required = false;
+                    opponentInfo.style.display = 'none';
+                    statusInfo.style.display = 'none';
+                }
 
-            updateModal.querySelector('#updateEvent_date').value = upcomingEventList[numIndex].dateVal;
-            updateModal.querySelector('#updateEvent_time').value = upcomingEventList[numIndex].time;
+                updateModal.querySelector('#updateEvent_date').value = event.dateVal;
+                updateModal.querySelector('#updateEvent_time').value = event.time;
 
-            var locationStr = upcomingEventList[numIndex].location.split(', ');
-            updateModal.querySelector('#updateEvent_loc').value = locationStr[0];
-            updateModal.querySelector('#updateEvent_city').value = locationStr[1];
+                var locationStr = event.location.split(', ');
+                updateModal.querySelector('#updateEvent_loc').value = locationStr[0];
+                updateModal.querySelector('#updateEvent_city').value = locationStr[1];
 
-            updateModal.style.display = 'block';
-            updateModal.querySelector('#updateEventForm').onsubmit = function() {
-                updateList(indexStr);
-            };
+                updateModal.style.display = 'block';
+                updateModal.querySelector('#updateEventForm').onsubmit = function () {
+                    updateList(eventId);
+                    return false;
+                };
+            }).catch(function(error) {
+                console.error('Error in getting event to remove: ', error);
+            });
         }
 
-        function updateList(indexStr) {
-            var numIndex = parseInt(indexStr);
+        function updateList(eventId) {
             var updateModal = document.querySelector('#updateEventModal');
-            var upcomingEventList = JSON.parse(localStorage.getItem('upcomingList'));
-            if (upcomingEventList[numIndex].type == 'Game') {
-                upcomingEventList[numIndex].opponent = updateModal.querySelector('#updateGame_opponent').value;
-                upcomingEventList[numIndex].status = updateModal.querySelector('#updateHomeaway_status').value;
-            }
-            var dateValue = updateModal.querySelector('#updateEvent_date').value;
-            upcomingEventList[numIndex].dateVal = dateValue;
-            upcomingEventList[numIndex].time = updateModal.querySelector('#updateEvent_time').value;
+            db.collection('upcomingEvents').doc(eventId).get().then(function(doc) {
+                var event = doc.data();
+                if (event.type == 'Game') {
+                    event.opponent = updateModal.querySelector('#updateGame_opponent').value;
+                    event.status = updateModal.querySelector('#updateHomeaway_status').value;
+                }
+                var dateValue = updateModal.querySelector('#updateEvent_date').value;
+                event.dateVal = dateValue;
+                event.time = updateModal.querySelector('#updateEvent_time').value;
 
-            var dateValTokens = dateValue.toString().split('-');
-            var year = parseInt(dateValTokens[0]);
-            var month = parseInt(dateValTokens[1]) - 1;
-            var day = parseInt(dateValTokens[2]);
-            var dateString = new Date(year, month, day, 0, 0, 0, 0).toString();
-            var dateTokens = dateString.split(' ');
-            var date = dateTokens[1] + ' ' + dateTokens[2] + ', ' + dateTokens[3];
-            upcomingEventList[numIndex].date = date;
+                var dateValTokens = dateValue.toString().split('-');
+                var year = parseInt(dateValTokens[0]);
+                var month = parseInt(dateValTokens[1]) - 1;
+                var day = parseInt(dateValTokens[2]);
+                var dateString = new Date(year, month, day, 0, 0, 0, 0).toString();
+                var dateTokens = dateString.split(' ');
+                var date = dateTokens[1] + ' ' + dateTokens[2] + ', ' + dateTokens[3];
+                event.date = date;
 
-            //get location
-            var location = updateModal.querySelector('#updateEvent_loc').value + ", " + updateModal.querySelector('#updateEvent_city').value;
-            upcomingEventList[numIndex].location = location;
+                var location = updateModal.querySelector('#updateEvent_loc').value + ", " + updateModal.querySelector('#updateEvent_city').value;
+                event.location = location;
+                checkForDuplicateEvents(event, doc.id, 'upcomingEvents', 'update');
+                updateModal.style.display = 'none';
 
-            if (checkForDuplicateEvents(upcomingEventList, upcomingEventList[numIndex], numIndex)) {
-                alert('Error: Another event already exists at the same time and date.')
-                return 0;
-            }
-
-            localStorage.setItem('upcomingList', JSON.stringify(upcomingEventList));
+            })
         }
 
         function showSchedule() {
-            var upcomingEventList = localStorage.getItem('upcomingList');
-            if (upcomingEventList == undefined) {
-                return 0;
-            }
-            upcomingEventList = JSON.parse(upcomingEventList);
-            upcomingEventList.sort(function (a,b) {
-                if (Date.parse(a.date) < Date.parse(b.date)) {
-                    return -1;
+
+            updateSchedule();
+            var eventContainer = document.querySelector('main');
+            eventContainer.innerHTML = '';
+            var upcomingRef = db.collection('upcomingEvents');
+            upcomingRef.orderBy('dateVal').orderBy('time').get().then(function (querySnapshot) {
+                for (var index = 0; index < querySnapshot.size; index++) {
+                    var currentEvent = querySnapshot.docs[index].data();
+                    var eventId = querySnapshot.docs[index].id;
+                    if (currentEvent.valid == '1') {
+                        if (currentEvent.type == 'Game') {
+                            var eventTemplate = document.querySelector('#gameTemplate');
+                            var templateContent = eventTemplate.content;
+                            templateContent.children[0].setAttribute('data-id', eventId);
+
+                            var teamStatus = templateContent.querySelector('.teamInfo p:last-child');
+                            teamStatus.textContent = "(" + currentEvent.status + ")";
+
+                            var oppStatus = (currentEvent.status == 'Home') ? 'Away' : 'Home';
+                            var oppInfo = templateContent.querySelectorAll('.oppInfo p');
+                            oppInfo[0].textContent = currentEvent.opponent;
+                            oppInfo[1].textContent = "(" + oppStatus + ")";
+
+                            var hour = parseInt(currentEvent.time.substr(0, 2));
+                            var timeHalf = (hour >= 12) ? 'PM' : 'AM';
+                            hour = ((hour + 11) % 12) + 1;
+                            var timeStr = hour.toString() + currentEvent.time.substr(2) + ' ' + timeHalf;
+                            var gameInfo = templateContent.querySelectorAll('.gameInfo p');
+                            gameInfo[0].textContent = currentEvent.date + ' ' + timeStr;
+                            gameInfo[2].textContent = currentEvent.location;
+
+                            var gameClone = document.importNode(templateContent, true);
+                            eventContainer.appendChild(gameClone);
+
+                        }
+                        else {
+                            var eventTemplate = document.querySelector('#practiceTemplate');
+                            var templateContent = eventTemplate.content;
+                            templateContent.children[0].setAttribute('data-id', eventId);
+
+                            var hour = parseInt(currentEvent.time.substr(0, 2));
+                            var timeHalf = (hour >= 12) ? 'PM' : 'AM';
+                            hour = ((hour + 11) % 12) + 1;
+                            var timeStr = hour.toString() + currentEvent.time.substr(2) + ' ' + timeHalf;
+                            var practTime = templateContent.querySelector('.practiceTime p:last-child');
+                            practTime.textContent = currentEvent.date + ' ' + timeStr;
+
+                            var practLoc = templateContent.querySelector('.practiceLoc p:last-child');
+                            practLoc.textContent = currentEvent.location;
+
+                            var practiceClone = document.importNode(templateContent, true);
+                            eventContainer.appendChild(practiceClone);
+                        }
+                    }
                 }
-                if (Date.parse(a.date) > Date.parse(b.date)) {
-                    return 1;
-                }
-                if (a.time < b.time) {
-                    return -1;
-                }
-                if (a.time > b.time) {
-                    return 1;
-                }
-                return 0;
+            }).catch(function(error) {
+                Raven.captureException(error);
+                console.error('Error getting upcoming events');
             });
-
-            updateSchedule(upcomingEventList); 
-
-            var addModal = document.querySelector('#addEventModal');
-            for (var index = 0; index < upcomingEventList.length; index++) {
-                var currentEvent = upcomingEventList[index];
-                if (currentEvent.valid == '1') {
-                    if (currentEvent.type == 'Game') {
-                        //get template
-                        var eventTemplate = document.querySelector('#gameTemplate');
-                        var templateContent = eventTemplate.content;
-                        templateContent.children[0].setAttribute('data-index', index);
-
-                        //team info
-                        var teamStatus = templateContent.querySelector('.teamInfo p:last-child');
-                        teamStatus.textContent = "(" + currentEvent.status + ")";
-
-                        //opponent info
-                        var oppStatus = (currentEvent.status == 'Home') ? 'Away' : 'Home';
-                        var oppInfo = templateContent.querySelectorAll('.oppInfo p');
-                        oppInfo[0].textContent = currentEvent.opponent;
-                        oppInfo[1].textContent = "(" + oppStatus + ")";
-
-                        //game info
-                        var hour = parseInt(currentEvent.time.substr(0, 2));
-                        var timeHalf = 'AM';
-                        if (hour > 12) {
-                            hour = hour % 12;
-                            timeHalf = 'PM';
-                        }
-                        var timeStr = hour.toString() + currentEvent.time.substr(2) + ' ' + timeHalf;
-                        var gameInfo = templateContent.querySelectorAll('.gameInfo p');
-                        gameInfo[0].textContent = currentEvent.date + ' ' + timeStr;
-                        gameInfo[2].textContent = currentEvent.location;
-
-                        var gameClone = document.importNode(templateContent, true);
-                        var mainBody = document.querySelector('body');
-                        mainBody.insertBefore(gameClone, addModal);
-
-                    }
-                    else {
-                        //get practice template
-                        var eventTemplate = document.querySelector('#practiceTemplate');
-                        var templateContent = eventTemplate.content;
-                        templateContent.children[0].setAttribute('data-index', index);
-
-                        //set date and time
-                        var hour = parseInt(currentEvent.time.substr(0, 2));
-                        var timeHalf = 'AM';
-                        if (hour > 12) {
-                            hour = hour % 12;
-                            timeHalf = 'PM';
-                        }
-                        var timeStr = hour.toString() + currentEvent.time.substr(2) + ' ' + timeHalf;
-                        var practTime = templateContent.querySelector('.practiceTime p:last-child');
-                        practTime.textContent = currentEvent.date + ' ' + timeStr;
-
-                        var practLoc = templateContent.querySelector('.practiceLoc p:last-child');
-                        practLoc.textContent = currentEvent.location;
-
-                        //insert
-                        var practiceClone = document.importNode(templateContent, true);
-                        var mainBody = document.querySelector('body');
-                        mainBody.insertBefore(practiceClone, addModal);
-
-                    }
-                }
-            }
         }
 
         function addEvent() {
@@ -779,7 +803,6 @@
             var objEvent = {};
             objEvent['type'] = eventType;
             if (eventType == 'Game') {
-                //teaminfo
                 var status = eventForm.querySelector('#homeaway_status').value;
                 objEvent['status'] = status;
 
@@ -807,10 +830,9 @@
                     rCards: '0',
                     oppRCards: '0'
                 };
-                objEvent['gameStats'] = gameStats; 
+                objEvent['gameStats'] = gameStats;
             }
-            
-            //get date and time
+
             var timeString = eventForm.querySelector('#addEvent_time').value;
             var dateValTokens = eventForm.querySelector('#addEvent_date').value.toString().split('-');
             var year = parseInt(dateValTokens[0]);
@@ -820,43 +842,18 @@
             var dateTokens = dateString.split(' ');
             var date = dateTokens[1] + ' ' + dateTokens[2] + ', ' + dateTokens[3];
 
-            //get location
             var location = eventForm.querySelector('#addEvent_loc').value + ", " + eventForm.querySelector('#addEvent_city').value;
-            
+
             objEvent['date'] = date;
             objEvent['time'] = timeString;
             objEvent['location'] = location;
             objEvent['valid'] = '1';
             objEvent['dateVal'] = eventForm.querySelector('#addEvent_date').value;
             if (checkDateLater(date, timeString)) {
-                var upcomingEventList = localStorage.getItem('upcomingList');
-                if (upcomingEventList == undefined) {
-                    upcomingEventList = [];
-                }
-                else {
-                    upcomingEventList = JSON.parse(upcomingEventList);
-                }
-                if (checkForDuplicateEvents(upcomingEventList, objEvent, -1)) {
-                    alert('Error: Another event already exists at the same time and date.')
-                    return 0;
-                }
-                upcomingEventList.push(objEvent);
-                localStorage.setItem('upcomingList', JSON.stringify(upcomingEventList));
+                checkForDuplicateEvents(objEvent, '', 'upcomingEvents', 'add');
             }
             else {
-                var previousEventList = localStorage.getItem('previousList');
-                if (previousEventList == undefined) {
-                    previousEventList = [];
-                }
-                else {
-                    previousEventList = JSON.parse(previousEventList);
-                }
-                if (checkForDuplicateEvents(previousEventList, objEvent, -1)) {
-                    alert('Error: Another event already exists at the same time and date.')
-                    return 0;
-                }
-                previousEventList.push(objEvent);
-                localStorage.setItem('previousList', JSON.stringify(previousEventList));
+                checkForDuplicateEvents(objEvent, '', 'previousEvents', 'add');
             }
             eventForm.reset();
             eventForm.querySelector('#eventType').value = 'Game';
@@ -868,7 +865,7 @@
         function checkDateLater(date, time) {
             var todayDate = new Date();
             var currentTime = todayDate.getHours() + ":" + todayDate.getMinutes();
-            todayDate.setHours(0,0,0,0);
+            todayDate.setHours(0, 0, 0, 0);
             if (Date.parse(todayDate.toDateString()) == Date.parse(date)) {
                 return currentTime < time;
             }
@@ -877,14 +874,40 @@
             }
         }
 
-        function checkForDuplicateEvents(eventList, newEvent, currPos) {
-            for (var index = 0; index < eventList.length; index++) {
-                var event = eventList[index];
-                if (index != currPos && event.date == newEvent.date && event.time == newEvent.time) {
-                    return true;
+        function checkForDuplicateEvents(newEvent, newId, listType, manageType) {
+            db.collection(listType).get().then(function (querySnapshot) {
+                for (var docIndex = 0; docIndex < querySnapshot.size; ++docIndex) {
+                    var currentDoc = querySnapshot.docs[docIndex];
+                    if (currentDoc.id != newId && currentDoc.data().valid == '1' && currentDoc.data().date == newEvent.date && currentDoc.data().time == newEvent.time) {
+                        return true;
+                    }
                 }
-            }
-            return false;
+                return false;
+            }).then(function (checkResult) {
+                console.log("RESULT: " + checkResult);
+                if (checkResult) {
+                    alert('Error: Another event already exists at the same time and date');
+                    return 0;
+                }
+                else {
+                    if (manageType == 'add') {
+                        db.collection(listType).add(newEvent).then(function (docRef) {
+                        console.log('Document written with ID: ', docRef.id);
+                        
+                        })
+                        .catch(function (error) {
+                            console.error('Error adding document: ', error);
+                        });
+                    }
+                    else if (manageType == 'update') {
+                        db.collection(listType).doc(newId).set(newEvent).then(function() {
+                            console.log('Successfully updated event')
+                        }).catch(function(error) {
+                            console.error('Error updating event');
+                        });
+                    }
+                }
+            });
         }
 
         function displayAddEvent() {
@@ -904,6 +927,14 @@
             var modal = this.parentNode.parentNode.parentNode;
             modal.style.display = 'none';
         }
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+            } else {
+                location.href = 'index.html';
+                alert('You must be logged in to use this app.');
+            }
+        });
     </script>
 </body>
+
 </html>

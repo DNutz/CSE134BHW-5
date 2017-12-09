@@ -3,6 +3,9 @@
 
 <head>
   <title>Player Info</title>
+  <meta charset="utf-8">
+  <meta name="theme-color" content="#2E3AA1">
+  <meta name="viewport" content="width=980, initial-scale=.3">
   <script>
     function back_to_roster() {
       location.href = "roster_vanilla.html";
@@ -16,7 +19,20 @@
       return currentDate;
     }
   </script>
-  <script src="/js/CRUD_roster.js"></script>
+  <script src="js/CRUD_roster.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/firestore.js"></script>
+  <script>
+    var config = {
+      apiKey: "AIzaSyA4_4i286-lIif954lxXfFFMCxIdzgNeLQ",
+      authDomain: "cse134bhw-5.firebaseapp.com",
+      databaseURL: "https://cse134bhw-5.firebaseio.com",
+      projectId: "cse134bhw-5",
+      storageBucket: "cse134bhw-5.appspot.com",
+      messagingSenderId: "849104176022"
+    };
+    firebase.initializeApp(config);
+  </script>
 
   <style>
     #rst_btn {
@@ -342,7 +358,7 @@
     .editDeleteSection {
 
       bottom: 2%;
-      width:100%
+      width: 100%
     }
 
     #deletePlayerButton {
@@ -402,7 +418,6 @@
     }
   </style>
 
-  <!-- Modal Styles -->
   <style>
     /* Modal Styles */
 
@@ -513,58 +528,65 @@
 
 <body>
   <div>
-  <header class="text-center">
-    <div id="btn_ct" class="container">
-      <button id="rst_btn" type="button" class="btn btn-primary" onclick="back_to_roster()">Back to Roster</button>
-    </div>
-    <h1 id="infoPlayerName">...</h1>
-    <!--<img class="img-responsive img-circle" alt="Player picture" src="../src/john_smith.jpg"> -->
+    <header class="text-center">
+      <div id="btn_ct" class="container">
+        <button id="rst_btn" type="button" class="btn btn-primary" onclick="back_to_roster()">Back to Roster</button>
+      </div>
+      <form class="navbar-form" role="search">
+        <div class="input-group add-on">
+          <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text">
+          <div class="input-group-btn">
+            <button id="srch-btn" class="btn btn-default" type="submit">
+              <i class="glyphicon glyphicon-search" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+      <h1 id="infoPlayerName">...</h1>
+      <img style="width:500px; height:600px" class="img-responsive img-circle" id="playerImage" alt="Player picture" src="">
 
-    <ul class="nav nav-tabs">
-      <li class="active">
-        <a href="">Information</a>
-      </li>
-      <li>
-        <a href="player_stats_vanilla.html">Stats</a>
-      </li>
-    </ul>
-  </header>
-  <div class="text-center">
-    <hr> PLAYER INFO
-    <hr>
-  </div>
-  <div id="info+values">
-    <span class="pull-left info-name">Position</span>
-    <span id="infoPlayerPosition" class="pull-right text-right info-value">Forward</span>
-    <br>
-    <span class="pull-left info-name">Number</span>
-    <span id="infoPlayerNumber" class="pull-right text-right info-value">76</span>
-    <br>
-    <span class="pull-left info-name">Status</span>
-    <span id="infoPlayerStatus" class="pull-right text-right info-value">Starter</span>
-    <br>
-    <span class="pull-left info-name">College</span>
-    <span id="infoPlayerCollege" class="pull-right text-right info-value">UCD</span>
-    <br>
-    <span class="pull-left info-name">Hometown</span>
-    <span id="infoPlayerHometown" class="pull-right text-right info-value">Sacramento</span>
-    <br>
-    <span class="pull-left info-name">Age</span>
-    <span id="infoPlayerAge" class="pull-right text-right info-value">20</span>
-    <br>
-    <span class="pull-left info-name">DOB</span>
-    <span id="infoPlayerDOB" class="pull-right text-right info-value">4/18/1997</span>
-    <br>
-    <span class="pull-left info-name">Player ID</span>
-    <span id="infoPlayerPID" class="pull-right text-right info-value">P16126065</span>
-  </div>
+      <ul class="nav nav-tabs">
+        <li class="active">
+          <a href="">Information</a>
+        </li>
+        <li>
+          <a href="player_stats_vanilla.html">Stats</a>
+        </li>
+      </ul>
+    </header>
+    <div class="text-center">
+      <hr> PLAYER INFO
+      <hr>
+    </div>
+    <div id="info+values">
+      <span class="pull-left info-name">Position</span>
+      <span id="infoPlayerPosition" class="pull-right text-right info-value">loading...</span>
+      <br>
+      <span class="pull-left info-name">Number</span>
+      <span id="infoPlayerNumber" class="pull-right text-right info-value">loading...</span>
+      <br>
+      <span class="pull-left info-name">Status</span>
+      <span id="infoPlayerStatus" class="pull-right text-right info-value">loading...</span>
+      <br>
+      <span class="pull-left info-name">College</span>
+      <span id="infoPlayerCollege" class="pull-right text-right info-value">loading...</span>
+      <br>
+      <span class="pull-left info-name">Hometown</span>
+      <span id="infoPlayerHometown" class="pull-right text-right info-value">loading...</span>
+      <br>
+      <span class="pull-left info-name">Age</span>
+      <span id="infoPlayerAge" class="pull-right text-right info-value">loading...</span>
+      <br>
+      <span class="pull-left info-name">DOB</span>
+      <span id="infoPlayerDOB" class="pull-right text-right info-value">loading...</span>
+      <br>
+    </div>
   </div>
 
   <div class="editDeleteSection">
     <button id="updatePlayerButton" class="btn" onclick="updatePlayer()">Update Player</button>
     <button id="deletePlayerButton" class="btn" onclick="deleteModalAppear()">Delete Player</button>
   </div>
-  <!-- Confirm Delete Modal -->
   <div id="deleteModal" class="modal">
     <div class="modal-content">
       <h2>Are you sure you want to delete this player?</h2>
@@ -575,13 +597,11 @@
 
 
   <div class="container">
-    <!-- Modal -->
     <div class="modal" id="updateModal">
-      <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" onclick="close_update_modal()">&times;</button>
-          <h4 class="modal-title">Add a Player</h4>
+          <h4 class="modal-title">Update a Player</h4>
         </div>
         <div class="modal-body">
           <form id="updatePlayerForm">
@@ -593,7 +613,7 @@
             <input class="form-control" type="text" name="hometown" placeholder="Hometown">
             <input class="form-control" type="number" name="age" placeholder="Age">
             <input class="form-control" type="text" name="dob" placeholder="DOB">
-            <input class="form-control" type="text" name="pid" placeholder="Player ID">
+            <input class="form-control" type="text" name="pid" placeholder="Player ID" style="display:none">
           </form>
         </div>
         <div class="modal-footer">
@@ -620,10 +640,9 @@
 
     function confirmDeletePlayer() {
 
-      var pid = document.getElementById('infoPlayerPID').innerHTML;
-      deletePlayerById(pid);
+      var pid = localStorage.getItem('currentPlayer');
+      deletePlayerFirestore(pid);
       deleteModalDissapear();
-      location.href = 'roster_vanilla.html';
     }
 
     function updatePlayer() {
@@ -633,15 +652,15 @@
       var form = document.getElementById('updatePlayerForm');
 
       var infoSpan = info.getElementsByTagName('span');
-      form.children[0].value = document.getElementById('infoPlayerName').innerHTML; //name
-      form.children[1].value = infoSpan[1].innerHTML; //position
-      form.children[2].value = infoSpan[3].innerHTML; //number
-      form.children[3].value = infoSpan[5].innerHTML; //status
-      form.children[4].value = infoSpan[7].innerHTML; //college
-      form.children[5].value = infoSpan[9].innerHTML; //hometown
-      form.children[6].value = infoSpan[11].innerHTML; //age
-      form.children[7].value = infoSpan[13].innerHTML; //DOB
-      form.children[8].value = infoSpan[15].innerHTML; //pid
+      form.children[0].value = document.getElementById('infoPlayerName').innerHTML;
+      form.children[1].value = infoSpan[1].innerHTML;
+      form.children[2].value = infoSpan[3].innerHTML;
+      form.children[3].value = infoSpan[5].innerHTML;
+      form.children[4].value = infoSpan[7].innerHTML;
+      form.children[5].value = infoSpan[9].innerHTML;
+      form.children[6].value = infoSpan[11].innerHTML;
+      form.children[7].value = infoSpan[13].innerHTML;
+      form.children[8].value = infoSpan[15].innerHTML;
     }
 
     function confirmUpdate() {
@@ -655,15 +674,9 @@
       var hometown = form.children[5].value;
       var age = form.children[6].value;
       var dob = form.children[7].value;
-      var pid = form.children[8].value;
+      var pid = localStorage.getItem('currentPlayer');
 
-      var unique = checkPlayerUpdate(num, pid);
-      if (unique == false) {
-        alert('This number is already taken');
-        return;
-      }
-      var player = updatePlayerStorage(undefined, name, pos, num, status, college, hometown, age, dob, pid);
-      console.log(player);
+      var player = updatePlayerFirestore(undefined, name, pos, num, status, college, hometown, age, dob, pid);
 
       document.getElementById('updateModal').style.display = 'none';
       loadInfo();
@@ -671,30 +684,44 @@
 
   </script>
 
-  <!-- On Load scripts -->
   <script>
-    //setting the player info
 
     loadInfo();
 
     function loadInfo() {
       var pid = localStorage.getItem('currentPlayer');
-      var inputRoster = JSON.parse(localStorage.getItem('Roster'));
-      var player;
+      var db = firebase.firestore();
 
-      for (var i = 0; i < inputRoster.length; i++) if (inputRoster[i].ID == pid) player = inputRoster[i];
-
-      console.log(player);
-      document.getElementById('infoPlayerName').innerText = player.name;
-      document.getElementById('infoPlayerPosition').innerText = player.position;
-      document.getElementById('infoPlayerNumber').innerText = player.number;
-      document.getElementById('infoPlayerStatus').innerText = player.status;
-      document.getElementById('infoPlayerCollege').innerText = player.college;
-      document.getElementById('infoPlayerHometown').innerText = player.hometown;
-      document.getElementById('infoPlayerAge').innerText = player.age;
-      document.getElementById('infoPlayerDOB').innerText = getFormattedDate(player.DOB);
-      document.getElementById('infoPlayerPID').innerText = player.ID;
+      db.collection('players').doc(pid)
+        .get()
+        .then(function (doc) {
+          document.getElementById('playerImage').src = doc.data().img;
+          document.getElementById('infoPlayerName').innerText = doc.data().name;
+          document.getElementById('infoPlayerPosition').innerText = doc.data().position;
+          document.getElementById('infoPlayerNumber').innerText = doc.data().number;
+          document.getElementById('infoPlayerStatus').innerText = doc.data().status;
+          document.getElementById('infoPlayerCollege').innerText = doc.data().college;
+          document.getElementById('infoPlayerHometown').innerText = doc.data().hometown;
+          document.getElementById('infoPlayerAge').innerText = doc.data().age;
+          document.getElementById('infoPlayerDOB').innerText = getFormattedDate(doc.data().DOB);
+        })
+        .catch(function (error) {
+        });
     }
+    firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+            } else {
+                location.href = 'index.html';
+                alert('You must be logged in to use this app.');
+            }
+        });
+
+    var db = firebase.firestore();
+    db.collection('players').onSnapshot(function () {
+
+      loadInfo();
+
+    });
   </script>
 </body>
 

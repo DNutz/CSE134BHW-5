@@ -3,16 +3,15 @@
 
 <head>
   <title>Input Stats</title>
+  <meta charset="utf-8">
+  <meta name="theme-color" content="#2E3AA1">
+  <meta name="viewport" content="width=980, initial-scale=.3">
   <script>
     function show_modal(n) {
-      viewStats(n);
+      viewFireStats(n);
       var modal = document.getElementById('myModal');
       modal.style.display = 'block';
     }
-    /*function show_modal() {
-      var modal = document.getElementById('myModal');
-      modal.style.display = 'block';
-    }*/
     function close_modal() {
       var modal = document.getElementById('myModal');
       modal.style.display = 'none';
@@ -20,6 +19,19 @@
   </script>
   <script src="/js/CRUD_roster.js"></script>
   <script src="/js/hideInputTab.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/firestore.js"></script>
+  <script>
+      var config = {
+        apiKey: "AIzaSyA4_4i286-lIif954lxXfFFMCxIdzgNeLQ",
+        authDomain: "cse134bhw-5.firebaseapp.com",
+        databaseURL: "https://cse134bhw-5.firebaseio.com",
+        projectId: "cse134bhw-5",
+        storageBucket: "cse134bhw-5.appspot.com",
+        messagingSenderId: "849104176022"
+      };
+      firebase.initializeApp(config);
+  </script>
   <style>
     /*Bootstrap C&P */
 
@@ -939,105 +951,16 @@
   </ul>
   <h1 class="ml-5 text-center">Input Stats</h1>
   <table class="table table-hover table-bordered">
-    <tbody id='IStbody'><!--
-      <tr>
+    <tbody id='IStbody'>
+      <tr id="loading">
         <td>
-          <div id="player_1" class="container" onClick="show_modal()">
-            <div class="row">
-              <div class="col-xs-4 text-center">
-                <img class="img-responsive img-circle center-block" alt="Player picture" src="../src/john_smith.jpg">
-                <span>76</span>
-              </div>
-              <div class="col-xs-8 text-right">
-                <p>John Smith</p>
-                <p>Forward</p>
-              </div>
-            </div>
-          </div>
+          Loading...
         </td>
       </tr>
-      <tr>
-        <td>
-          <div id="player_2" class="container" onClick="show_modal()">
-            <div class="row">
-              <div class="col-xs-4 text-center">
-                <img class="img-responsive img-circle center-block" alt="Player picture" src="../src/john_smith.jpg"> 6
-              </div>
-              <div class="col-xs-8 text-right">
-                <p>Joe McDonald</p>
-                <p>Forward</p>
-              </div>
-            </div>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <div class="container" onClick="show_modal()">
-            <div class="row">
-              <div class="col-xs-4 text-center">
-                <img class="img-responsive img-circle center-block" alt="Player picture" src="../src/john_smith.jpg"> 17
-              </div>
-              <div class="col-xs-8 text-right">
-                <p>Jack Williams</p>
-                <p>Mid-Field</p>
-              </div>
-            </div>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <div class="container" onClick="show_modal()">
-            <div class="row">
-              <div class="col-xs-4 text-center">
-                <img class="img-responsive img-circle center-block" alt="Player picture" src="../src/john_smith.jpg"> 8
-              </div>
-              <div class="col-xs-8 text-right">
-                <p>Daniel Jackson</p>
-                <p>Mid-Field</p>
-              </div>
-            </div>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <div class="container" onClick="show_modal()">
-            <div class="row">
-              <div class="col-xs-4 text-center">
-                <img class="img-responsive img-circle center-block" alt="Player picture" src="../src/john_smith.jpg"> 13
-              </div>
-              <div class="col-xs-8 text-right">
-                <p>Zachary Eason</p>
-                <p>Defense</p>
-              </div>
-            </div>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <div class="container" onClick="show_modal()">
-            <div class="row">
-              <div class="col-xs-4 text-center">
-                <img class="img-responsive img-circle center-block" alt="Player picture" src="../src/john_smith.jpg"> 28
-              </div>
-              <div class="col-xs-8 text-right">
-                <p>Robert Redder</p>
-                <p>Defense</p>
-              </div>
-            </div>
-          </div>
-        </td>
-      </tr>
-    -->
     </tbody>
   </table>
   <div class="container">
-    <!-- Modal -->
     <div class="modal" id="myModal">
-      <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" onclick="close_modal()">&times;</button>
@@ -1116,7 +1039,7 @@
     </tr>
   </template>
   <script>
-    initializeInputStats();
+    initializeFireStats();
     var values = document.getElementsByClassName('editable');
     for (var i = 0; i < values.length; i++) {
       values.item(i).setAttribute("contenteditable", "true");
@@ -1128,6 +1051,13 @@
             location.href = 'homepage.html';
         }
     }
+    firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+            } else {
+                location.href = 'index.html';
+                alert('You must be logged in to use this app.');
+            }
+        });
   </script>
 </body>
 

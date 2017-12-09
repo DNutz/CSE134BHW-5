@@ -3,22 +3,39 @@
 
 <head>
   <title>Roster</title>
-  <script src="/js/CRUD_roster.js"></script>
-  <script src="/js/hideInputTab.js"></script>
+  <meta charset="utf-8">
+  <meta name="theme-color" content="#2E3AA1">
+  <meta name="viewport" content="width=980, initial-scale=.3">
+  <script src="js/CRUD_roster.js"></script>
+  <script src="js/hideInputTab.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/firestore.js"></script>
+  <script src="https://static.filestackapi.com/v3/filestack.js"></script>
   <script>
-    function link_to_playerinfo(td) {
-      console.log(td);
-      var pid = td.getElementsByTagName('input')[0].value;
-      console.log('PID = ' + pid);
+    var config = {
+      apiKey: "AIzaSyA4_4i286-lIif954lxXfFFMCxIdzgNeLQ",
+      authDomain: "cse134bhw-5.firebaseapp.com",
+      databaseURL: "https://cse134bhw-5.firebaseio.com",
+      projectId: "cse134bhw-5",
+      storageBucket: "cse134bhw-5.appspot.com",
+      messagingSenderId: "849104176022"
+    };
+    firebase.initializeApp(config);
+  </script>
+  <script>
+    function link_to_playerinfo(tr) {
+      var pid = tr.getElementsByTagName('input')[0].value;
       localStorage.setItem('currentPlayer', pid);
-      location.href = ("../vanilla-src/player_info_vanilla.html")
+      location.href = ("player_info_vanilla.html")
     }
-    function show_add_modal(){
+    function show_add_modal() {
+      uploadSuccess = true;
       var modal = document.getElementById('addModal');
       modal.style.display = 'block';
     }
-    function close_add_modal(){
+    function close_add_modal() {
       var modal = document.getElementById('addModal');
+      clearModal();
       modal.style.display = 'none';
     }
     /*function show_remove_modal(){
@@ -45,12 +62,13 @@
       background-color: rgb(0, 0, 0);
       background-color: rgba(0, 0, 0, 0.4);
     }
+
     .modal-content {
       position: relative;
       background-color: #fefefe;
       border-radius: 10px;
       border: 1px solid #888;
-      width: 80%; 
+      width: 80%;
       margin: 10%;
       vertical-align: middle;
       box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -59,6 +77,7 @@
       animation-name: animatetop;
       animation-duration: 0.5s
     }
+
     .modal-header {
       border-radius: 10px 10px 0px 0px;
       padding: 1rem;
@@ -68,26 +87,36 @@
       font-size: 4.5rem;
       padding: 1rem 1rem 1rem 2rem;
     }
+
     .modal-body {
       padding: 4%;
       text-align: center;
     }
+
     .modal-footer {
       padding: 1rem;
     }
 
     .modal label {
-        display: block;
-        text-align: left;
+      display: block;
+      text-align: left;
     }
 
-    .modal-header > span:nth-child(1) {
-        display: inline-block;
-        margin-top: 1.5rem;
+    .modal-header>span:nth-child(1) {
+      display: inline-block;
+      margin-top: 1.5rem;
     }
 
     .playerInfoP {
       font-size: 4rem !important;
+    }
+
+    #modalImageInput {
+      font-size: 3rem;
+      border: rgb(104, 102, 102) 2px solid;
+      background-color: #777;
+      font: white;
+      margin-bottom: 1rem;
     }
 
     #save_btn {
@@ -101,6 +130,7 @@
     }
 
     /* The Close Button */
+
     .close {
       color: gray;
       float: right;
@@ -108,6 +138,7 @@
       font-weight: bold;
       margin: 4rem 0 0 3rem;
     }
+
     .close:hover,
     .close:focus {
       color: #000;
@@ -116,10 +147,11 @@
     }
 
     .btn-primary {
-        background-color: #42b1b1;
+      background-color: #42b1b1;
     }
 
     /* Add Animation */
+
     @keyframes animatetop {
       from {
         top: -300px;
@@ -130,6 +162,7 @@
         opacity: 1
       }
     }
+
     /*Bootstrap C&P*/
 
     * {
@@ -717,6 +750,7 @@
       padding-right: 15px;
       padding-left: 15px;
     }
+
     .col-xs-2 {
       width: 5%;
       float: left;
@@ -734,6 +768,7 @@
       padding-right: 15px;
       padding-left: 15px;
     }
+
     .col-xs-3 {
       width: 35%;
       float: left;
@@ -830,7 +865,7 @@
     <li class="active">
       <a data-toggle="pill">Roster</a>
     </li>
-    <li class="inputTab">
+    <li id="inputTab">
       <a data-toggle="pill" href="input_stats_vanilla.html">Input</a>
     </li>
     <li>
@@ -839,107 +874,78 @@
   </ul>
   <table id="playerTable" class="table table-hover table-bordered">
     <tbody>
-      <tr>
+      <tr id="addPlayerRow">
         <td>
           <button id="addPlayerButton" type="button" class="btn btn-primary fourty" onclick="show_add_modal()">Add a player</button>
+          <p style="display:inline; float:right;" id="loadingRoster">Loading...</p>
         </td>
       </tr>
     </tbody>
   </table>
   <div class="container">
-      <!-- Modal -->
-      <div class="modal" id="addModal">
-          <!-- Modal content-->
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" onclick="close_add_modal()">&times;</button>
-              <h4 class="modal-title">Add a Player</h4>
-            </div>
-            <div class="modal-body">
-              <form id="addPlayerForm">
-                <input class="form-control" type="text" name="name" placeholder="Name" required>
-                <input class="form-control" type="text" name="position" placeholder="Position" required>
-                <input class="form-control" type="number" name="number" placeholder="Number" required>
-                <input class="form-control" type="text" name="status" placeholder="Status" required>
-                <input class="form-control" type="text" name="college" placeholder="College" required>
-                <input class="form-control" type="text" name="hometown" placeholder="Hometown" required>
-                <input class="form-control" type="number" name="age" placeholder="Age" required>
-                <label style="display: block;font-size: 4rem;margin: 2rem 0 2rem 0;">DOB:</label>
-                <input class="form-control" type="date" name="dob" placeholder="DOB" required>
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button id="save_btn" type="button" class="btn btn-primary" onclick="confirmAddPlayer()">Save</button>
-            </div>
-          </div>
+    <div class="modal" id="addModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" onclick="close_add_modal()">&times;</button>
+          <h4 class="modal-title">Add a Player</h4>
+        </div>
+        <div class="modal-body">
+          <form id="addPlayerForm">
+            <input class="form-control" type="text" name="name" placeholder="Name" required>
+            <input class="form-control" type="text" name="position" placeholder="Position" required>
+            <input class="form-control" type="number" name="number" placeholder="Number" required>
+            <input class="form-control" type="text" name="status" placeholder="Status" required>
+            <input class="form-control" type="text" name="college" placeholder="College" required>
+            <input class="form-control" type="text" name="hometown" placeholder="Hometown" required>
+            <input class="form-control" type="number" name="age" placeholder="Age" required>
+            <label style="display: block;font-size: 4rem;margin: 2rem 0 2rem 0;">DOB:</label>
+            <input class="form-control" type="date" name="dob" placeholder="DOB" required>
+            <button type="button" style="font-size: 4rem; margin: 1rem 1rem 1rem 0; float:left; background-color:pink; height: 5rem; border: 0.5rem solid #dfa1c2;"
+              onclick="filestackUpload()">Upload a picture</button>
+            <br>
+            <img id="modalImage" src="" height="300px" width="250px" alt="ProfileImage">
+            <img id="fullSizeImage" style="display:none">
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button id="save_btn" type="button" class="btn btn-primary" onclick="confirmAddPlayerFilestack()">Save</button>
+        </div>
       </div>
+    </div>
   </div>
-  <!--< div class="container">
-      Modal
-      <div class="modal" id="removeModal">
-          Modal content
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" onclick="close_remove_modal()">&times;</button>
-              <h4 class="modal-title">Remove a Player</h4>
-            </div>
-            <div class="modal-body">
-                <table id="playerTable2" class="table table-hover table-bordered">
-                    <tbody>
-                      <tr>
-                        <td onclick="close_remove_modal()">
-                          <div id="player_5" class="container">
-                            <div class="row">
-                              <div class="col-xs-4 text-center">
-                                <img class="img-responsive img-circle center-block" alt="Player picture" src="../src/john_smith.jpg"> 76
-                              </div>
-                              <div class="col-xs-8 text-right">
-                                <p>John Smith</p>
-                                <p>Forward</p>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-            </div>
-          </div>
-      </div>
-  </div>-->
 
   <template id="playerTemplate">
-      <tr>
-          <!--<td onclick="close_remove_modal()">-->
-              <td>
-            <input type="hidden">
-            <div class="container">
-              <div class="row">
-                <div class="col-xs-2 text-left">
-                  <p class="playerInfoP">1</p>
-                </div>
-                <div class="col-xs-7 text-center">
-                  <p class="playerInfoP">John Smith</p>
-                </div>
-                <div class="col-xs-3 text-right">  
-                  <p class="playerInfoP">Forward</p>
-                </div>
-              </div>
+    <tr>
+      <td>
+        <input type="hidden">
+        <div class="container">
+          <div class="row">
+            <div class="col-xs-2 text-left">
+              <p class="playerInfoP">1</p>
             </div>
-          </td>
-        </tr>
+            <div class="col-xs-7 text-center">
+              <p class="playerInfoP">John Smith</p>
+            </div>
+            <div class="col-xs-3 text-right">
+              <p class="playerInfoP">Forward</p>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
   </template>
 
-  <!-- Modal Scripts-->
   <script>
     var values = document.getElementsByClassName('editable');
-    for(var i=0;i < values.length; i++){
-      values.item(i).setAttribute("contenteditable","true");
+    for (var i = 0; i < values.length; i++) {
+      values.item(i).setAttribute("contenteditable", "true");
     }
   </script>
 
-  <!-- CRUD Scripts -->
   <script>
+
+    var uploadSuccess = false;
     function confirmAddPlayer() {
       var playerTable = document.getElementById('playerTable');
       var form = document.getElementById('addPlayerForm');
@@ -950,27 +956,37 @@
       var college = form.children[4].value;
       var hometown = form.children[5].value;
       var age = form.children[6].value;
-      var dob = form.children[7].value;
+      var dob = form.children[8].value;
+      var imgInput = form.children[10].files[0];
+      var img = document.getElementById('fullSizeImage');
+      var imgData = undefined;
+
+      if (!imgInput.type.match('image\/.+')) {
+
+        alert('This is not an image file');
+      }
+      else imgData = getBase64Image(img, imgInput.name);
 
       var unique = checkPlayer(num);
       if (unique == false) {
         alert('This number is already taken');
         return
       }
+
       var stats = {
-            fouls: 0,
-            redCards: 0,
-            yellowCards: 0,
-            shotsOnGoal: 0,
-            goals: 0,
-            cKicks: 0,
-            pKicks: 0,
-            tIns: 0,
-            appearances: 0
-        };
-      var player = createPlayer(undefined, name, pos, num, status, college, hometown, age, dob,stats);
-      //console.log(player);
-      var playerRow = createPlayerRowNoImg(player);
+        fouls: 0,
+        redCards: 0,
+        yellowCards: 0,
+        shotsOnGoal: 0,
+        goals: 0,
+        cKicks: 0,
+        pKicks: 0,
+        tIns: 0,
+        appearances: 0
+      };
+      if (uploadSuccess == false) alert('Please Wait until the picture finish uploading');
+      var player = createPlayerFirestore(imgData, name, pos, num, status, college, hometown, age, dob, stats);
+      var playerRow = createPlayerRow(player);
       playerTable.children[0].appendChild(playerRow);
 
       var backRoster = JSON.parse(localStorage.getItem('Roster'));
@@ -978,11 +994,55 @@
       localStorage.setItem('Roster', JSON.stringify(backRoster));
       close_add_modal();
     }
-    
+
+    function confirmAddPlayerFilestack() {
+      var playerTable = document.getElementById('playerTable');
+      var form = document.getElementById('addPlayerForm');
+      var name = form.children[0].value;
+      var pos = form.children[1].value;
+      var num = form.children[2].value;
+      var status = form.children[3].value;
+      var college = form.children[4].value;
+      var hometown = form.children[5].value;
+      var age = form.children[6].value;
+      var dob = form.children[8].value;
+      var imgUrl = document.getElementById('modalImage').src;
+
+      var stats = {
+        fouls: 0,
+        redCards: 0,
+        yellowCards: 0,
+        shotsOnGoal: 0,
+        goals: 0,
+        cKicks: 0,
+        pKicks: 0,
+        tIns: 0,
+        appearances: 0
+      };
+      var player = createPlayerFirestore(imgUrl, name, pos, num, status, college, hometown, age, dob, stats);
+      var playerRow = createPlayerRow(player);
+      playerTable.children[0].appendChild(playerRow);
+      close_add_modal();
+    }
+
   </script>
 
-  <!-- Helper Scripts-->
   <script>
+    function clearModal() {
+
+      var playerTable = document.getElementById('playerTable');
+      var form = document.getElementById('addPlayerForm');
+      form.children[0].value = '';
+      form.children[1].value = '';
+      form.children[2].value = '';
+      form.children[3].value = '';
+      form.children[4].value = '';
+      form.children[5].value = '';
+      form.children[6].value = '';
+      form.children[8].value = '';
+      document.getElementById('modalImage').src = '';
+    }
+
     function createPlayerRow(player) {
 
       if ('options' in document.createElement('template')) {
@@ -997,18 +1057,16 @@
         tr.setAttribute('data-index', index);
         tr.setAttribute('onclick', 'link_to_playerinfo(this);');
 
-        //pid
         td.getElementsByTagName('input')[0].value = player.ID;
 
-        //img
+        td.getElementsByTagName('img')[0].setAttribute('src', player.img);
         td.getElementsByTagName('img')[0].setAttribute('alt', 'Player picture');
 
-        //player p tags
+
         td.getElementsByTagName('p')[0].innerHTML = player.name;
         td.getElementsByTagName('p')[1].innerHTML = player.position;
 
         var clone = document.importNode(playerTemplate.content, true);
-        console.log(clone.children[0]);
         return clone.children[0];
       }
       else {
@@ -1023,10 +1081,9 @@
         var col8 = document.createElement('div');
         var name = document.createElement('p');
         var pos = document.createElement('p');
-    
+
         tr.setAttribute('data-index', index);
         tr.setAttribute('onclick', 'link_to_playerinfo(this);');
-        //td.setAttribute('onclick', 'close_remove_modal()');
         input.setAttribute('type', 'hidden');
         input.value = player.ID;
         container.setAttribute('class', 'container');
@@ -1034,11 +1091,11 @@
         col4.setAttribute('class', 'col-xs-4 text-center');
         img.setAttribute('class', 'img-responsive img-circle center-block');
         img.setAttribute('alt', 'Player Icon');
-        img.setAttribute('src', '');
+        img.setAttribute('src', player.img);
         col8.setAttribute('class', 'col-xs-8 text-right');
         name.innerHTML = player.name;
         pos.innerHTML = player.position;
-    
+
         col8.appendChild(name);
         col8.appendChild(pos);
         col4.appendChild(img);
@@ -1048,114 +1105,181 @@
         td.appendChild(input);
         td.appendChild(container);
         tr.appendChild(td);
-        console.log(tr);
         return tr;
       }
     }
 
-    function createPlayerRowNoImg(player) {
-
-      if ('options' in document.createElement('template')) {
-
-        var playerTemplate = document.getElementById('playerTemplate');
-
-        var playerTable = document.getElementById('playerTable');
-        var index = playerTable.childElementCount - 1;
-
-        var tr = playerTemplate.content.children[0];
-        var td = playerTemplate.content.children[0].children[0];
-        tr.setAttribute('data-index', index);
-        tr.setAttribute('onclick', 'link_to_playerinfo(this);');
-
-        //pid
-        td.getElementsByTagName('input')[0].value = player.ID;
-
-        //player p tags
-        td.getElementsByTagName('p')[0].innerHTML = player.num;
-        td.getElementsByTagName('p')[1].innerHTML = player.name;
-        td.getElementsByTagName('p')[2].innerHTML = player.position;
-
-        var clone = document.importNode(playerTemplate.content, true);
-        console.log(clone.children[0]);
-        return clone.children[0];
-      }
-      else {
-
-        var tr = document.createElement('tr');
-        var td = document.createElement('td');
-        var input = document.createElement('input');
-        var container = document.createElement('div');
-        var row = document.createElement('div');
-        var col2 = document.createElement('div');
-        var col7 = document.createElement('div');
-        var col3 = document.createElement('div');
-        var num = document.createElement('p');
-        var name = document.createElement('p');
-        var pos = document.createElement('p');
-    
-        tr.setAttribute('data-index', index);
-        tr.setAttribute('onclick', 'link_to_playerinfo(this);');
-        //td.setAttribute('onclick', 'close_remove_modal()');
-        input.setAttribute('type', 'hidden');
-        input.value = player.ID;
-        container.setAttribute('class', 'container');
-        row.setAttribute('class', 'row');
-        col2.setAttribute('class', 'col-xs-2 text-left');
-        col7.setAttribute('class', 'col-xs-7 text-center');
-        col3.setAttribute('class', 'col-xs-3 text-right');
-        num.innerHTML = player.number;
-        name.innerHTML = player.name;
-        pos.innerHTML = player.position;
-    
-        col2.appendChild(num);
-        col7.appendChild(name);
-        col3.appendChild(pos);
-        row.appendChild(col2)
-        row.appendChild(col7);
-        row.appendChild(col3);
-        container.appendChild(row);
-        td.appendChild(input);
-        td.appendChild(container);
-        tr.appendChild(td);
-        console.log(tr);
-        return tr;
-      }
+    function filestackUpload() {
+      const client = filestack.init('AvxLSbgnTQsmcqyHB0WPFz');
+      client.pick({
+        accept: 'image/*',
+      }).then(function (result) {
+        const fileUrl = result.filesUploaded[0].url;
+        var index = fileUrl.lastIndexOf('/');
+        var fileStackUrl = fileUrl.substr(0, index);
+        var imgUrl = fileUrl.substr(fileUrl.lastIndexOf('/'));
+        var compressStr = '/resize=width:250,height:300/compress';
+        var finalUrl = fileStackUrl + compressStr + imgUrl;
+        document.getElementById('modalImage').src = finalUrl;
+      })
+        .then(function () {
+          uploadSuccess = true;
+        });
     }
 
-    function setPlayerTable() {
-      var playerTable = document.getElementById('playerTable');
-      var roster = JSON.parse(localStorage.getItem('Roster'));
-      //var roster = JSON.parse(localStorage.getItem('Roster'));
-      for (var i = 0; i < roster.length; i++) {
-        var player = roster[i];
-
-        if (player.inactive == false) {
-          var playerRow = createPlayerRowNoImg(player);
-          playerTable.children[0].appendChild(playerRow);
-        }
-      }
+    function parseBase64Image(imgData) {
+      return "data:image/jpg;base64," + imgData;
     }
+
+    function getBase64Image(img, imgName) {
+
+      var canvas = document.createElement('canvas');
+      canvas.width = 250;
+      canvas.height = canvas.width * img.height / img.width;
+      var ctx = canvas.getContext('2d');
+
+      resizeImage(canvas, ctx, img, canvas.width);
+
+      var extension = imgName.substring(imgName.lastIndexOf('.'));
+
+      var validFileType = '.jpg , .png , .bmp , .svg';
+
+      if (validFileType.toLowerCase().indexOf(extension) < 0) {
+
+        alert('The file type is not supported');
+      }
+
+      var extentionNoDot = extension.substring(1, extension.length);
+      var urlName = 'image/' + extension;
+      var dataURL = canvas.toDataURL("urlName", 0.1);
+
+      return dataURL;
+    }
+
+    function resizeImage(canvas, context, img, destWidth) {
+
+      var otherCanvas = document.createElement('canvas');
+      var otherCtx = otherCanvas.getContext('2d');
+
+      otherCanvas.width = img.width;
+      otherCanvas.height = img.height;
+      otherCtx.drawImage(img, 0, 0);
+
+      while (otherCanvas.width * 0.5 > destWidth) {
+        otherCanvas.width *= 0.5;
+        otherCanvas.height *= 0.5;
+        otherCtx.drawImage(otherCanvas, 0, 0, otherCanvas.width, otherCanvas.height);
+      }
+
+      context.drawImage(img, 0, 0, otherCanvas.width, otherCanvas.height);
+    }
+
+    function getRosterFirestore() {
+      var db = firebase.firestore();
+      var playerList = [];
+      var i = 0;
+      db.collection('players').where('inactive', '==', false)
+        .get()
+        .then(function (querySnapshot) {
+          querySnapshot.forEach(function (doc) {
+            playerList.push(doc.data());
+          });
+        })
+        .then(function () {
+          for (var i = 0; i < playerList.length; i++) {
+            var player = playerList[i];
+            var playerRow = createPlayerRow(player);
+            playerTable.children[0].appendChild(playerRow);
+            document.getElementById('loadingRoster').innerHTML = '';
+          }
+        })
+        .catch(function (error) {
+        });
+    }
+
   </script>
 
-  <!-- Page Scripts--> 
   <script>
-    if (localStorage.getItem('Roster') == undefined) initializeRoster(0);
-    setPlayerTable();
-  </script>
-  <script>
-    //initializeRoster(10);
-    /*var u = {
-      email : 'hi@mail.com',
-      password : 'password',
-      question : 'question',
-      answer : 'none',
-      type : 'coach'
-    }
-    localStorage.setItem('currentUser',JSON.stringify(u));*/
+
+    var db = firebase.firestore();
+    db.collection('players').onSnapshot(function () {
+
+      var table = document.getElementById('playerTable');
+
+      while (table.children[0].childElementCount > 1) {
+        table.deleteRow(1);
+      }
+
+      getRosterFirestore();
+
+    });
+
     hideInputTab();
-    if (localStorage.getItem('currentUser') == undefined || JSON.parse(localStorage.getItem('currentUser')).type != 'Coach') {
-        document.getElementById('addPlayerButton').style.display = 'none';
+  </script>
+
+  <script>
+
+    function previewFile() {
+      var preview = document.getElementById('modalImage');
+      var fullSize = document.getElementById('fullSizeImage');
+      var file = document.getElementById('modalImageInput').files[0];
+      var reader = new FileReader();
+
+      reader.onloadend = function () {
+        preview.src = reader.result;
+        fullSize.src = reader.result;
+
+      }
+
+      if (file) {
+        reader.readAsDataURL(file);
+      } else {
+        preview.src = "";
+      }
     }
+
+  </script>
+
+  <script>
+    function checkUserType() {
+      /*var currUser = localStorage.getItem('currentUser');
+      if (currUser == undefined || JSON.parse(currUser).type != 'Coach') {
+          document.getElementById('schedule_addButton').style.display = 'none';
+      }*/
+      var curruser;
+      var db = firebase.firestore();
+      firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+          curruser = firebase.auth().currentUser;
+          db.collection('users').where("email", "==", curruser.email).get()
+          .then(function(querySnapshot) {
+              querySnapshot.forEach(function(doc) {
+                  var type = doc.data().type;
+                  if (type != 'Coach'){
+                    document.getElementById('addPlayerRow').style.display = 'none';
+                    document.getElementById('inputTab').style.display = 'none';
+                      /*var buttons = document.querySelectorAll(".manageButtons");
+                      for (var i = 0; i < buttons.length; ++i){
+                          buttons[i].style.display = 'none';
+                      }*/
+                  }
+              });
+          })
+          .catch(function(error) {
+          });
+          
+      } else {
+      }
+      });
+  }
+  checkUserType();
+  firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+            } else {
+                location.href = 'index.html';
+                alert('You must be logged in to use this app.');
+            }
+        });
   </script>
 </body>
 

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Filestack Test</title>
+    <script src="https://static.filestackapi.com/v3/filestack.js"></script>
+</head>
+
+<body>
+    <button style="font-size: 4rem;" onclick="fileStackUpload()">Upload File</button>
+    <p id="url"></p>
+    <script>
+        function fileStackUpload() {
+            const client = filestack.init('AvxLSbgnTQsmcqyHB0WPFz');
+            const link = document.getElementById('url');
+
+            client.pick({
+                accept: 'image/*',
+            }).then(function (result) {
+                const fileUrl = result.filesUploaded[0].url;
+                var index = fileUrl.lastIndexOf('/');
+                var fileStackUrl = fileUrl.substr(0, index);
+                var imgUrl = fileUrl.substr(fileUrl.lastIndexOf('/'));
+                var compressStr = '/resize=width:250,height:300/compress';
+                link.href = fileStackUrl + compressStr + imgUrl;
+                link.innerHTML = fileStackUrl + compressStr + imgUrl;
+            });
+        }
+    </script>
+</body>
+
+</html>

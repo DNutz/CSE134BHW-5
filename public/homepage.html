@@ -4,8 +4,27 @@
 <head>
     <title>Home</title>
     <meta charset="utf-8">
-    <script src="/js/schedule.js" type="text/javascript"></script>
-    <script src="/js/hideInputTab.js" type="text/javascript"></script>
+    <meta name="theme-color" content="#2E3AA1">
+    <meta name="viewport" content="width=980, initial-scale=.3">
+    <link rel="manifest" href="./manifest.json">
+    <script src="js/firebase.js" type="text/javascript"></script>
+    <script src="js/firestore.js" type="text/javascript"></script>
+    <script>
+        var config = {
+            apiKey: "AIzaSyA4_4i286-lIif954lxXfFFMCxIdzgNeLQ",
+            authDomain: "cse134bhw-5.firebaseapp.com",
+            databaseURL: "https://cse134bhw-5.firebaseio.com",
+            projectId: "cse134bhw-5",
+            storageBucket: "cse134bhw-5.appspot.com",
+            messagingSenderId: "849104176022"
+        };
+        firebase.initializeApp(config);
+    </script>
+    <script src="js/schedule.js" type="text/javascript"></script>
+    <script src="js/raven.js" type="text/javascript"></script>
+    <script src="js/app.js" type="text/javascript"></script>
+    <script src="sw.js" type="text/javascript"></script>
+    <script src="js/hideInputTab.js" type="text/javascript"></script>
     <style>
         body {
             text-align: center;
@@ -149,8 +168,7 @@
             content: " ";
         }
 
-        .nav:after
-            {
+        .nav:after {
             clear: both;
         }
 
@@ -208,7 +226,6 @@
         }
     </style>
 
-    <!-- Tabs Styles -->
     <style>
         li>a {
             font-size: 2rem;
@@ -223,28 +240,30 @@
 
 <body>
 
-    <!-- Logo -->
-    <img src="/images/LAGalaxy.svg" alt="Team Logo" class="logo">
-        <ul id="menuTabs" class="nav nav-pills nav-justified">
-            <li class="active">
-                <a data-toggle="pill">Home</a>
-            </li>
-            <li>
-                <a data-toggle="pill" href="schedule_upcoming.html">Schedule</a>
-            </li>
-            <li>
-                <a data-toggle="pill" href="roster_vanilla.html">Roster</a>
-            </li>
-            <li class="inputTab">
-                <a data-toggle="pill" href="input_stats_vanilla.html">Input</a>
-            </li>
-            <li>
-                <a data-toggle="pill" href="account_settings.html">Settings</a>
-            </li>
-        </ul>
-        <section>   
-        <h3>Current Record</h3>
+    <img src="./images/aztec.png" alt="Team Logo" class="logo">
+    <ul id="menuTabs" class="nav nav-pills nav-justified">
+        <li class="active">
+            <a data-toggle="pill">Home</a>
+        </li>
+        <li>
+            <a data-toggle="pill" href="schedule_upcoming.html">Schedule</a>
+        </li>
+        <li>
+            <a data-toggle="pill" href="roster_vanilla.html">Roster</a>
+        </li>
+        <li class="inputTab">
+            <a data-toggle="pill" href="input_stats_vanilla.html">Input</a>
+        </li>
+        <li>
+            <a data-toggle="pill" href="account_settings.html">Settings</a>
+        </li>
+    </ul>
+    <section>
+        <h3>Team Stats</h3>
         <table id="recordTable">
+            <tr>
+                <td style="text-align: center; font-size: 3rem;">Loading Team Stats...</td>
+            </tr>
         </table>
         <template id="recordTemplate">
             <tr>
@@ -264,32 +283,35 @@
         </template>
     </section>
     <section>
-    <h3>Upcoming/Current Game</h3>
-    <table id="upcomingGamesTable" class="gamesTable">
-    </table>
-    <template id="upcomingGameTemplate">
-        <tr onclick="viewGame(this.getAttribute('data-index'), 'upcoming')">
-            <td>
-                <h5>Team Aztecs</h5>
-            </td>
-            <td>
-                <span id="scoreCell"></span>
-                <!-- Can't really implement now
-                <br>
-                <span id="timeCell"></span>-->
-            </td>
-            <td>
-                <h5></h5>
-            </td>
-        </tr>
-    </template>
+        <h3>Upcoming/Current Game</h3>
+        <table id="upcomingGamesTable" class="gamesTable">
+            <tr>
+                <td style="text-align: center; font-size: 3rem;">Loading Upcoming Games...</td>
+            </tr>
+        </table>
+        <template id="upcomingGameTemplate">
+            <tr onclick="viewGame(this.getAttribute('data-id'), 'upcomingEvents')">
+                <td>
+                    <h5>Team Aztecs</h5>
+                </td>
+                <td>
+                    <span id="scoreCell"></span>
+                </td>
+                <td>
+                    <h5></h5>
+                </td>
+            </tr>
+        </template>
     </section>
     <section>
         <h3>Recent Games</h3>
         <table id="recentGamesTable" class="gamesTable">
+            <tr style="border-bottom: none">
+                <td style="text-align: center; font-size: 3rem;">Loading Recent Games...</td>
+            </tr>
         </table>
         <template id="recentGameTemplate">
-            <tr onclick="viewGame(this.getAttribute('data-index'), 'previous')">
+            <tr onclick="viewGame(this.getAttribute('data-id'), 'previousEvents')">
                 <td>
                     <h5>Team Aztecs</h5>
                 </td>
@@ -310,168 +332,120 @@
         </tr>
     </template>
     <script>
+        var db = firebase.firestore();
         hideInputTab();
         populateGames();
         populateTeamStats();
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+            } else {
+                location.href = 'index.html';
+                alert('You must be logged in to use this app.');
+            }
+        });
 
         function populateGames() {
-            var upcomingEventList = localStorage.getItem('upcomingList');
-            if (upcomingEventList == undefined) {
-                putUpcomingGame([]);
-            }
-            else {
-                upcomingEventList = JSON.parse(upcomingEventList);
-                upcomingEventList.sort(function (a,b) {
-                    if (Date.parse(a.date) < Date.parse(b.date)) {
-                        return -1;
-                    }
-                    if (Date.parse(a.date) > Date.parse(b.date)) {
-                        return 1;
-                    }
-                    if (a.time < b.time) {
-                        return -1;
-                    }
-                    if (a.time > b.time) {
-                        return 1;
-                    }
-                    return 0;
-                });
-                updateSchedule(upcomingEventList); 
-                putUpcomingGame(upcomingEventList);
-            }
-
-            var previousEventList = localStorage.getItem('previousList');
-            if (previousEventList == undefined) {
-                putRecentGame([]);
-            }
-            else {
-                previousEventList = JSON.parse(previousEventList);
-                previousEventList.sort(function (a,b) {
-                    if (Date.parse(a.date) < Date.parse(b.date)) {
-                        return 1;
-                    }
-                    if (Date.parse(a.date) > Date.parse(b.date)) {
-                        return -1;
-                    }
-                    if (a.time < b.time) {
-                        return 1;
-                    }
-                    if (a.time > b.time) {
-                        return -1;
-                    }
-                    return 0;
-                });
-                putRecentGame(previousEventList);
-            }
+            updateSchedule();
+            putUpcomingGame();
+            putRecentGames();
         }
 
         function populateTeamStats() {
-            var previousEventList = localStorage.getItem('previousList');
             var wins = 0;
             var losses = 0;
             var ties = 0;
             var goalsFor = 0;
             var goalsAgainst = 0;
-            var recordTable = document.querySelector('#recordTable');
-            if (previousEventList != undefined) {
-                previousEventList = JSON.parse(previousEventList);
-                for (var i = 0; i < previousEventList.length; i++) {
-                    var pastEvent = previousEventList[i];
-                    if (pastEvent.type == 'Game' && pastEvent.valid == '1') {
-                        var ownGoals = parseInt(pastEvent.gameStats.goals);
-                        goalsFor += ownGoals;
-                        var oppGoals = parseInt(pastEvent.gameStats.oppGoals);
-                        goalsAgainst += oppGoals;
-                        if (ownGoals > oppGoals) {
-                            wins++;
-                        }
-                        else if (ownGoals < oppGoals) {
-                            losses++;
-                        }
-                        else {
-                            ties++;
-                        }
+            db.collection('previousEvents').where('type', '==', 'Game').where('valid', '==', '1').get().then(function (querySnapshot) {
+                var recordTable = document.querySelector('#recordTable');
+                recordTable.innerHTML = '';
+                for (var i = 0; i < querySnapshot.size; i++) {
+                    var pastEvent = querySnapshot.docs[i].data();
+                    var ownGoals = parseInt(pastEvent.gameStats.goals);
+                    goalsFor += ownGoals;
+                    var oppGoals = parseInt(pastEvent.gameStats.oppGoals);
+                    goalsAgainst += oppGoals;
+                    if (ownGoals > oppGoals) {
+                        wins++;
+                    }
+                    else if (ownGoals < oppGoals) {
+                        losses++;
+                    }
+                    else {
+                        ties++;
                     }
                 }
-            }
-            var record = document.querySelector('#recordTemplate');
-            var recordContent = record.content;
-            recordContent.querySelector('#teamRecordData').textContent = wins + 'W - ' + losses + 'L - ' + ties + 'T';
-            recordContent.querySelector('#goalsForData').textContent = goalsFor;
-            var recordClone = document.importNode(recordContent, true);
-            recordTable.appendChild(recordClone);
 
-            var standings = document.getElementById('standingsTemplate');
-            var standingsContent = standings.content;
-            standingsContent.getElementById('goalsAgainstData').textContent = goalsAgainst;
-            var standingsClone = document.importNode(standingsContent, true);
-            recordTable.appendChild(standingsClone);
+                var record = document.querySelector('#recordTemplate');
+                var recordContent = record.content;
+                recordContent.querySelector('#teamRecordData').textContent = wins + 'W - ' + losses + 'L - ' + ties + 'T';
+                recordContent.querySelector('#goalsForData').textContent = goalsFor;
+                var recordClone = document.importNode(recordContent, true);
+                recordTable.appendChild(recordClone);
 
+                var standings = document.getElementById('standingsTemplate');
+                var standingsContent = standings.content;
+                standingsContent.getElementById('goalsAgainstData').textContent = goalsAgainst;
+                var standingsClone = document.importNode(standingsContent, true);
+                recordTable.appendChild(standingsClone);
+            }).catch(function (error) {
+                console.error('Error in setting team stats');
+            });
         }
 
-        function putUpcomingGame(eventList) {
-            var gamesCount = -1;
-            for (var i = 0; i < eventList.length; i++) {
-                if (eventList[i].type == 'Game' && eventList[i].valid == '1') {
-                    gamesCount = i;
-                    break;
+        function putUpcomingGame() {
+            db.collection('upcomingEvents').where('type', '==', 'Game').where('valid', '==', '1').orderBy('dateVal').orderBy('time').limit(1).get().then(function (querySnapshot) {
+                var upcomingTable = document.querySelector('#upcomingGamesTable');
+                upcomingTable.innerHTML = '';
+                if (querySnapshot.size == 0) {
+                    var emptyMessage = document.querySelector('#emptyTemplate');
+                    var td = emptyMessage.content.querySelector('td');
+                    td.textContent = 'There are no upcoming games right now';
+                    td.style.fontSize = '3rem';
+                    var gameClone = document.importNode(emptyMessage.content, true);
                 }
-            }
-            var upcomingTable = document.querySelector('#upcomingGamesTable');
-            if (gamesCount < 0) {
-                var emptyMessage = document.querySelector('#emptyTemplate');
-                var td = emptyMessage.content.querySelector('td');
-                td.textContent = 'There are no upcoming games right now';
-                td.style.fontSize = '3rem';
-                var gameClone = document.importNode(emptyMessage.content, true);
-            }
-            else {
-                var upcomingGameT = document.querySelector('#upcomingGameTemplate');
-                var upcomingGameContent = upcomingGameT.content;
-                upcomingGameContent.children[0].setAttribute('data-index', gamesCount);
+                else {
+                    var upcomingGameT = document.querySelector('#upcomingGameTemplate');
+                    var upcomingGameContent = upcomingGameT.content;
+                    upcomingGameContent.children[0].setAttribute('data-id', querySnapshot.docs[0].id);
 
-                var score = upcomingGameContent.querySelector('#scoreCell');
-                var upcomingGame = eventList[gamesCount];
-                score.textContent = upcomingGame.gameStats.goals + ' - ' + upcomingGame.gameStats.oppGoals;
+                    var score = upcomingGameContent.querySelector('#scoreCell');
+                    var upcomingGame = querySnapshot.docs[0].data();
+                    score.textContent = upcomingGame.gameStats.goals + ' - ' + upcomingGame.gameStats.oppGoals;
 
-                var opp = upcomingGameContent.querySelectorAll('h5')[1];
-                opp.textContent = upcomingGame.opponent;
+                    var opp = upcomingGameContent.querySelectorAll('h5')[1];
+                    opp.textContent = upcomingGame.opponent;
 
-                var gameClone = document.importNode(upcomingGameContent, true);
-            }
-            upcomingTable.appendChild(gameClone);
+                    var gameClone = document.importNode(upcomingGameContent, true);
+                }
+                upcomingTable.appendChild(gameClone);
+            }).catch(function (error) {
+                console.error('Error getting next game');
+            });
         }
 
-        function putRecentGame(eventList) {
-            var gamesCount = 0;
-            for (var i = 0; i < eventList.length; i++) {
-                if (eventList[i].type == 'Game' && eventList[i].valid == '1') {
-                    gamesCount++;
+        function putRecentGames() {
+            db.collection('previousEvents').where('type', '==', 'Game').where('valid', '==', '1').orderBy('dateVal', 'desc').orderBy('time', 'desc').limit(2).get().then(function (querySnapshot) {
+                var recentTable = document.querySelector('#recentGamesTable');
+                recentTable.innerHTML = '';
+                if (querySnapshot.size == 0) {
+                    var emptyMessage = document.querySelector('#emptyTemplate');
+                    var td = emptyMessage.content.querySelector('td');
+                    td.textContent = 'There are no recent games right now';
+                    td.style.fontSize = '3rem';
+                    var gameClone = document.importNode(emptyMessage.content, true);
+                    recentTable.appendChild(gameClone);
+                    recentTable.children[0].style.borderBottom = 'none';
                 }
-            }
+                else {
 
-            var recentTable = document.querySelector('#recentGamesTable');
-            if (gamesCount == 0) {
-                var emptyMessage = document.querySelector('#emptyTemplate');
-                var td = emptyMessage.content.querySelector('td');
-                td.textContent = 'There are no recent games right now';
-                td.style.fontSize = '3rem';
-                var gameClone = document.importNode(emptyMessage.content, true);
-                recentTable.appendChild(gameClone);
-                recentTable.children[0].style.borderBottom = 'none';
-            }
-            else {
-                gamesCount = 0;
-                for (var i = 0; i < eventList.length; i++) {
-                    if (gamesCount == 2) {
-                        return 0;
-                    }
-                    var pastEvent = eventList[i];
-                    if (pastEvent.type == 'Game' && pastEvent.valid == '1') {
+                    for (var i = 0; i < querySnapshot.size; i++) {
+                        var pastEvent = querySnapshot.docs[i].data();
+
                         var recentGame = document.querySelector('#recentGameTemplate');
                         var recentGameContent = recentGame.content;
-                        recentGameContent.children[0].setAttribute('data-index', i);
-                        
+                        recentGameContent.children[0].setAttribute('data-id', querySnapshot.docs[i].id);
+
                         var gameInfo = recentGameContent.querySelectorAll('.recentMiddleCell');
                         gameInfo[0].textContent = pastEvent.gameStats.goals + ' - ' + pastEvent.gameStats.oppGoals;
                         var ownGoals = parseInt(pastEvent.gameStats.goals);
@@ -491,13 +465,13 @@
 
                         var gameClone = document.importNode(recentGameContent, true);
                         recentTable.appendChild(gameClone);
-                        gamesCount++;
                     }
-                    
                 }
-            }
-
+            }).catch(function (error) {
+                console.error('Error in getting recent games');
+            });
         }
     </script>
 </body>
+
 </html>

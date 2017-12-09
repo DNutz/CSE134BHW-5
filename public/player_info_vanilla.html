@@ -23,7 +23,6 @@
   <script src="js/firebase.js"></script>
   <script src="js/firestore.js"></script>
   <script>
-    // Initialize Firebase
     var config = {
       apiKey: "AIzaSyA4_4i286-lIif954lxXfFFMCxIdzgNeLQ",
       authDomain: "cse134bhw-5.firebaseapp.com",
@@ -46,8 +45,6 @@
       text-align: center;
       margin-bottom: 1rem !important;
     }
-
-    /*Bootstrap C&P*/
 
     * {
       -webkit-box-sizing: border-box;
@@ -333,8 +330,6 @@
       content: " ";
     }
 
-    /*End of Bootstrap C&P*/
-
     li {
       width: 50%;
     }
@@ -419,9 +414,7 @@
     }
   </style>
 
-  <!-- Modal Styles -->
   <style>
-    /* Modal Styles */
 
     .modal {
       display: none;
@@ -513,8 +506,6 @@
       color: white;
     }
 
-    /* Add Animation */
-
     @keyframes animatetop {
       from {
         top: -300px;
@@ -581,9 +572,6 @@
       <br>
       <span class="pull-left info-name">DOB</span>
       <span id="infoPlayerDOB" class="pull-right text-right info-value">loading...</span>
-      <br>
-      <!--<span class="pull-left info-name">Player ID</span>
-      <span id="infoPlayerPID" class="pull-right text-right info-value">loading...</span>-->
     </div>
   </div>
 
@@ -591,7 +579,7 @@
     <button id="updatePlayerButton" class="btn" onclick="updatePlayer()">Update Player</button>
     <button id="deletePlayerButton" class="btn" onclick="deleteModalAppear()">Delete Player</button>
   </div>
-  <!-- Confirm Delete Modal -->
+
   <div id="deleteModal" class="modal">
     <div class="modal-content">
       <h2>Are you sure you want to delete this player?</h2>
@@ -602,9 +590,7 @@
 
 
   <div class="container">
-    <!-- Modal -->
     <div class="modal" id="updateModal">
-      <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" onclick="close_update_modal()">&times;</button>
@@ -660,15 +646,15 @@
       var form = document.getElementById('updatePlayerForm');
 
       var infoSpan = info.getElementsByTagName('span');
-      form.children[0].value = document.getElementById('infoPlayerName').innerHTML; //name
-      form.children[1].value = infoSpan[1].innerHTML; //position
-      form.children[2].value = infoSpan[3].innerHTML; //number
-      form.children[3].value = infoSpan[5].innerHTML; //status
-      form.children[4].value = infoSpan[7].innerHTML; //college
-      form.children[5].value = infoSpan[9].innerHTML; //hometown
-      form.children[6].value = infoSpan[11].innerHTML; //age
-      form.children[7].value = infoSpan[13].innerHTML; //DOB
-      form.children[8].value = infoSpan[15].innerHTML; //pid
+      form.children[0].value = document.getElementById('infoPlayerName').innerHTML;
+      form.children[1].value = infoSpan[1].innerHTML;
+      form.children[2].value = infoSpan[3].innerHTML;
+      form.children[3].value = infoSpan[5].innerHTML;
+      form.children[4].value = infoSpan[7].innerHTML; 
+      form.children[5].value = infoSpan[9].innerHTML;
+      form.children[6].value = infoSpan[11].innerHTML;
+      form.children[7].value = infoSpan[13].innerHTML;
+      form.children[8].value = infoSpan[15].innerHTML;
     }
 
     function confirmUpdate() {
@@ -693,9 +679,7 @@
 
   </script>
 
-  <!-- On Load scripts -->
   <script>
-    //setting the player info
 
     loadInfo();
 
@@ -715,7 +699,6 @@
           document.getElementById('infoPlayerHometown').innerText = doc.data().hometown;
           document.getElementById('infoPlayerAge').innerText = doc.data().age;
           document.getElementById('infoPlayerDOB').innerText = getFormattedDate(doc.data().DOB);
-          // document.getElementById('infoPlayerPID').innerText = doc.data().ID;
         })
         .catch(function (error) {
         });
@@ -723,7 +706,6 @@
     firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
             } else {
-                // No user is signed in.
                 location.href = 'index.html';
                 alert('You must be logged in to use this app.');
             }

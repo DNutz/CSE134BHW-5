@@ -25,9 +25,7 @@
   </script>
   <script>
     function link_to_playerinfo(tr) {
-      console.log(tr);
       var pid = tr.getElementsByTagName('input')[0].value;
-      console.log('PID = ' + pid);
       localStorage.setItem('currentPlayer', pid);
       location.href = ("player_info_vanilla.html")
     }
@@ -41,17 +39,9 @@
       clearModal();
       modal.style.display = 'none';
     }
-    /*function show_remove_modal(){
-      var modal = document.getElementById('removeModal');
-      modal.style.display = 'block';
-    }
-    function close_remove_modal(){
-      var modal = document.getElementById('removeModal');
-      modal.style.display = 'none';
-    }*/
+    
   </script>
   <style>
-     /* Modal Styles */
      .modal {
       display: none;
       position: fixed;
@@ -132,8 +122,6 @@
       font-size: 4rem;
     }
 
-    /* The Close Button */
-
     .close {
       color: gray;
       float: right;
@@ -153,8 +141,6 @@
       background-color: #42b1b1;
     }
 
-    /* Add Animation */
-
     @keyframes animatetop {
       from {
         top: -300px;
@@ -165,8 +151,6 @@
         opacity: 1
       }
     }
-
-    /*Bootstrap C&P*/
 
     * {
       -webkit-box-sizing: border-box;
@@ -796,8 +780,6 @@
       line-height: inherit;
     }
 
-    /*End of Bootstrap C&P*/
-
     .fourty {
       width: 40%;
       margin-left: 1rem;
@@ -886,9 +868,7 @@
     </tbody>
   </table>
   <div class="container">
-    <!-- Modal -->
     <div class="modal" id="addModal">
-      <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" onclick="close_add_modal()">&times;</button>
@@ -907,7 +887,6 @@
             <input class="form-control" type="date" name="dob" placeholder="DOB" required>
             <button type="button" style="font-size: 4rem; margin: 1rem 1rem 1rem 0; float:left; background-color:pink; height: 5rem; border: 0.5rem solid #dfa1c2;"
               onclick="filestackUpload()">Upload a picture</button>
-            <!--<input input id="modalImageInput" type="file" onchange="previewFile()">-->
             <br>
             <img id="modalImage" src="" height="300px" width="250px" alt="ProfileImage">
             <img id="fullSizeImage" style="display:none">
@@ -923,7 +902,6 @@
 
   <template id="playerTemplate">
     <tr>
-      <!--<td onclick="close_remove_modal()">-->
       <td>
         <input type="hidden">
         <div class="container">
@@ -943,7 +921,6 @@
     </tr>
   </template>
 
-  <!-- Modal Scripts-->
   <script>
     var values = document.getElementsByClassName('editable');
     for (var i = 0; i < values.length; i++) {
@@ -951,60 +928,8 @@
     }
   </script>
 
-  <!-- CRUD Scripts -->
   <script>
-
     var uploadSuccess = false;
-    function confirmAddPlayer() {
-      var playerTable = document.getElementById('playerTable');
-      var form = document.getElementById('addPlayerForm');
-      var name = form.children[0].value;
-      var pos = form.children[1].value;
-      var num = form.children[2].value;
-      var status = form.children[3].value;
-      var college = form.children[4].value;
-      var hometown = form.children[5].value;
-      var age = form.children[6].value;
-      var dob = form.children[8].value;
-      var imgInput = form.children[10].files[0];
-      var img = document.getElementById('fullSizeImage');
-      var imgData = undefined;
-
-      if (!imgInput.type.match('image\/.+')) {
-
-        alert('This is not an image file');
-        //return 0;
-      }
-      else imgData = getBase64Image(img, imgInput.name);
-
-      var unique = checkPlayer(num);
-      if (unique == false) {
-        alert('This number is already taken');
-        return
-      }
-
-      var stats = {
-        fouls: 0,
-        redCards: 0,
-        yellowCards: 0,
-        shotsOnGoal: 0,
-        goals: 0,
-        cKicks: 0,
-        pKicks: 0,
-        tIns: 0,
-        appearances: 0
-      };
-      if (uploadSuccess == false) alert('Please Wait until the picture finish uploading');
-      var player = createPlayerFirestore(imgData, name, pos, num, status, college, hometown, age, dob, stats);
-      //console.log(player);
-      var playerRow = createPlayerRow(player);
-      playerTable.children[0].appendChild(playerRow);
-
-      var backRoster = JSON.parse(localStorage.getItem('Roster'));
-      backRoster.push(player);
-      localStorage.setItem('Roster', JSON.stringify(backRoster));
-      close_add_modal();
-    }
 
     function confirmAddPlayerFilestack() {
       var playerTable = document.getElementById('playerTable');
@@ -1031,15 +956,12 @@
         appearances: 0
       };
       var player = createPlayerFirestore(imgUrl, name, pos, num, status, college, hometown, age, dob, stats);
-      //console.log(player);
       var playerRow = createPlayerRow(player);
       playerTable.children[0].appendChild(playerRow);
       close_add_modal();
     }
 
   </script>
-
-  <!-- Helper Scripts-->
   <script>
     function clearModal() {
 
@@ -1069,21 +991,13 @@
         var td = playerTemplate.content.children[0].children[0];
         tr.setAttribute('data-index', index);
         tr.setAttribute('onclick', 'link_to_playerinfo(this);');
-
-        //pid
         td.getElementsByTagName('input')[0].value = player.ID;
-
-        //img
         td.getElementsByTagName('img')[0].setAttribute('src', player.img);
         td.getElementsByTagName('img')[0].setAttribute('alt', 'Player picture');
-
-
-        //player p tags
         td.getElementsByTagName('p')[0].innerHTML = player.name;
         td.getElementsByTagName('p')[1].innerHTML = player.position;
 
         var clone = document.importNode(playerTemplate.content, true);
-        console.log(clone.children[0]);
         return clone.children[0];
       }
       else {
@@ -1101,7 +1015,6 @@
 
         tr.setAttribute('data-index', index);
         tr.setAttribute('onclick', 'link_to_playerinfo(this);');
-        //td.setAttribute('onclick', 'close_remove_modal()');
         input.setAttribute('type', 'hidden');
         input.value = player.ID;
         container.setAttribute('class', 'container');
@@ -1109,7 +1022,6 @@
         col4.setAttribute('class', 'col-xs-4 text-center');
         img.setAttribute('class', 'img-responsive img-circle center-block');
         img.setAttribute('alt', 'Player Icon');
-        //console.log(player.img);
         img.setAttribute('src', player.img);
         col8.setAttribute('class', 'col-xs-8 text-right');
         name.innerHTML = player.name;
@@ -1124,18 +1036,15 @@
         td.appendChild(input);
         td.appendChild(container);
         tr.appendChild(td);
-        console.log(tr);
         return tr;
       }
     }
 
     function filestackUpload() {
-      console.log('IN UPLOAD');
-      const client = filestack.init('AvxLSbgnTQsmcqyHB0WPFz');
+\      const client = filestack.init('AvxLSbgnTQsmcqyHB0WPFz');
       client.pick({
         accept: 'image/*',
       }).then(function (result) {
-        console.log('IN THEN');
         const fileUrl = result.filesUploaded[0].url;
         var index = fileUrl.lastIndexOf('/');
         var fileStackUrl = fileUrl.substr(0, index);
@@ -1149,58 +1058,6 @@
         });
     }
 
-    function parseBase64Image(imgData) {
-      return "data:image/jpg;base64," + imgData;
-    }
-
-    function getBase64Image(img, imgName) {
-
-      var canvas = document.createElement('canvas');
-      canvas.width = 250; // destination size
-      canvas.height = canvas.width * img.height / img.width;
-      var ctx = canvas.getContext('2d');
-
-      resizeImage(canvas, ctx, img, canvas.width);
-
-      var extension = imgName.substring(imgName.lastIndexOf('.'));
-
-      var validFileType = '.jpg , .png , .bmp , .svg';
-
-      if (validFileType.toLowerCase().indexOf(extension) < 0) {
-
-        alert('The file type is not supported');
-        //return 0;
-      }
-
-      var extentionNoDot = extension.substring(1, extension.length);
-      var urlName = 'image/' + extension;
-      var dataURL = canvas.toDataURL("urlName", 0.1);
-      //console.log(dataURL);
-
-      return dataURL;
-    }
-
-    function resizeImage(canvas, context, img, destWidth) {
-
-      // step 1 - resize to 50%
-      var otherCanvas = document.createElement('canvas');
-      var otherCtx = otherCanvas.getContext('2d');
-
-      otherCanvas.width = img.width;
-      otherCanvas.height = img.height;
-      otherCtx.drawImage(img, 0, 0);
-
-      // step 2
-      while (otherCanvas.width * 0.5 > destWidth) {
-        otherCanvas.width *= 0.5;
-        otherCanvas.height *= 0.5;
-        otherCtx.drawImage(otherCanvas, 0, 0, otherCanvas.width, otherCanvas.height);
-      }
-
-      // step 3, resize to final size
-      context.drawImage(img, 0, 0, otherCanvas.width, otherCanvas.height);
-    }
-
     function getRosterFirestore() {
       var db = firebase.firestore();
       var playerList = [];
@@ -1209,16 +1066,12 @@
         .get()
         .then(function (querySnapshot) {
           querySnapshot.forEach(function (doc) {
-            //console.log(doc.data());
-            //console.log(typeof(doc.data()));
             playerList.push(doc.data());
-            //console.log(i++);
           });
         })
         .then(function () {
           for (var i = 0; i < playerList.length; i++) {
             var player = playerList[i];
-            console.log(player);
 
             var playerRow = createPlayerRow(player);
             playerTable.children[0].appendChild(playerRow);
@@ -1226,12 +1079,12 @@
           }
         })
         .catch(function (error) {
+          console.log('Error:', error);
         });
     }
 
   </script>
 
-  <!-- Onload Scripts -->
   <script>
 
     var db = firebase.firestore();
@@ -1239,11 +1092,9 @@
 
       var table = document.getElementById('playerTable');
 
-      console.log(table.children[0].childElementCount);
       var i;
       while (table.children[0].childElementCount > 1) {
         table.deleteRow(1);
-        console.log(i++);
       }
 
       getRosterFirestore();
@@ -1253,7 +1104,7 @@
     hideInputTab();
     if (localStorage.getItem('currentUser') == undefined || JSON.parse(localStorage.getItem('currentUser')).type != 'Coach') {
       document.getElementById('addPlayerButton').style.display = 'none';
-    }*/
+    }
   </script>
 
   <script>
@@ -1271,7 +1122,7 @@
       }
 
       if (file) {
-        reader.readAsDataURL(file); //reads the data as a URL
+        reader.readAsDataURL(file); 
       } else {
         preview.src = "";
       }
@@ -1281,10 +1132,6 @@
 
   <script>
     function checkUserType() {
-      /*var currUser = localStorage.getItem('currentUser');
-      if (currUser == undefined || JSON.parse(currUser).type != 'Coach') {
-          document.getElementById('schedule_addButton').style.display = 'none';
-      }*/
       var curruser;
       var db = firebase.firestore();
       firebase.auth().onAuthStateChanged(function(user) {
@@ -1297,10 +1144,7 @@
                   if (type != 'Coach'){
                     document.getElementById('addPlayerRow').style.display = 'none';
                     document.getElementById('inputTab').style.display = 'none';
-                      /*var buttons = document.querySelectorAll(".manageButtons");
-                      for (var i = 0; i < buttons.length; ++i){
-                          buttons[i].style.display = 'none';
-                      }*/
+
                   }
               });
           })
@@ -1309,7 +1153,6 @@
           });
           
       } else {
-          // No user is signed in.
       }
       });
   }
@@ -1317,11 +1160,60 @@
   firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
             } else {
-                // No user is signed in.
                 location.href = 'index.html';
                 alert('You must be logged in to use this app.');
             }
         });
+  </script>
+  <script>
+    /*
+    function parseBase64Image(imgData) {
+      return "data:image/jpg;base64," + imgData;
+    }
+
+    function getBase64Image(img, imgName) {
+
+      var canvas = document.createElement('canvas');
+      canvas.width = 250;
+      canvas.height = canvas.width * img.height / img.width;
+      var ctx = canvas.getContext('2d');
+
+      resizeImage(canvas, ctx, img, canvas.width);
+
+      var extension = imgName.substring(imgName.lastIndexOf('.'));
+
+      var validFileType = '.jpg , .png , .bmp , .svg';
+
+      if (validFileType.toLowerCase().indexOf(extension) < 0) {
+
+        alert('The file type is not supported');
+      }
+
+      var extentionNoDot = extension.substring(1, extension.length);
+      var urlName = 'image/' + extension;
+      var dataURL = canvas.toDataURL("urlName", 0.1);
+
+      return dataURL;
+    }
+
+    function resizeImage(canvas, context, img, destWidth) {
+
+      var otherCanvas = document.createElement('canvas');
+      var otherCtx = otherCanvas.getContext('2d');
+
+      otherCanvas.width = img.width;
+      otherCanvas.height = img.height;
+      otherCtx.drawImage(img, 0, 0);
+
+      while (otherCanvas.width * 0.5 > destWidth) {
+        otherCanvas.width *= 0.5;
+        otherCanvas.height *= 0.5;
+        otherCtx.drawImage(otherCanvas, 0, 0, otherCanvas.width, otherCanvas.height);
+      }
+
+      context.drawImage(img, 0, 0, otherCanvas.width, otherCanvas.height);
+    }
+    */
   </script>
 </body>
 

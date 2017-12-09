@@ -1,13 +1,1 @@
-{
-    "name": "TeamWatch",
-    "short_name": "TeamWatch",
-    "start_url": "./homepage.html",
-    "icons": [{
-          "src": "images/soccer_icon.png",
-          "sizes": "512x512",
-          "type": "image/png"
-        }],
-    "background_color": "#3E4EB8",
-    "display": "standalone",
-    "theme_color": "#2E3AA1"
-  }
+{"name": "TeamWatch", "short_name": "TeamWatch", "start_url": "./homepage.html", "icons": [{"src": "images/soccer_icon.png", "sizes": "512x512", "type": "image/png"}], "background_color": "#3E4EB8", "display": "standalone", "theme_color": "#2E3AA1"}

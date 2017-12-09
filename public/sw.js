@@ -4,34 +4,34 @@ const cacheID = 'v1';
 const cacheFiles = [
   '/',
   // HTML Files
-  '../index.html',
-  '../homepage.html',
-  '../create_account.html',
-  '../forgot_password.html',
-  '../account_settings.html',
-  '../schedule_upcoming.html',
-  '../schedule_previous.html',
-  '../roster_vanilla.html',
-  '../player_stats_vanilla.html',
-  '../player_info_vanilla.html',
-  '../input_stats_vanilla.html',
-  '../gamestat_summary.html',
+  './index.html',
+  './homepage.html',
+  './create_account.html',
+  './forgot_password.html',
+  './account_settings.html',
+  './schedule_upcoming.html',
+  './schedule_previous.html',
+  './roster_vanilla.html',
+  './player_stats_vanilla.html',
+  './player_info_vanilla.html',
+  './input_stats_vanilla.html',
+  './gamestat_summary.html',
   // CSS Files
   // Image Files
-  '../images/edit.svg',
-  '../images/LAGalaxy.svg',
-  '../soccer_icon.png',
+  './images/edit.svg',
+  './images/LAGalaxy.svg',
+  './images/soccer_icon.png',
   // JS Files
-  './schedule.js',
-  './hideInputTab.js',
-  './CRUD_roster.js',
-  './raven.js',
-  './firebase.js',
-  './firestore.js',
+  './js/schedule.js',
+  './js/hideInputTab.js',
+  './js/CRUD_roster.js',
+  './js/raven.js',
+  './js/firebase.js',
+  './js/firestore.js',
   './sw.js',
-  './app.js',
+  './js/app.js',
   // Misc. Files
-  '../manifest.json',
+  './manifest.json',
 ];
 
 // Service Worker Install Event
@@ -68,8 +68,10 @@ self.addEventListener('fetch', function(event) {
     event.respondWith(
       caches.match(event.request)
         .then(function(response) {
+          console.log('event');
           // Cache hit - return response
           if (response) {
+            console.log('hit');
             return response;
           }
   
@@ -78,11 +80,15 @@ self.addEventListener('fetch', function(event) {
           // once by cache and once by the browser for fetch, we need
           // to clone the response.
           var fetchRequest = event.request.clone();
+          console.log(fetchRequest.method);
   
           return fetch(fetchRequest).then(
             function(response) {
+              console.log('here');
+              console.log(response.type);
               // Check if we received a valid response
-              if(!response || response.status !== 200 || response.type !== 'basic') {
+              if(!response || response.status !== 200 || fetchRequest.method == 'POST') {
+                console.log('invalid');
                 return response;
               }
   
@@ -90,10 +96,11 @@ self.addEventListener('fetch', function(event) {
               // and because we want the browser to consume the response
               // as well as the cache consuming the response, we need
               // to clone it so we have two streams.
+              console.log('there');
               var responseToCache = response.clone();
-  
-              caches.open(CACHE_NAME)
+              caches.open(cacheID)
                 .then(function(cache) {
+                  console.log('cached');
                   cache.put(event.request, responseToCache);
                 });
   

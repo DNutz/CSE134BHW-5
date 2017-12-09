@@ -4,6 +4,8 @@
 <head>
     <title>Create Account</title>
     <meta charset="utf-8">
+    <meta name="theme-color" content="#2E3AA1">
+    <meta name="viewport" content="width=980, initial-scale=.3">
     <style>
         body {
             margin: 5% 5% 5% 5%;
@@ -126,6 +128,7 @@
                 var errorMessage = error.message;
                 console.log("Error: code("+errorCode+") "+errorMessage);
                 alert("Error: code("+errorCode+") "+errorMessage);
+                return 0;
             });
             firebase.auth().onAuthStateChanged(function(user) {
             if (user) {

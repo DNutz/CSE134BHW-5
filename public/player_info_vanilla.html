@@ -3,6 +3,9 @@
 
 <head>
   <title>Player Info</title>
+  <meta charset="utf-8">
+  <meta name="theme-color" content="#2E3AA1">
+  <meta name="viewport" content="width=980, initial-scale=.3">
   <script>
     function back_to_roster() {
       location.href = "roster_vanilla.html";
@@ -722,6 +725,14 @@
         .catch(function (error) {
         });
     }
+    firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+            } else {
+                // No user is signed in.
+                location.href = 'index.html';
+                alert('You must be logged in to use this app.');
+            }
+        });
   </script>
 </body>
 

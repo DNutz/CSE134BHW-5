@@ -4,6 +4,8 @@
 <head>
     <title>Game Summary</title>
     <meta charset="utf-8">
+    <meta name="theme-color" content="#2E3AA1">
+    <meta name="viewport" content="width=980, initial-scale=.3">
     <script src="js/firebase.js" type="text/javascript"></script>
     <script src="js/firestore.js" type="text/javascript"></script>
     <script>
@@ -23,7 +25,7 @@
     </script>
     <script src="js/raven.js" type="text/javascript"></script>
     <script src="js/app.js" type="text/javascript"></script>
-    <script src="js/sw.js" type="text/javascript"></script>
+    <script src="sw.js" type="text/javascript"></script>
     <style>
         html {
             font-size: 10px;
@@ -569,6 +571,14 @@
                 return 0;
             }
         }
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+            } else {
+                // No user is signed in.
+                location.href = 'index.html';
+                alert('You must be logged in to use this app.');
+            }
+        });
     </script>
 </body>
 

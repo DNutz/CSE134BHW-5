@@ -4,6 +4,8 @@
 <head>
     <title>Account Settings</title>
     <meta charset="utf-8">
+    <meta name="theme-color" content="#2E3AA1">
+    <meta name="viewport" content="width=980, initial-scale=.3">
     <script src="/js/hideInputTab.js"></script>
 
     <!-- Element Styles -->
@@ -588,6 +590,7 @@
             document.getElementById('email').innerText = curruser.email;
         } else {
             // No user is signed in.
+                location.href = 'index.html';
         }
         });
     </script>

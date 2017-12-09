@@ -4,6 +4,8 @@
 <head>
     <title>Current/Upcoming Games</title>
     <meta charset="utf-8">
+    <meta name="theme-color" content="#2E3AA1">
+    <meta name="viewport" content="width=980, initial-scale=.3">
     <script src="js/firebase.js" type="text/javascript"></script>
     <script src="js/firestore.js" type="text/javascript"></script>
     <script>
@@ -20,7 +22,7 @@
     <script src="js/schedule.js" type="text/javascript"></script>
     <script src="js/raven.js" type="text/javascript"></script>
     <script src="js/app.js" type="text/javascript"></script>
-    <script src="js/sw.js" type="text/javascript"></script>
+    <script src="sw.js" type="text/javascript"></script>
     <script src="js/hideInputTab.js" type="text/javascript"></script>
     <style>
         html {
@@ -422,7 +424,7 @@
         <li>
             <a data-toggle="pill" href="roster_vanilla.html">Roster</a>
         </li>
-        <li class="inputTab">
+        <li id="inputTab">
             <a data-toggle="pill" href="input_stats_vanilla.html">Input</a>
         </li>
         <li>
@@ -489,7 +491,7 @@
             </div>
             <div id="addBody" class="modal-body">
 
-                <form id="addEventForm" method="POST" onsubmit="addEvent(); return false;">
+                <form id="addEventForm" method="GET" onsubmit="addEvent(); return false;">
                     <label for="eventType">Select Type of Event:</label>
                     <select id="eventType" name="eventType" form="addEventForm" onchange="changeAddInfo(this)">
                         <option value="Game">Game</option>
@@ -528,7 +530,7 @@
             </div>
             <div id="updateBody" class="modal-body">
 
-                <form id="updateEventForm" method="POST">
+                <form id="updateEventForm" method="GET">
                     <label for="updateEventType"></label>
                     <input type="text" name="updateEventType" id="updateEventType" disabled>
                     <div id="updateOpponentContainer">
@@ -573,9 +575,9 @@
     </div>
     <script>
         var db = firebase.firestore();
-        checkUserType();
         db.collection('upcomingEvents').onSnapshot(function() {
             showSchedule();
+            checkUserType();
         });
         
         function checkUserType() {
@@ -583,6 +585,32 @@
             if (currUser == undefined || JSON.parse(currUser).type != 'Coach') {
                 document.getElementById('schedule_addButton').style.display = 'none';
             }
+            var curruser;
+            firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                curruser = firebase.auth().currentUser;
+                db.collection('users').where("email", "==", curruser.email).get()
+                .then(function(querySnapshot) {
+                    querySnapshot.forEach(function(doc) {
+                        var type = doc.data().type;
+                        if (type != 'Coach'){
+                            document.getElementById('schedule_addButton').style.display = 'none';
+                            document.getElementById('inputTab').style.display = 'none';
+                            var buttons = document.querySelectorAll(".manageButtons");
+                            for (var i = 0; i < buttons.length; ++i){
+                                buttons[i].style.display = 'none';
+                            }
+                        }
+                    });
+                })
+                .catch(function(error) {
+                    console.log("Error getting documents: ", error);
+                });
+                
+            } else {
+                // No user is signed in.
+            }
+            });
         }
 
         function changeAddInfo(dropdown) {
@@ -976,6 +1004,14 @@
             var modal = this.parentNode.parentNode.parentNode;
             modal.style.display = 'none';
         }
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+            } else {
+                // No user is signed in.
+                location.href = 'index.html';
+                alert('You must be logged in to use this app.');
+            }
+        });
     </script>
 </body>
 

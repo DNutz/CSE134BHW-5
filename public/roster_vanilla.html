@@ -3,6 +3,9 @@
 
 <head>
   <title>Roster</title>
+  <meta charset="utf-8">
+  <meta name="theme-color" content="#2E3AA1">
+  <meta name="viewport" content="width=980, initial-scale=.3">
   <script src="js/CRUD_roster.js"></script>
   <script src="js/hideInputTab.js"></script>
   <script src="js/firebase.js"></script>
@@ -862,7 +865,7 @@
     <li class="active">
       <a data-toggle="pill">Roster</a>
     </li>
-    <li class="inputTab">
+    <li id="inputTab">
       <a data-toggle="pill" href="input_stats_vanilla.html">Input</a>
     </li>
     <li>
@@ -871,7 +874,7 @@
   </ul>
   <table id="playerTable" class="table table-hover table-bordered">
     <tbody>
-      <tr>
+      <tr id="addPlayerRow">
         <td>
           <button id="addPlayerButton" type="button" class="btn btn-primary fourty" onclick="show_add_modal()">Add a player</button>
         </td>
@@ -1206,10 +1209,10 @@
       type : 'coach'
     }
     localStorage.setItem('currentUser',JSON.stringify(u));*/
-    hideInputTab();
-    if (localStorage.getItem('currentUser') == undefined || JSON.parse(localStorage.getItem('currentUser')).type != 'Coach') {
+    //hideInputTab();
+    /*if (localStorage.getItem('currentUser') == undefined || JSON.parse(localStorage.getItem('currentUser')).type != 'Coach') {
       document.getElementById('addPlayerButton').style.display = 'none';
-    }
+    }*/
   </script>
 
   <script>
@@ -1234,39 +1237,49 @@
 
   </script>
 
-  <script>/*
-    var db = firebase.firestore();
-    var stats = {
-            fouls: 0,
-            redCards: 0,
-            yellowCards: 0,
-            shotsOnGoal: 0,
-            goals: 0,
-            cKicks: 0,
-            pKicks: 0,
-            tIns: 0,
-            appearances: 0
-        };
-    db.collection("players").add({
-      img: null,
-      number: 0,
-      name: 'Player ' + 0,
-      status: 'Starter',
-      position: 'position ' + 0,
-      college: 'UCSD',
-      hometown: 'San Diego',
-      age: 30,
-      DOB: Date.now(),
-      ID: ('P' + (11110)),
-      stats: stats,
-      inactive: false
-    })
-    .then(function(docRef) {
-        console.log("Document written with ID: ", docRef.id);
-    })
-    .catch(function(error) {
-        console.error("Error adding document: ", error);
-    });*/
+  <script>
+    function checkUserType() {
+      /*var currUser = localStorage.getItem('currentUser');
+      if (currUser == undefined || JSON.parse(currUser).type != 'Coach') {
+          document.getElementById('schedule_addButton').style.display = 'none';
+      }*/
+      var curruser;
+      var db = firebase.firestore();
+      firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+          curruser = firebase.auth().currentUser;
+          db.collection('users').where("email", "==", curruser.email).get()
+          .then(function(querySnapshot) {
+              querySnapshot.forEach(function(doc) {
+                  var type = doc.data().type;
+                  if (type != 'Coach'){
+                    document.getElementById('addPlayerRow').style.display = 'none';
+                    document.getElementById('inputTab').style.display = 'none';
+                      /*var buttons = document.querySelectorAll(".manageButtons");
+                      for (var i = 0; i < buttons.length; ++i){
+                          buttons[i].style.display = 'none';
+                      }*/
+                  }
+              });
+          })
+          .catch(function(error) {
+              console.log("Error getting documents: ", error);
+          });
+          
+      } else {
+          // No user is signed in.
+      }
+      });
+  }
+  checkUserType();
+  firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+            } else {
+                // No user is signed in.
+                location.href = 'index.html';
+                alert('You must be logged in to use this app.');
+            }
+        });
   </script>
 </body>
 

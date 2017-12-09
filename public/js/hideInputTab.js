@@ -16,7 +16,7 @@ function hideInputTab() {
         .then(function(querySnapshot) {
             querySnapshot.forEach(function(doc) {
                 var type = doc.data().type;
-                console.log(type);
+                //console.log(type);
                 if (type != 'Coach'){
                     document.getElementsByClassName('inputTab')[0].style.display = 'none';
                 }

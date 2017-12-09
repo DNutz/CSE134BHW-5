@@ -3,6 +3,9 @@
 
 <head>
   <title>Input Stats</title>
+  <meta charset="utf-8">
+  <meta name="theme-color" content="#2E3AA1">
+  <meta name="viewport" content="width=980, initial-scale=.3">
   <script>
     function show_modal(n) {
       viewFireStats(n);
@@ -1149,6 +1152,14 @@
             location.href = 'homepage.html';
         }
     }
+    firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+            } else {
+                // No user is signed in.
+                location.href = 'index.html';
+                alert('You must be logged in to use this app.');
+            }
+        });
   </script>
 </body>
 

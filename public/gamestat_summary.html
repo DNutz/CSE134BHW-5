@@ -9,10 +9,6 @@
     <script src="js/firebase.js" type="text/javascript"></script>
     <script src="js/firestore.js" type="text/javascript"></script>
     <script>
-        // Initialize Firebase
-        //const firebase = require("firebase");
-        // Required for side-effects
-        //require("firebase/firestore");
         var config = {
             apiKey: "AIzaSyA4_4i286-lIif954lxXfFFMCxIdzgNeLQ",
             authDomain: "cse134bhw-5.firebaseapp.com",
@@ -441,40 +437,6 @@
             })
         }
 
-        function updateGame() {
-            var previousEventList = JSON.parse(localStorage.getItem('previousList'));
-            var selectedGame = localStorage.getItem('selectedGame');
-            if (selectedGame == undefined) {
-                return 0;
-            }
-            selectedGame = JSON.parse(selectedGame);
-            if (selectedGame.listOrigin == 'upcoming') {
-                var upcomingEventList = JSON.parse(localStorage.getItem('upcomingList'));
-                for (var index = 0; index < upcomingEventList.length; index++) {
-                    var event = upcomingEventList[index];
-                    if (event.type == 'Game' && event.date == selectedGame.date && event.time == selectedGame.time && event.location == selectedGame.location &&
-                        event.opponent == selectedGame.opponent && event.status == selectedGame.status) {
-                        event.gameStats = selectedGame.gameStats;
-                        upcomingEventList[index] = event;
-                        localStorage.setItem('upcomingList', JSON.stringify(upcomingEventList));
-                        return 0;
-                    }
-                }
-            }
-
-            for (var index = 0; index < previousEventList.length; index++) {
-                var event = previousEventList[index];
-                if (event.type == 'Game' && event.date == selectedGame.date && event.time == selectedGame.time && event.location == selectedGame.location &&
-                    event.opponent == selectedGame.opponent && event.status == selectedGame.status) {
-                    event.gameStats = selectedGame.gameStats;
-                    previousEventList[index] = event;
-                    localStorage.setItem('previousList', JSON.stringify(previousEventList));
-                    return 0;
-                }
-            }
-            return 0;
-        }
-
         function saveStats() {
             var inputtedStats = {};
 
@@ -537,7 +499,6 @@
                 .catch(function (error) {
                     console.error("Error updating stats: ", error);
                 });
-
         }
 
         function enableEditing() {
@@ -557,7 +518,6 @@
                 document.querySelector('#gameStatsForm').onsubmit = function () {
                     saveStats();
                     return false;
-                    //updateGame();
                 };
                 var stats = document.querySelectorAll('.statValue');
                 for (var i = 0; i < stats.length; i++) {
@@ -574,7 +534,6 @@
         firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
             } else {
-                // No user is signed in.
                 location.href = 'index.html';
                 alert('You must be logged in to use this app.');
             }

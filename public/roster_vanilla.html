@@ -1048,6 +1048,7 @@
       <tr>
         <td>
           <button id="addPlayerButton" type="button" class="btn btn-primary fourty" onclick="show_add_modal()">Add a player</button>
+          <p style="display:inline; float:right;" id="loadingRoster">Loading...</p>
         </td>
       </tr>
     </tbody>
@@ -1072,7 +1073,7 @@
             <input class="form-control" type="number" name="age" placeholder="Age" required>
             <label style="display: block;font-size: 4rem;margin: 2rem 0 2rem 0;">DOB:</label>
             <input class="form-control" type="date" name="dob" placeholder="DOB" required>
-            <button type="button" style="font-size: 4rem; margin: 1rem 1rem 1rem 0; float:left; background-color:pink; height: 5rem; border: #db7fb0, 3px" 
+            <button type="button" style="font-size: 4rem; margin: 1rem 1rem 1rem 0; float:left; background-color:pink; height: 5rem; border: 0.5rem solid #dfa1c2;"
               onclick="filestackUpload()">Upload a picture</button>
             <!--<input input id="modalImageInput" type="file" onchange="previewFile()">-->
             <br>
@@ -1185,7 +1186,7 @@
       var age = form.children[6].value;
       var dob = form.children[8].value;
       var imgUrl = document.getElementById('modalImage').src;
-      
+
       var stats = {
         fouls: 0,
         redCards: 0,
@@ -1228,7 +1229,7 @@
         //img
         td.getElementsByTagName('img')[0].setAttribute('src', player.img);
         td.getElementsByTagName('img')[0].setAttribute('alt', 'Player picture');
-        
+
 
         //player p tags
         td.getElementsByTagName('p')[0].innerHTML = player.name;
@@ -1282,24 +1283,24 @@
     }
 
     function filestackUpload() {
-            console.log('IN UPLOAD');
-            const client = filestack.init('AvxLSbgnTQsmcqyHB0WPFz');
-            client.pick({
-                accept: 'image/*',
-            }).then(function (result) {
-                console.log('IN THEN');
-                const fileUrl = result.filesUploaded[0].url;
-                var index = fileUrl.lastIndexOf('/');
-                var fileStackUrl = fileUrl.substr(0, index);
-                var imgUrl = fileUrl.substr(fileUrl.lastIndexOf('/'));
-                var compressStr = '/resize=width:250,height:300/compress';
-                var finalUrl = fileStackUrl + compressStr + imgUrl;
-                document.getElementById('modalImage').src = finalUrl;
-            })
-            .then(function() {
-              uploadSuccess = true;
-            });
-        }
+      console.log('IN UPLOAD');
+      const client = filestack.init('AvxLSbgnTQsmcqyHB0WPFz');
+      client.pick({
+        accept: 'image/*',
+      }).then(function (result) {
+        console.log('IN THEN');
+        const fileUrl = result.filesUploaded[0].url;
+        var index = fileUrl.lastIndexOf('/');
+        var fileStackUrl = fileUrl.substr(0, index);
+        var imgUrl = fileUrl.substr(fileUrl.lastIndexOf('/'));
+        var compressStr = '/resize=width:250,height:300/compress';
+        var finalUrl = fileStackUrl + compressStr + imgUrl;
+        document.getElementById('modalImage').src = finalUrl;
+      })
+        .then(function () {
+          uploadSuccess = true;
+        });
+    }
 
     function parseBase64Image(imgData) {
       return "data:image/jpg;base64," + imgData;
@@ -1353,12 +1354,6 @@
       context.drawImage(img, 0, 0, otherCanvas.width, otherCanvas.height);
     }
 
-    function setPlayerTable() {
-      var playerTable = document.getElementById('playerTable');
-
-      getRosterFirestore();
-
-    }
     function getRosterFirestore() {
       var db = firebase.firestore();
       var playerList = [];
@@ -1380,30 +1375,34 @@
 
             var playerRow = createPlayerRow(player);
             playerTable.children[0].appendChild(playerRow);
-
+            document.getElementById('loadingRoster').innerHTML = '';
           }
         })
         .catch(function (error) {
         });
     }
-    
+
   </script>
 
-  <!-- Page Scripts-->
+  <!-- Onload Scripts -->
   <script>
-    if (localStorage.getItem('Roster') == undefined) initializeRoster(0);
-    setPlayerTable();
-  </script>
-  <script>
-    //initializeRoster(10);
-    /*var u = {
-      email : 'hi@mail.com',
-      password : 'password',
-      question : 'question',
-      answer : 'none',
-      type : 'coach'
-    }
-    localStorage.setItem('currentUser',JSON.stringify(u));*/
+
+    var db = firebase.firestore();
+    db.collection('players').onSnapshot(function () {
+
+      var table = document.getElementById('playerTable');
+
+      console.log(table.children[0].childElementCount);
+      var i;
+      while (table.children[0].childElementCount > 1) {
+        table.deleteRow(1);
+        console.log(i++);
+      }
+
+      getRosterFirestore();
+
+    });
+
     hideInputTab();
     if (localStorage.getItem('currentUser') == undefined || JSON.parse(localStorage.getItem('currentUser')).type != 'Coach') {
       document.getElementById('addPlayerButton').style.display = 'none';
@@ -1411,7 +1410,7 @@
   </script>
 
   <script>
-    
+
     function previewFile() {
       var preview = document.getElementById('modalImage'); //selects the query named img
       var fullSize = document.getElementById('fullSizeImage');
@@ -1431,41 +1430,6 @@
       }
     }
 
-  </script>
-
-  <script>/*
-    var db = firebase.firestore();
-    var stats = {
-            fouls: 0,
-            redCards: 0,
-            yellowCards: 0,
-            shotsOnGoal: 0,
-            goals: 0,
-            cKicks: 0,
-            pKicks: 0,
-            tIns: 0,
-            appearances: 0
-        };
-    db.collection("players").add({
-      img: null,
-      number: 0,
-      name: 'Player ' + 0,
-      status: 'Starter',
-      position: 'position ' + 0,
-      college: 'UCSD',
-      hometown: 'San Diego',
-      age: 30,
-      DOB: Date.now(),
-      ID: ('P' + (11110)),
-      stats: stats,
-      inactive: false
-    })
-    .then(function(docRef) {
-        console.log("Document written with ID: ", docRef.id);
-    })
-    .catch(function(error) {
-        console.error("Error adding document: ", error);
-    });*/
   </script>
 </body>
 

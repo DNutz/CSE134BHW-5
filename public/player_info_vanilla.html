@@ -789,6 +789,13 @@
         .catch(function (error) {
         });
     }
+
+    var db = firebase.firestore();
+    db.collection('players').onSnapshot(function () {
+
+      loadInfo();
+
+    });
   </script>
 </body>
 

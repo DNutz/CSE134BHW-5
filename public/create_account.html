@@ -92,13 +92,11 @@
             <option value="3">Fan</option>
         </select>
     </form>
-    <!--<button id="create_start" name="create_start" type="button" form="create_account_form" class="btn btn-success" onclick="createUser()">Start</button>-->
     <button id="create_start" type="button" class="btn btn-success" onclick="fireCreate()">Start</button>
 
     <script src="/js/firebase.js"></script>
     <script src="js/firestore.js"></script>
     <script>
-        // Initialize Firebase
         var config = {
             apiKey: "AIzaSyA4_4i286-lIif954lxXfFFMCxIdzgNeLQ",
             authDomain: "cse134bhw-5.firebaseapp.com",
@@ -126,7 +124,7 @@
             firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
                 var errorCode = error.code;
                 var errorMessage = error.message;
-                console.log("Error: code("+errorCode+") "+errorMessage);
+                /*console.log("Error: code("+errorCode+") "+errorMessage);*/
                 alert("Error: code("+errorCode+") "+errorMessage);
                 return 0;
             });
@@ -139,7 +137,6 @@
                         type: userType.options[userType.selectedIndex].text
                     })
                     .then(function(docRef) {
-                        console.log("Document written with ID: ", docRef.id);
                         location.href = ("homepage.html");
                     })
                     .catch(function(error) {
@@ -149,11 +146,9 @@
                 }).catch(function(error) {
                     var errorCode = error.code;
                     var errorMessage = error.message;
-                    console.log("Error: code("+errorCode+") "+errorMessage);
                     alert("Error: code("+errorCode+") "+errorMessage);
                     });
             } else {
-                // No user is signed in.
             }
             });
             return 1;

@@ -8,7 +8,6 @@
     <meta name="viewport" content="width=980, initial-scale=.3">
     <script src="/js/hideInputTab.js"></script>
 
-    <!-- Element Styles -->
     <style>
         body {
             margin: 3% 3% 3% 3%;
@@ -93,7 +92,6 @@
 
     </style>
 
-    <!-- Modal Styles -->
     <style>
         .modal {
             display: none;
@@ -186,7 +184,6 @@
         }
     </style>
 
-    <!-- Bootstrap styles-->
     <style>
         /* ---------------- Button ---------------- */
 
@@ -420,7 +417,6 @@
         <button id='logoutButton' class='btn btn-lg' onclick="fireLogout()">Logout</button>
     </section>
 
-    <!-- Change Email Modal -->
     <div id="changeEmailModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -452,15 +448,12 @@
                 </form>
 
             </div>
-            <!-- modal body div -->
 
             <div class="modal-footer">
             </div>
         </div>
-        <!-- content div -->
     </div>
 
-    <!-- Change Password Modal -->
     <div id="changePasswordModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -495,17 +488,13 @@
                 </form>
 
             </div>
-            <!-- modal body div -->
         </div>
-        <!-- content div -->
 
     </div>
 
-    <!--Firebase Scripts-->
     <script src="/js/firebase.js"></script>
     <script src="/js/firestore.js"></script>
     <script>
-        // Initialize Firebase
         var config = {
             apiKey: "AIzaSyA4_4i286-lIif954lxXfFFMCxIdzgNeLQ",
             authDomain: "cse134bhw-5.firebaseapp.com",
@@ -516,10 +505,7 @@
         };
         firebase.initializeApp(config);
     </script>
-    <!-- Modal Script -->
     <script>
-
-        //Make the modals appear
         document.getElementById('changeEmail').onclick = function () {
             var modal = document.getElementById((this.id + 'Modal'));
             modal.style.display = 'block';
@@ -529,7 +515,6 @@
             modal.style.display = 'block';
         }
 
-        //making the modals dissapear
         document.getElementById('closeEmail').onclick = function () {
             var modal = this.parentNode.parentNode.parentNode;
             modal.style.display = 'none';
@@ -540,14 +525,13 @@
         }
     </script>
 
-    <!-- General Scripts -->
     <script>
         function fireLogout(){
             firebase.auth().signOut().then(function() {
                 location.href = "index.html";
                 return 1;
             }).catch(function(error) {
-                console.log("Error: code("+errorCode+") "+errorMessage);
+                /*console.log("Error: code("+errorCode+") "+errorMessage);*/
                 alert("Error: code("+errorCode+") "+errorMessage);
                 return 0;
             });
@@ -560,7 +544,7 @@
             alert('Password updated sucessfully');
             document.getElementById('changePasswordModal').style.display = 'none';
             }).catch(function(error) {
-            console.log("Error: code("+errorCode+") "+errorMessage);
+            /*console.log("Error: code("+errorCode+") "+errorMessage);*/
             alert("Error: code("+errorCode+") "+errorMessage);
             });
         }
@@ -573,23 +557,20 @@
             location.reload();
             document.getElementById('changeEmailModal').style.display = 'none';
             }).catch(function(error) {
-            console.log("Error: code("+errorCode+") "+errorMessage);
+            /*console.log("Error: code("+errorCode+") "+errorMessage);*/
             alert("Error: code("+errorCode+") "+errorMessage);
             });
         }
     </script>
     <script>
-        //hide input tab if user is not a coach
         hideInputTab();
 
-        //populate the page with current account info
         var curruser;
         firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
             curruser = firebase.auth().currentUser;
             document.getElementById('email').innerText = curruser.email;
         } else {
-            // No user is signed in.
                 location.href = 'index.html';
         }
         });

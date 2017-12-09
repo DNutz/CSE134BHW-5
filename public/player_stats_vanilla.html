@@ -22,7 +22,6 @@
   <script src="js/firebase.js"></script>
   <script src="js/firestore.js"></script>
   <script>
-    // Initialize Firebase
     var config = {
       apiKey: "AIzaSyA4_4i286-lIif954lxXfFFMCxIdzgNeLQ",
       authDomain: "cse134bhw-5.firebaseapp.com",
@@ -579,7 +578,6 @@
     }
   </style>
   
-    <!-- Modal Styles -->
     <style>
       /* Modal Styles */
   
@@ -746,25 +744,6 @@
     <button id="rstr_btn" type="button" class="btn btn-primary" onclick="back_to_roster()">Back to Roster</button>
   </div>
   <script>
-    /*var infoPlayer = localStorage.getItem('currentPlayer');
-    var inputRoster = JSON.parse(localStorage.getItem('Roster'));
-    for (var i = 0; i < inputRoster.length; ++i){
-      if (inputRoster[i].ID == infoPlayer){
-        console.log(inputRoster[i]);
-        console.log(inputRoster);
-        document.getElementById('statsPlayerName').innerText = inputRoster[i].name;
-        document.getElementById('statsPlayerFouls').innerText = inputRoster[i].stats.fouls;
-        document.getElementById('statsPlayerRcards').innerText = inputRoster[i].stats.redCards;
-        document.getElementById('statsPlayerYcards').innerText = inputRoster[i].stats.yellowCards;
-        document.getElementById('statsPlayerSOG').innerText = inputRoster[i].stats.shotsOnGoal;
-        document.getElementById('statsPlayerGoals').innerText = inputRoster[i].stats.goals;
-        document.getElementById('statsPlayerCkicks').innerText = inputRoster[i].stats.cKicks;
-        document.getElementById('statsPlayerPkicks').innerText = inputRoster[i].stats.pKicks;
-        document.getElementById('statsPlayerTins').innerText = inputRoster[i].stats.tIns;
-        document.getElementById('statsPlayerAppearances').innerText = inputRoster[i].stats.appearances;
-        break;
-      }
-    }*/
     var id = localStorage.getItem('currentPlayer');
     var db = firebase.firestore();
     db.collection("players").doc(id).get().then(function (doc) {
@@ -782,13 +761,10 @@
         document.getElementById('statsPlayerAppearances').innerText = player.stats.appearances;
         document.getElementById('playerPic').setAttribute('src', player.img);
       } else {
-        console.log("No such document!");
       }
     }).catch(function (error) {
-      console.log("Error getting document:", error);
     });
     db.collection("players").doc(id).onSnapshot(function(doc) {
-        console.log("Current data: ", doc && doc.data());
         var player = doc.data();
         document.getElementById('statsPlayerName').innerText = player.name;
         document.getElementById('statsPlayerFouls').innerText = player.stats.fouls;
@@ -805,7 +781,6 @@
     firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
             } else {
-                // No user is signed in.
                 location.href = 'index.html';
                 alert('You must be logged in to use this app.');
             }
